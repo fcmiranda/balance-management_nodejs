@@ -1,5 +1,6 @@
-export interface Client {
-  id?: number;
+// DTOs for API communication
+export interface ClientDTO {
+  id: number;
   name: string;
   email: string;
   balance: number;
