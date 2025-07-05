@@ -9,5 +9,5 @@ app.use('/api', routes);
 const PORT = 8080;
 
 app.listen(PORT, () => {
-    console.log(`Server Listening on PORT: ${PORT}`);
+  console.log(`Server Listening on PORT: ${PORT}`);
 });
