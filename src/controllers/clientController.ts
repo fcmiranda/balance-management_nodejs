@@ -1,10 +1,10 @@
 import db from '../database';
-import { CreateClienteRequest, UpdateClienteRequest, DepositRequest, WithdrawalRequest } from '../types';
+import { CreateClientRequest, UpdateClientRequest, DepositRequest, WithdrawalRequest } from '../types';
 
-export class ClienteController {
+export class ClientController {
     
-    static async getAllClientes(req: any, res: any): Promise<any> {
-        const query = 'SELECT * FROM clientes';
+    static async getAllClients(req: any, res: any): Promise<any> {
+        const query = 'SELECT * FROM clients';
         db.all(query, [], (err: any, rows: any) => {
             if (err) 
                 return res.status(400).json({error: err.message});
@@ -12,9 +12,9 @@ export class ClienteController {
         });
     }
 
-    static async getClienteById(req: any, res: any): Promise<any> {
+    static async getClientById(req: any, res: any): Promise<any> {
         const {id} = req.params;
-        const query = 'SELECT * FROM clientes WHERE id = ?';
+        const query = 'SELECT * FROM clients WHERE id = ?';
         db.all(query, [id], (err: any, rows: any) => {
             if (err) 
                 return res.status(400).json({error: err.message});
@@ -22,10 +22,10 @@ export class ClienteController {
         });
     }
 
-    static async createCliente(req: any, res: any): Promise<any> {
-        const {nome, email}: CreateClienteRequest = req.body;
+    static async createClient(req: any, res: any): Promise<any> {
+        const {name, email}: CreateClientRequest = req.body;
         try {
-            db.run(`INSERT INTO clientes(nome, email) VALUES(?, ?)`, [nome, email]);
+            db.run(`INSERT INTO clients(name, email) VALUES(?, ?)`, [name, email]);
             return res.status(200).json();
         } catch(err) {
             console.log(err);
@@ -33,11 +33,11 @@ export class ClienteController {
         }
     }
 
-    static async updateCliente(req: any, res: any): Promise<any> {
+    static async updateClient(req: any, res: any): Promise<any> {
         const { id } = req.params;
-        const {nome, email}: UpdateClienteRequest = req.body;
+        const {name, email}: UpdateClientRequest = req.body;
         try {
-            db.run(`UPDATE clientes SET nome = ?, email = ? WHERE id = ?`, [nome, email, id]);
+            db.run(`UPDATE clients SET name = ?, email = ? WHERE id = ?`, [name, email, id]);
             return res.status(200).json();
         } catch(err) {
             console.log(err);
@@ -45,10 +45,10 @@ export class ClienteController {
         }
     }
 
-    static async deleteCliente(req: any, res: any): Promise<any> {
+    static async deleteClient(req: any, res: any): Promise<any> {
         const { id } = req.params;
         try {
-            db.run(`DELETE FROM clientes WHERE id = ?`, [id]);
+            db.run(`DELETE FROM clients WHERE id = ?`, [id]);
             return res.status(200).json();
         } catch(err) {
             console.log(err);
@@ -58,10 +58,10 @@ export class ClienteController {
 
     static async deposit(req: any, res: any): Promise<any> {
         const { id } = req.params;
-        const { valor }: DepositRequest = req.body;
-        console.log({id, valor});
+        const { amount }: DepositRequest = req.body;
+        console.log({id, amount});
         try {
-            db.run(`UPDATE clientes SET saldo = saldo + ? WHERE id = ?`, [valor, id]);
+            db.run(`UPDATE clients SET balance = balance + ? WHERE id = ?`, [amount, id]);
             return res.status(200).json();
         } catch(err) {
             console.log(err);
@@ -71,10 +71,10 @@ export class ClienteController {
 
     static async withdraw(req: any, res: any): Promise<any> {
         const { id } = req.params;
-        const { valor }: WithdrawalRequest = req.body;
-        console.log({id, valor});
+        const { amount }: WithdrawalRequest = req.body;
+        console.log({id, amount});
         try {
-            db.run(`UPDATE clientes SET saldo = saldo - ? WHERE id = ?`, [valor, id]);
+            db.run(`UPDATE clients SET balance = balance - ? WHERE id = ?`, [amount, id]);
             return res.status(200).json();
         } catch(err) {
             console.log(err);

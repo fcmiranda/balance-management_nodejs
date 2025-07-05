@@ -3,14 +3,14 @@ import sqlite3 from 'sqlite3';
 const database = new sqlite3.Database(':memory:');
 
 database.serialize(() => {
-    database.run(`CREATE TABLE clientes(
+    database.run(`CREATE TABLE clients(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
+        name TEXT NOT NULL,
         email TEXT NOT NULL UNIQUE,
-        saldo FLOAT
+        balance DECIMAL(15,2) DEFAULT 0.00
     )`);
 
-    database.run(`INSERT INTO clientes(nome, email, saldo) VALUES(?, ?, 0)`, ['TESTE', 'TESTE@TESTE.com.br']);
+    database.run(`INSERT INTO clients(name, email, balance) VALUES(?, ?, 0)`, ['TEST', 'TEST@TEST.com']);
 });
 
 export default database;

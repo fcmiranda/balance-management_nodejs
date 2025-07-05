@@ -1,26 +1,26 @@
-export interface Cliente {
+export interface Client {
     id?: number;
-    nome: string;
+    name: string;
     email: string;
-    saldo: number;
+    balance: number;
 }
 
-export interface CreateClienteRequest {
-    nome: string;
+export interface CreateClientRequest {
+    name: string;
     email: string;
 }
 
-export interface UpdateClienteRequest {
-    nome: string;
+export interface UpdateClientRequest {
+    name: string;
     email: string;
 }
 
 export interface DepositRequest {
-    valor: number;
+    amount: number;
 }
 
 export interface WithdrawalRequest {
-    valor: number;
+    amount: number;
 }
 
 export interface ErrorResponse {

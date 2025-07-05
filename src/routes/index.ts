@@ -1,8 +1,8 @@
 import express from 'express';
-import { clienteRoutes } from './clienteRoutes';
+import { clientRoutes } from './clientRoutes';
 
 const router = express.Router();
 
-router.use('/', clienteRoutes);
+router.use('/', clientRoutes);
 
 export { router as routes };
