@@ -1,5 +1,8 @@
-import type { ClientRepository } from '../../domain/repositories/client-repository';
-import type { ClientResponse, IGetAllClientsUseCase } from '../interfaces/client-use-cases';
+import type {
+  ClientResponse,
+  IGetAllClientsUseCase,
+} from '@application/interfaces/client-use-cases';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class GetAllClientsUseCase implements IGetAllClientsUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

@@ -1,9 +1,9 @@
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import type {
   ClientResponse,
   GetClientByIdRequest,
   IGetClientByIdUseCase,
-} from '../interfaces/client-use-cases';
+} from '@application/interfaces/client-use-cases';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class GetClientByIdUseCase implements IGetClientByIdUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

@@ -1,14 +1,14 @@
-import express from 'express';
-import { ClientController } from '../controllers/client-controller';
-import { AuthMiddleware } from '../infrastructure/middleware/auth-middleware';
-import { validateBody, validateParams } from '../infrastructure/validation/middleware';
+import { ClientController } from '@controllers/client-controller';
+import { AuthMiddleware } from '@infrastructure/middleware/auth-middleware';
+import { validateBody, validateParams } from '@infrastructure/validation/middleware';
 import {
   clientIdParamSchema,
   createClientRequestSchema,
   depositRequestSchema,
   updateClientRequestSchema,
   withdrawRequestSchema,
-} from '../infrastructure/validation/schemas';
+} from '@infrastructure/validation/schemas';
+import express from 'express';
 
 const router = express.Router();
 const clientController = new ClientController();

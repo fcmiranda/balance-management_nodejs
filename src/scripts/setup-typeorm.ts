@@ -1,8 +1,8 @@
 #!/usr/bin/env ts-node
 import 'reflect-metadata';
-import { AuthService } from '../infrastructure/auth/auth-service';
-import { AppDataSource } from '../infrastructure/database/data-source';
-import { TypeOrmAuthRepository } from '../infrastructure/repositories/typeorm-auth-repository';
+import { AuthService } from '@infrastructure/auth/auth-service';
+import { AppDataSource } from '@infrastructure/database/data-source';
+import { TypeOrmAuthRepository } from '@infrastructure/repositories/typeorm-auth-repository';
 
 async function setupTypeORM() {
   console.log('🚀 Setting up TypeORM database...');

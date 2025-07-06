@@ -1,9 +1,9 @@
+import { AuthController } from '@controllers/auth-controller';
+import { AuthMiddleware } from '@infrastructure/middleware/auth-middleware';
+import { createAuthRateLimiter } from '@infrastructure/middleware/security-middleware';
+import { validateBody } from '@infrastructure/validation/middleware';
+import { loginSchema, registerSchema } from '@infrastructure/validation/schemas';
 import express from 'express';
-import { AuthController } from '../controllers/auth-controller';
-import { AuthMiddleware } from '../infrastructure/middleware/auth-middleware';
-import { createAuthRateLimiter } from '../infrastructure/middleware/security-middleware';
-import { validateBody } from '../infrastructure/validation/middleware';
-import { loginSchema, registerSchema } from '../infrastructure/validation/schemas';
 
 const router = express.Router();
 const authController = new AuthController();

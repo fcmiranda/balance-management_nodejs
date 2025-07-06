@@ -1,6 +1,6 @@
+import type { User as DomainUser } from '@domain/entities/auth';
+import type { AuthRepository } from '@domain/repositories/auth-repository';
 import type { Repository } from 'typeorm';
-import type { User as DomainUser } from '../../domain/entities/auth';
-import type { AuthRepository } from '../../domain/repositories/auth-repository';
 import { AppDataSource } from '../database/data-source';
 import { User } from '../database/entities/user.entity';
 

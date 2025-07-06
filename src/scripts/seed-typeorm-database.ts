@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { AuthService } from '../infrastructure/auth/auth-service';
-import { TypeOrmDatabase } from '../infrastructure/database/typeorm-database';
-import { TypeOrmAuthRepository } from '../infrastructure/repositories/typeorm-auth-repository';
+import { AuthService } from '@infrastructure/auth/auth-service';
+import { TypeOrmDatabase } from '@infrastructure/database/typeorm-database';
+import { TypeOrmAuthRepository } from '@infrastructure/repositories/typeorm-auth-repository';
 
 async function seedTypeOrmDatabase() {
   console.log('🌱 Seeding TypeORM database...');

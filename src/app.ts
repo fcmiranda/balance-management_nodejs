@@ -1,16 +1,16 @@
 import 'dotenv/config';
 import 'reflect-metadata';
-import express from 'express';
-import { TypeOrmDatabase } from './infrastructure/database/typeorm-database';
-import { handleError } from './infrastructure/middleware/error-handler';
+import { TypeOrmDatabase } from '@infrastructure/database/typeorm-database';
+import { handleError } from '@infrastructure/middleware/error-handler';
 import {
   createCorsMiddleware,
   createHelmetMiddleware,
   createRateLimiter,
   requestLogger,
   sanitizeInput,
-} from './infrastructure/middleware/security-middleware';
-import { routes } from './routes/index';
+} from '@infrastructure/middleware/security-middleware';
+import { routes } from '@routes/index';
+import express from 'express';
 
 const app = express();
 

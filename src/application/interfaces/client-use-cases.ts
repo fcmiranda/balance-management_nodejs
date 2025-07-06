@@ -1,4 +1,4 @@
-import type { ClientResponse } from '../../domain/entities/client';
+import type { ClientResponse } from '@domain/entities/client';
 import type {
   CreateClientRequest,
   DeleteClientRequest,
@@ -6,7 +6,7 @@ import type {
   GetClientByIdRequest,
   UpdateClientRequest,
   WithdrawRequest,
-} from '../../infrastructure/validation/schemas';
+} from '@infrastructure/validation/schemas';
 
 import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase } from './use-case';
 

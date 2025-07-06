@@ -1,5 +1,5 @@
+import type { JwtPayload } from '@domain/entities/auth';
 import type { NextFunction, Request, Response } from 'express';
-import type { JwtPayload } from '../../domain/entities/auth';
 import { AuthService } from '../auth/auth-service';
 
 // Extend Express Request to include user

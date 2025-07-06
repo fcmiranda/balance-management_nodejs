@@ -1,11 +1,11 @@
-import { Client } from '../../domain/entities/client';
-import { DuplicateError } from '../../domain/errors/domain-errors';
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import type {
   ClientResponse,
   CreateClientRequest,
   ICreateClientUseCase,
-} from '../interfaces/client-use-cases';
+} from '@application/interfaces/client-use-cases';
+import { Client } from '@domain/entities/client';
+import { DuplicateError } from '@domain/errors/domain-errors';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class CreateClientUseCase implements ICreateClientUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

@@ -1,10 +1,10 @@
-import { NotFoundError } from '../../domain/errors/domain-errors';
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import type {
   ClientResponse,
   DepositRequest,
   IDepositUseCase,
-} from '../interfaces/client-use-cases';
+} from '@application/interfaces/client-use-cases';
+import { NotFoundError } from '@domain/errors/domain-errors';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class DepositUseCase implements IDepositUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

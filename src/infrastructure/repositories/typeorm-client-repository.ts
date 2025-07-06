@@ -1,6 +1,6 @@
+import { Client as DomainClient } from '@domain/entities/client';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 import type { Repository } from 'typeorm';
-import { Client as DomainClient } from '../../domain/entities/client';
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import { AppDataSource } from '../database/data-source';
 import { Client } from '../database/entities/client.entity';
 

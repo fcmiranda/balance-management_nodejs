@@ -1,10 +1,10 @@
-import { NotFoundError } from '../../domain/errors/domain-errors';
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import type {
   ClientResponse,
   IWithdrawUseCase,
   WithdrawRequest,
-} from '../interfaces/client-use-cases';
+} from '@application/interfaces/client-use-cases';
+import { NotFoundError } from '@domain/errors/domain-errors';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class WithdrawUseCase implements IWithdrawUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

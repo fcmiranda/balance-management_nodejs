@@ -1,5 +1,8 @@
-import type { ClientRepository } from '../../domain/repositories/client-repository';
-import type { DeleteClientRequest, IDeleteClientUseCase } from '../interfaces/client-use-cases';
+import type {
+  DeleteClientRequest,
+  IDeleteClientUseCase,
+} from '@application/interfaces/client-use-cases';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class DeleteClientUseCase implements IDeleteClientUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

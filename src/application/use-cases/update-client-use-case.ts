@@ -1,9 +1,9 @@
-import type { ClientRepository } from '../../domain/repositories/client-repository';
 import type {
   ClientResponse,
   IUpdateClientUseCase,
   UpdateClientRequest,
-} from '../interfaces/client-use-cases';
+} from '@application/interfaces/client-use-cases';
+import type { ClientRepository } from '@domain/repositories/client-repository';
 
 export class UpdateClientUseCase implements IUpdateClientUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}

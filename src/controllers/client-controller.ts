@@ -1,7 +1,7 @@
+import type { IContainer } from '@application/interfaces/use-case-factory';
+import { DuplicateError, NotFoundError } from '@domain/errors/domain-errors';
+import { Container } from '@infrastructure/container';
 import type { Request, Response } from 'express';
-import type { IContainer } from '../application/interfaces/use-case-factory';
-import { DuplicateError, NotFoundError } from '../domain/errors/domain-errors';
-import { Container } from '../infrastructure/container';
 
 export class ClientController {
   private readonly container: IContainer = Container.getInstance();

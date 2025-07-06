@@ -4,9 +4,9 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node src/app.ts",
-    "seed:typeorm": "ts-node src/scripts/seed-typeorm-database.ts",
-    "setup:typeorm": "ts-node src/scripts/setup-typeorm.ts",
+    "start": "ts-node -r tsconfig-paths/register src/app.ts",
+    "seed:typeorm": "ts-node -r tsconfig-paths/register src/scripts/seed-typeorm-database.ts",
+    "setup:typeorm": "ts-node -r tsconfig-paths/register src/scripts/setup-typeorm.ts",
     "biome:check": "biome check .",
     "biome:fix": "biome check --write .",
     "biome:format": "biome format --write .",
@@ -56,6 +56,7 @@
     "supertest": "^7.1.1",
     "ts-jest": "^29.4.0",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.3"
   },
   "lint-staged": {

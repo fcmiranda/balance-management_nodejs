@@ -1,9 +1,9 @@
-import { validateData } from '../../infrastructure/validation/middleware';
 import {
   amountDomainSchema,
   clientCreateDomainSchema,
   clientUpdateDomainSchema,
-} from '../validation/domain-schemas';
+} from '@domain/validation/domain-schemas';
+import { validateData } from '@infrastructure/validation/middleware';
 
 export class Client {
   private constructor(
