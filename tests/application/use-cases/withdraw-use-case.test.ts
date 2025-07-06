@@ -1,7 +1,7 @@
 import { WithdrawUseCase } from '../../../src/application/use-cases/withdraw-use-case';
 import { Client } from '../../../src/domain/entities/client';
 import { NotFoundError } from '../../../src/domain/errors/domain-errors';
-import { mockClientRepository, createMockClient } from '../../test-utils';
+import { createMockClient, mockClientRepository } from '../../test-utils';
 
 describe('WithdrawUseCase', () => {
   let useCase: WithdrawUseCase;
@@ -17,7 +17,12 @@ describe('WithdrawUseCase', () => {
       const request = { clientId: 1, amount: 300 };
       const existingClient = createMockClient({ id: 1, balance: 1000 });
       const updatedClient = createMockClient({ id: 1, balance: 700 });
-      const expectedResponse = { id: 1, name: 'Test Client', email: 'test@example.com', balance: 700 };
+      const expectedResponse = {
+        id: 1,
+        name: 'Test Client',
+        email: 'test@example.com',
+        balance: 700,
+      };
 
       clientRepository.findById.mockResolvedValue(existingClient);
       clientRepository.update.mockResolvedValue(updatedClient);

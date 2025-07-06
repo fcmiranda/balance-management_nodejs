@@ -1,7 +1,11 @@
 import { AuthController } from '../../src/controllers/auth-controller';
+import {
+  DuplicateError,
+  NotFoundError,
+  ValidationError,
+} from '../../src/domain/errors/domain-errors';
 import { Container } from '../../src/infrastructure/container';
 import { createMockRequest, createMockResponse, createMockUser, testUserData } from '../test-utils';
-import { ValidationError, DuplicateError, NotFoundError } from '../../src/domain/errors/domain-errors';
 
 // Mock the Container
 jest.mock('../../src/infrastructure/container');
@@ -139,7 +143,7 @@ describe('AuthController', () => {
   describe('getCurrentUser', () => {
     it('should return current user', async () => {
       const user = createMockUser({ id: 1, email: 'test@example.com' });
-      
+
       req.user = { userId: 1, email: 'test@example.com', role: 'client' };
       mockAuthUseCase.getCurrentUser.mockResolvedValue(user);
 
@@ -165,7 +169,7 @@ describe('AuthController', () => {
 
     it('should handle user not found error', async () => {
       const error = new NotFoundError('User', 999);
-      
+
       req.user = { userId: 999, email: 'test@example.com', role: 'client' };
       mockAuthUseCase.getCurrentUser.mockRejectedValue(error);
 

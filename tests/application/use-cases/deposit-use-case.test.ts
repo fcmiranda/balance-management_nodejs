@@ -1,7 +1,7 @@
 import { DepositUseCase } from '../../../src/application/use-cases/deposit-use-case';
 import { Client } from '../../../src/domain/entities/client';
 import { NotFoundError } from '../../../src/domain/errors/domain-errors';
-import { mockClientRepository, createMockClient } from '../../test-utils';
+import { createMockClient, mockClientRepository } from '../../test-utils';
 
 describe('DepositUseCase', () => {
   let useCase: DepositUseCase;
@@ -17,7 +17,12 @@ describe('DepositUseCase', () => {
       const request = { clientId: 1, amount: 500 };
       const existingClient = createMockClient({ id: 1, balance: 1000 });
       const updatedClient = createMockClient({ id: 1, balance: 1500 });
-      const expectedResponse = { id: 1, name: 'Test Client', email: 'test@example.com', balance: 1500 };
+      const expectedResponse = {
+        id: 1,
+        name: 'Test Client',
+        email: 'test@example.com',
+        balance: 1500,
+      };
 
       clientRepository.findById.mockResolvedValue(existingClient);
       clientRepository.update.mockResolvedValue(updatedClient);

@@ -1,6 +1,6 @@
-import { AuthMiddleware } from '../../../src/infrastructure/middleware/auth-middleware';
 import { AuthService } from '../../../src/infrastructure/auth/auth-service';
-import { createMockRequest, createMockResponse, createMockNext } from '../../test-utils';
+import { AuthMiddleware } from '../../../src/infrastructure/middleware/auth-middleware';
+import { createMockNext, createMockRequest, createMockResponse } from '../../test-utils';
 
 // Mock the AuthService
 jest.mock('../../../src/infrastructure/auth/auth-service');
@@ -20,9 +20,9 @@ describe('Auth Middleware', () => {
       hashPassword: jest.fn(),
       comparePassword: jest.fn(),
     } as any;
-    
+
     (AuthService as jest.MockedClass<typeof AuthService>).mockImplementation(() => mockAuthService);
-    
+
     authMiddleware = new AuthMiddleware();
     req = createMockRequest();
     res = createMockResponse();
@@ -37,7 +37,7 @@ describe('Auth Middleware', () => {
     it('should authenticate user with valid token', () => {
       const token = 'valid-token';
       const payload = { userId: 1, email: 'test@example.com', role: 'client' };
-      
+
       req.headers.authorization = `Bearer ${token}`;
       mockAuthService.extractTokenFromHeader.mockReturnValue(token);
       mockAuthService.verifyToken.mockReturnValue(payload);
@@ -80,7 +80,7 @@ describe('Auth Middleware', () => {
 
     it('should return 403 if token is invalid', () => {
       const token = 'invalid-token';
-      
+
       req.headers.authorization = `Bearer ${token}`;
       mockAuthService.extractTokenFromHeader.mockReturnValue(token);
       mockAuthService.verifyToken.mockImplementation(() => {
@@ -101,7 +101,7 @@ describe('Auth Middleware', () => {
     it('should handle token with Bearer prefix', () => {
       const token = 'valid-token';
       const payload = { userId: 1, email: 'test@example.com', role: 'client' };
-      
+
       req.headers.authorization = `Bearer ${token}`;
       mockAuthService.extractTokenFromHeader.mockReturnValue(token);
       mockAuthService.verifyToken.mockReturnValue(payload);
@@ -129,7 +129,7 @@ describe('Auth Middleware', () => {
 
     it('should return 401 if user is not authenticated', () => {
       const roles = ['admin'];
-      
+
       const middleware = authMiddleware.authorize(roles);
       middleware(req, res, next);
 

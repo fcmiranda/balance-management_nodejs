@@ -1,7 +1,7 @@
 import { CreateClientUseCase } from '../../../src/application/use-cases/create-client-use-case';
 import { Client } from '../../../src/domain/entities/client';
 import { DuplicateError } from '../../../src/domain/errors/domain-errors';
-import { mockClientRepository, createMockClient } from '../../test-utils';
+import { createMockClient, mockClientRepository } from '../../test-utils';
 
 describe('CreateClientUseCase', () => {
   let useCase: CreateClientUseCase;
@@ -16,7 +16,12 @@ describe('CreateClientUseCase', () => {
     it('should create client with valid data', async () => {
       const request = { name: 'John Doe', email: 'john@example.com' };
       const savedClient = createMockClient({ id: 1, name: 'John Doe', email: 'john@example.com' });
-      const expectedResponse = { id: 1, name: 'John Doe', email: 'john@example.com', balance: 1000 };
+      const expectedResponse = {
+        id: 1,
+        name: 'John Doe',
+        email: 'john@example.com',
+        balance: 1000,
+      };
 
       clientRepository.findByEmail.mockResolvedValue(null);
       clientRepository.save.mockResolvedValue(savedClient);

@@ -1,7 +1,12 @@
 import { ClientController } from '../../src/controllers/client-controller';
+import { DuplicateError, NotFoundError } from '../../src/domain/errors/domain-errors';
 import { Container } from '../../src/infrastructure/container';
-import { createMockRequest, createMockResponse, createMockClient, testClientData } from '../test-utils';
-import { NotFoundError, DuplicateError } from '../../src/domain/errors/domain-errors';
+import {
+  createMockClient,
+  createMockRequest,
+  createMockResponse,
+  testClientData,
+} from '../test-utils';
 
 // Mock the Container
 jest.mock('../../src/infrastructure/container');
@@ -31,9 +36,9 @@ describe('ClientController', () => {
 
     (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
 
-    Object.keys(mockUseCases).forEach(key => {
+    for (const key of Object.keys(mockUseCases)) {
       mockContainer[key as keyof Container] = mockUseCases[key];
-    });
+    }
 
     controller = new ClientController();
     req = createMockRequest();
@@ -122,7 +127,10 @@ describe('ClientController', () => {
       await controller.createClient(req, res);
 
       expect(mockContainer.getCreateClientUseCase).toHaveBeenCalled();
-      expect(mockUseCase.execute).toHaveBeenCalledWith({ name: 'John Doe', email: 'john@example.com' });
+      expect(mockUseCase.execute).toHaveBeenCalledWith({
+        name: 'John Doe',
+        email: 'john@example.com',
+      });
       expect(res.status).toHaveBeenCalledWith(201);
       expect(res.json).toHaveBeenCalledWith(client);
     });
@@ -142,7 +150,9 @@ describe('ClientController', () => {
 
     it('should handle validation error', async () => {
       req.body = { name: 'A', email: 'invalid-email' };
-      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error('Invalid client data')) };
+      const mockUseCase = {
+        execute: jest.fn().mockRejectedValue(new Error('Invalid client data')),
+      };
       mockContainer.getCreateClientUseCase.mockReturnValue(mockUseCase);
 
       await controller.createClient(req, res);

@@ -1,28 +1,44 @@
-import request from 'supertest';
 import express from 'express';
-import { Container } from '../../src/infrastructure/container';
+import request from 'supertest';
 import { testUserData } from '../test-utils';
 
-// Mock the Container and its dependencies
+// Mock the Container and its dependencies BEFORE importing anything else
 jest.mock('../../src/infrastructure/container');
 jest.mock('../../src/infrastructure/auth/auth-service');
 jest.mock('../../src/infrastructure/repositories/typeorm-client-repository');
 jest.mock('../../src/infrastructure/repositories/typeorm-auth-repository');
 
+// Import Container after mocking
+import { Container } from '../../src/infrastructure/container';
+
+// Setup mock auth use case
+const mockAuthUseCase = {
+  login: jest.fn(),
+  register: jest.fn(),
+  getCurrentUser: jest.fn(),
+};
+
 // Setup container mock
 const mockContainer = {
   getInstance: jest.fn(),
-  getAuthUseCase: jest.fn(),
-} as any;
+  getAuthUseCase: jest.fn().mockReturnValue(mockAuthUseCase),
+  getGetAllClientsUseCase: jest.fn(),
+  getCreateClientUseCase: jest.fn(),
+  getDepositUseCase: jest.fn(),
+  getWithdrawUseCase: jest.fn(),
+  getGetClientByIdUseCase: jest.fn(),
+  getUpdateClientUseCase: jest.fn(),
+  getDeleteClientUseCase: jest.fn(),
+} as unknown;
 
+// Mock the Container getInstance method
 (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
 
-// Import routes after mocking
+// Import routes after all mocks are set up
 import { routes } from '../../src/routes/index';
 
 describe('Auth Routes Integration', () => {
   let app: express.Application;
-  let mockAuthUseCase: any;
 
   beforeAll(() => {
     app = express();
@@ -31,13 +47,7 @@ describe('Auth Routes Integration', () => {
   });
 
   beforeEach(() => {
-    mockAuthUseCase = {
-      login: jest.fn(),
-      register: jest.fn(),
-      getCurrentUser: jest.fn(),
-    };
-
-    mockContainer.getAuthUseCase.mockReturnValue(mockAuthUseCase);
+    // Reset all mocks before each test
     jest.clearAllMocks();
   });
 
@@ -51,10 +61,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.login.mockResolvedValue(authResponse);
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(200);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(200);
 
       expect(response.body).toEqual(authResponse);
       expect(mockAuthUseCase.login).toHaveBeenCalledWith(loginData);
@@ -66,10 +73,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.login.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(400);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(400);
 
       expect(response.body).toMatchObject({
         error: 'Login failed',
@@ -88,10 +92,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.register.mockResolvedValue(authResponse);
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(registerData)
-        .expect(201);
+      const response = await request(app).post('/api/auth/register').send(registerData).expect(201);
 
       expect(response.body).toEqual(authResponse);
       expect(mockAuthUseCase.register).toHaveBeenCalledWith(registerData);
@@ -103,10 +104,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.register.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(registerData)
-        .expect(400);
+      const response = await request(app).post('/api/auth/register').send(registerData).expect(400);
 
       expect(response.body).toMatchObject({
         error: 'Registration failed',

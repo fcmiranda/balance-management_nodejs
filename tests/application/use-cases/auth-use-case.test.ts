@@ -1,6 +1,15 @@
 import { AuthUseCase } from '../../../src/application/use-cases/auth-use-case';
-import { DuplicateError, NotFoundError, ValidationError } from '../../../src/domain/errors/domain-errors';
-import { mockAuthRepository, mockAuthService, createMockUser, testUserData } from '../../test-utils';
+import {
+  DuplicateError,
+  NotFoundError,
+  ValidationError,
+} from '../../../src/domain/errors/domain-errors';
+import {
+  createMockUser,
+  mockAuthRepository,
+  mockAuthService,
+  testUserData,
+} from '../../test-utils';
 
 describe('AuthUseCase', () => {
   let useCase: AuthUseCase;
@@ -83,7 +92,11 @@ describe('AuthUseCase', () => {
 
       expect(authRepository.findUserByEmail).toHaveBeenCalledWith(registerData.email);
       expect(authService.hashPassword).toHaveBeenCalledWith(registerData.password);
-      expect(authRepository.createUser).toHaveBeenCalledWith(registerData.email, hashedPassword, registerData.role);
+      expect(authRepository.createUser).toHaveBeenCalledWith(
+        registerData.email,
+        hashedPassword,
+        registerData.role,
+      );
       expect(authService.generateToken).toHaveBeenCalledWith({
         userId: newUser.id,
         email: newUser.email,

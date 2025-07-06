@@ -1,6 +1,6 @@
-import { AuthService } from '../../../src/infrastructure/auth/auth-service';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { AuthService } from '../../../src/infrastructure/auth/auth-service';
 
 // Mock external dependencies
 jest.mock('bcryptjs');
@@ -17,7 +17,7 @@ describe('AuthService', () => {
     process.env.JWT_SECRET = 'test-secret-key';
     process.env.JWT_EXPIRES_IN = '24h';
     process.env.BCRYPT_ROUNDS = '12';
-    
+
     authService = new AuthService();
   });
 
@@ -41,7 +41,7 @@ describe('AuthService', () => {
     it('should use default values if environment variables not provided', () => {
       delete process.env.JWT_SECRET;
       delete process.env.JWT_EXPIRES_IN;
-      
+
       const authServiceWithDefaults = new AuthService();
       const payload = { userId: 1, email: 'test@example.com', role: 'client' as const };
       const expectedToken = 'jwt-token';
@@ -137,7 +137,9 @@ describe('AuthService', () => {
 
       (mockBcrypt.compare as jest.Mock).mockRejectedValue(error);
 
-      await expect(authService.comparePassword(password, hashedPassword)).rejects.toThrow('Bcrypt error');
+      await expect(authService.comparePassword(password, hashedPassword)).rejects.toThrow(
+        'Bcrypt error',
+      );
       expect(mockBcrypt.compare).toHaveBeenCalledWith(password, hashedPassword);
     });
   });

@@ -1,7 +1,7 @@
-import { Client } from '../src/domain/entities/client';
 import type { User } from '../src/domain/entities/auth';
-import type { ClientRepository } from '../src/domain/repositories/client-repository';
+import { Client } from '../src/domain/entities/client';
 import type { AuthRepository } from '../src/domain/repositories/auth-repository';
+import type { ClientRepository } from '../src/domain/repositories/client-repository';
 import type { AuthService } from '../src/infrastructure/auth/auth-service';
 
 // Mock Client Repository
@@ -36,7 +36,7 @@ export const createMockClient = (overrides: Partial<Client> = {}): Client => {
     overrides.id || 1,
     overrides.name || 'Test Client',
     overrides.email || 'test@example.com',
-    overrides.balance || 1000
+    overrides.balance || 1000,
   );
 };
 
@@ -78,20 +78,32 @@ export const testUserData = {
   invalid: {
     email: 'invalid-email',
     password: '123',
-    role: 'invalid' as any,
+    role: 'invalid' as const,
   },
 };
 
 // JWT Test Tokens
 export const testTokens = {
-  validClient: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE2MjM5MjQ4MDB9.test',
-  validAdmin: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYyMzkyNDgwMH0.test',
-  expired: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE2MjM5MjQ4MDAsImV4cCI6MTYyMzkyNDgwMX0.test',
+  validClient:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE2MjM5MjQ4MDB9.test',
+  validAdmin:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTYyMzkyNDgwMH0.test',
+  expired:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE2MjM5MjQ4MDAsImV4cCI6MTYyMzkyNDgwMX0.test',
   invalid: 'invalid.token.here',
 };
 
 // Helper to create Express-like request/response mocks
-export const createMockRequest = (overrides: any = {}) => ({
+interface MockRequest {
+  body: Record<string, unknown>;
+  params: Record<string, unknown>;
+  query: Record<string, unknown>;
+  headers: Record<string, unknown>;
+  user?: unknown;
+  [key: string]: unknown;
+}
+
+export const createMockRequest = (overrides: Partial<MockRequest> = {}): MockRequest => ({
   body: {},
   params: {},
   query: {},
@@ -100,8 +112,14 @@ export const createMockRequest = (overrides: any = {}) => ({
   ...overrides,
 });
 
-export const createMockResponse = () => {
-  const res: any = {};
+interface MockResponse {
+  status: jest.Mock;
+  json: jest.Mock;
+  send: jest.Mock;
+}
+
+export const createMockResponse = (): MockResponse => {
+  const res = {} as MockResponse;
   res.status = jest.fn().mockReturnValue(res);
   res.json = jest.fn().mockReturnValue(res);
   res.send = jest.fn().mockReturnValue(res);

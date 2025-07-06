@@ -1,5 +1,5 @@
 import { GetAllClientsUseCase } from '../../../src/application/use-cases/get-all-clients-use-case';
-import { mockClientRepository, createMockClient } from '../../test-utils';
+import { createMockClient, mockClientRepository } from '../../test-utils';
 
 describe('GetAllClientsUseCase', () => {
   let useCase: GetAllClientsUseCase;

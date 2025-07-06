@@ -1,5 +1,5 @@
-import request from 'supertest';
 import express from 'express';
+import request from 'supertest';
 import { Container } from '../../src/infrastructure/container';
 import { testUserData } from '../test-utils';
 
@@ -29,7 +29,7 @@ const mockContainer = {
 };
 
 // Mock Container.getInstance to return our mock container
-const MockedContainer = Container as jest.MockedClass<typeof Container>;
+const MockedContainer = Container as jest.Mocked<typeof Container>;
 MockedContainer.getInstance = jest.fn().mockReturnValue(mockContainer);
 
 // Import routes after all mocks are set up
@@ -58,10 +58,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.login.mockResolvedValue(authResponse);
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(200);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(200);
 
       expect(response.body).toEqual(authResponse);
       expect(mockAuthUseCase.login).toHaveBeenCalledWith(loginData);
@@ -73,10 +70,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.login.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send(loginData)
-        .expect(400);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(400);
 
       expect(response.body).toMatchObject({
         error: 'Login failed',
@@ -95,10 +89,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.register.mockResolvedValue(authResponse);
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(registerData)
-        .expect(201);
+      const response = await request(app).post('/api/auth/register').send(registerData).expect(201);
 
       expect(response.body).toEqual(authResponse);
       expect(mockAuthUseCase.register).toHaveBeenCalledWith(registerData);
@@ -110,10 +101,7 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.register.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send(registerData)
-        .expect(400);
+      const response = await request(app).post('/api/auth/register').send(registerData).expect(400);
 
       expect(response.body).toMatchObject({
         error: 'Registration failed',

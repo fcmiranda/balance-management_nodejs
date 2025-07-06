@@ -8,5 +8,5 @@ export default new DataSource({
   synchronize: false,
   logging: true,
   entities: [Client, User],
-  migrations: ['src/infrastructure/database/migrations/*.ts']
+  migrations: ['src/infrastructure/database/migrations/*.ts'],
 });

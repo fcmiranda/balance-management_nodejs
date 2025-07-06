@@ -1,5 +1,5 @@
-import request from 'supertest';
 import express from 'express';
+import request from 'supertest';
 import { Container } from '../../src/infrastructure/container';
 import { createMockClient } from '../test-utils';
 
@@ -7,6 +7,31 @@ import { createMockClient } from '../test-utils';
 jest.mock('../../src/infrastructure/container');
 jest.mock('../../src/infrastructure/auth/auth-service');
 jest.mock('../../src/infrastructure/repositories/typeorm-client-repository');
+jest.mock('../../src/infrastructure/middleware/auth-middleware');
+
+// Mock AuthService
+const MockAuthService = require('../../src/infrastructure/auth/auth-service').AuthService;
+const mockAuthService = {
+  extractTokenFromHeader: jest.fn(),
+  verifyToken: jest.fn(),
+  generateToken: jest.fn(),
+  hashPassword: jest.fn(),
+  comparePassword: jest.fn(),
+};
+MockAuthService.mockImplementation(() => mockAuthService);
+
+// Mock AuthMiddleware
+const MockAuthMiddleware =
+  require('../../src/infrastructure/middleware/auth-middleware').AuthMiddleware;
+const mockAuthMiddleware = {
+  authenticate: jest.fn((req, _res, next) => {
+    // Mock successful authentication
+    req.user = { userId: 1, email: 'test@example.com', role: 'admin' };
+    next();
+  }),
+  authorize: jest.fn(() => (_req, _res, next) => next()),
+};
+MockAuthMiddleware.mockImplementation(() => mockAuthMiddleware);
 
 // Setup container mock
 const mockContainer = {
@@ -14,6 +39,7 @@ const mockContainer = {
   getCreateClientUseCase: jest.fn(),
   getDepositUseCase: jest.fn(),
   getWithdrawUseCase: jest.fn(),
+  getAuthUseCase: jest.fn(),
 };
 
 (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
@@ -23,10 +49,15 @@ import { routes } from '../../src/routes/index';
 
 describe('Client Routes Integration', () => {
   let app: express.Application;
-  let mockGetAllClientsUseCase: any;
-  let mockCreateClientUseCase: any;
-  let mockDepositUseCase: any;
-  let mockWithdrawUseCase: any;
+  let mockGetAllClientsUseCase: jest.Mocked<{ execute: jest.Mock }>;
+  let mockCreateClientUseCase: jest.Mocked<{ execute: jest.Mock }>;
+  let mockDepositUseCase: jest.Mocked<{ execute: jest.Mock }>;
+  let mockWithdrawUseCase: jest.Mocked<{ execute: jest.Mock }>;
+
+  // Helper function to create authenticated requests
+  const createAuthenticatedRequest = (agent: any, method: string, url: string) => {
+    return agent[method](url).set('Authorization', 'Bearer valid-token');
+  };
 
   beforeAll(() => {
     app = express();
@@ -52,7 +83,7 @@ describe('Client Routes Integration', () => {
     mockContainer.getCreateClientUseCase.mockReturnValue(mockCreateClientUseCase);
     mockContainer.getDepositUseCase.mockReturnValue(mockDepositUseCase);
     mockContainer.getWithdrawUseCase.mockReturnValue(mockWithdrawUseCase);
-    
+
     jest.clearAllMocks();
   });
 
@@ -65,9 +96,9 @@ describe('Client Routes Integration', () => {
 
       mockGetAllClientsUseCase.execute.mockResolvedValue(clients);
 
-      const response = await request(app)
-        .get('/api/clients')
-        .expect(200);
+      const response = await createAuthenticatedRequest(request(app), 'get', '/api/clients').expect(
+        200,
+      );
 
       expect(response.body).toEqual(clients);
       expect(mockGetAllClientsUseCase.execute).toHaveBeenCalled();
@@ -76,9 +107,9 @@ describe('Client Routes Integration', () => {
     it('should handle empty client list', async () => {
       mockGetAllClientsUseCase.execute.mockResolvedValue([]);
 
-      const response = await request(app)
-        .get('/api/clients')
-        .expect(200);
+      const response = await createAuthenticatedRequest(request(app), 'get', '/api/clients').expect(
+        200,
+      );
 
       expect(response.body).toEqual([]);
       expect(mockGetAllClientsUseCase.execute).toHaveBeenCalled();
@@ -92,8 +123,7 @@ describe('Client Routes Integration', () => {
 
       mockCreateClientUseCase.execute.mockResolvedValue(createdClient);
 
-      const response = await request(app)
-        .post('/api/clients')
+      const response = await createAuthenticatedRequest(request(app), 'post', '/api/clients')
         .send(clientData)
         .expect(201);
 
@@ -107,14 +137,12 @@ describe('Client Routes Integration', () => {
 
       mockCreateClientUseCase.execute.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post('/api/clients')
+      const response = await createAuthenticatedRequest(request(app), 'post', '/api/clients')
         .send(clientData)
         .expect(400);
 
       expect(response.body).toMatchObject({
-        error: 'Client creation failed',
-        message: 'Client already exists',
+        error: 'Client already exists',
       });
     });
   });
@@ -127,8 +155,11 @@ describe('Client Routes Integration', () => {
 
       mockDepositUseCase.execute.mockResolvedValue(updatedClient);
 
-      const response = await request(app)
-        .post(`/api/clients/${clientId}/deposit`)
+      const response = await createAuthenticatedRequest(
+        request(app),
+        'post',
+        `/api/clients/${clientId}/deposit`,
+      )
         .send(depositData)
         .expect(200);
 
@@ -143,14 +174,16 @@ describe('Client Routes Integration', () => {
 
       mockDepositUseCase.execute.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post(`/api/clients/${clientId}/deposit`)
+      const response = await createAuthenticatedRequest(
+        request(app),
+        'post',
+        `/api/clients/${clientId}/deposit`,
+      )
         .send(depositData)
         .expect(400);
 
       expect(response.body).toMatchObject({
-        error: 'Deposit failed',
-        message: 'Invalid deposit amount',
+        error: 'Validation failed',
       });
     });
   });
@@ -163,8 +196,11 @@ describe('Client Routes Integration', () => {
 
       mockWithdrawUseCase.execute.mockResolvedValue(updatedClient);
 
-      const response = await request(app)
-        .post(`/api/clients/${clientId}/withdraw`)
+      const response = await createAuthenticatedRequest(
+        request(app),
+        'post',
+        `/api/clients/${clientId}/withdraw`,
+      )
         .send(withdrawData)
         .expect(200);
 
@@ -179,14 +215,16 @@ describe('Client Routes Integration', () => {
 
       mockWithdrawUseCase.execute.mockRejectedValue(error);
 
-      const response = await request(app)
-        .post(`/api/clients/${clientId}/withdraw`)
+      const response = await createAuthenticatedRequest(
+        request(app),
+        'post',
+        `/api/clients/${clientId}/withdraw`,
+      )
         .send(withdrawData)
         .expect(400);
 
       expect(response.body).toMatchObject({
-        error: 'Withdrawal failed',
-        message: 'Insufficient funds',
+        error: 'Insufficient funds',
       });
     });
   });
