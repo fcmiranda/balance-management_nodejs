@@ -10,5 +10,4 @@ export const AppDataSource = new DataSource({
   logging: process.env.NODE_ENV === 'development',
   entities: [Client, User],
   migrations: ['src/infrastructure/database/migrations/*.ts'],
-  subscribers: ['src/infrastructure/database/subscribers/*.ts'],
 });
