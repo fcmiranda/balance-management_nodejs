@@ -1,3 +1,8 @@
+import type {
+  IAccountDepositUseCase,
+  IAccountWithdrawUseCase,
+  IGetAccountsByUserIdUseCase,
+} from './account-use-cases';
 import type { IAuthUseCase } from './auth-use-cases';
 import type {
   ICreateClientUseCase,
@@ -28,4 +33,7 @@ export interface IContainer {
   getDepositUseCase(): IDepositUseCase;
   getWithdrawUseCase(): IWithdrawUseCase;
   getAuthUseCase(): IAuthUseCase;
+  getGetAccountsByUserIdUseCase(): IGetAccountsByUserIdUseCase;
+  getAccountDepositUseCase(): IAccountDepositUseCase;
+  getAccountWithdrawUseCase(): IAccountWithdrawUseCase;
 }

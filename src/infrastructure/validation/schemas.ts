@@ -47,12 +47,31 @@ export const withdrawRequestSchema = z.object({
   amount: amountSchema,
 });
 
+// Account request schemas
+export const accountDepositRequestSchema = z.object({
+  amount: amountSchema,
+});
+
+export const accountWithdrawRequestSchema = z.object({
+  amount: amountSchema,
+});
+
 // URL parameter validation schemas
 export const clientIdParamSchema = z.object({
   id: z.string().transform((val) => {
     const parsed = Number.parseInt(val, 10);
     if (Number.isNaN(parsed) || parsed <= 0) {
       throw new Error('Invalid client ID');
+    }
+    return parsed;
+  }),
+});
+
+export const accountIdParamSchema = z.object({
+  accountId: z.string().transform((val) => {
+    const parsed = Number.parseInt(val, 10);
+    if (Number.isNaN(parsed) || parsed <= 0) {
+      throw new Error('Invalid account ID');
     }
     return parsed;
   }),
@@ -77,6 +96,7 @@ export const loginSchema = z.object({
 });
 
 export const registerSchema = z.object({
+  name: nameSchema,
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
   role: z.enum(['admin', 'client']).default('client'),
@@ -89,7 +109,10 @@ export type GetClientByIdRequest = z.infer<typeof getClientByIdRequestSchema>;
 export type DeleteClientRequest = z.infer<typeof deleteClientRequestSchema>;
 export type DepositRequest = z.infer<typeof depositRequestSchema>;
 export type WithdrawRequest = z.infer<typeof withdrawRequestSchema>;
+export type AccountDepositRequest = z.infer<typeof accountDepositRequestSchema>;
+export type AccountWithdrawRequest = z.infer<typeof accountWithdrawRequestSchema>;
 export type ClientIdParam = z.infer<typeof clientIdParamSchema>;
+export type AccountIdParam = z.infer<typeof accountIdParamSchema>;
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;

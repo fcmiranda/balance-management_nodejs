@@ -2,14 +2,19 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Account } from './account.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Column({ type: 'varchar', length: 255 })
+  name!: string;
 
   @Column({ type: 'varchar', length: 255, unique: true })
   email!: string;
@@ -25,4 +30,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  // Relations
+  @OneToMany(
+    () => Account,
+    (account) => account.user,
+  )
+  accounts!: Account[];
 }

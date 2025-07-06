@@ -37,6 +37,14 @@ export class DuplicateError extends DomainError {
   }
 }
 
+export class UnauthorizedError extends DomainError {
+  readonly code = 'UNAUTHORIZED';
+
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 export class InsufficientFundsError extends DomainError {
   readonly code = 'INSUFFICIENT_FUNDS';
 

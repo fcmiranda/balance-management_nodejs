@@ -3,6 +3,7 @@ import { z } from 'zod';
 // User Entity for authentication
 export interface User {
   id: number;
+  name: string;
   email: string;
   password: string;
   role: 'admin' | 'client';
@@ -23,6 +24,7 @@ export interface AuthResponse {
   token: string;
   user: {
     id: number;
+    name: string;
     email: string;
     role: string;
   };

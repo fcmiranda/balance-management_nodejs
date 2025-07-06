@@ -36,6 +36,7 @@ export class AuthUseCase {
       token,
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
       },
@@ -55,6 +56,7 @@ export class AuthUseCase {
 
     // Create user
     const user = await this.authRepository.createUser(
+      registerData.name,
       registerData.email,
       hashedPassword,
       registerData.role,
@@ -71,6 +73,7 @@ export class AuthUseCase {
       token,
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
       },

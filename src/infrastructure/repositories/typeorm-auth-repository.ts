@@ -17,6 +17,7 @@ export class TypeOrmAuthRepository implements AuthRepository {
 
     return {
       id: entity.id,
+      name: entity.name,
       email: entity.email,
       password: entity.password,
       role: entity.role,
@@ -31,6 +32,7 @@ export class TypeOrmAuthRepository implements AuthRepository {
 
     return {
       id: entity.id,
+      name: entity.name,
       email: entity.email,
       password: entity.password,
       role: entity.role,
@@ -40,11 +42,13 @@ export class TypeOrmAuthRepository implements AuthRepository {
   }
 
   async createUser(
+    name: string,
     email: string,
     hashedPassword: string,
     role: 'admin' | 'client' = 'client',
   ): Promise<DomainUser> {
     const entity = this.repository.create({
+      name,
       email,
       password: hashedPassword,
       role,
@@ -53,6 +57,7 @@ export class TypeOrmAuthRepository implements AuthRepository {
     const saved = await this.repository.save(entity);
     return {
       id: saved.id,
+      name: saved.name,
       email: saved.email,
       password: saved.password,
       role: saved.role,
@@ -63,7 +68,7 @@ export class TypeOrmAuthRepository implements AuthRepository {
 
   async updateUser(
     id: number,
-    updates: Partial<Pick<DomainUser, 'email' | 'password' | 'role'>>,
+    updates: Partial<Pick<DomainUser, 'name' | 'email' | 'password' | 'role'>>,
   ): Promise<DomainUser> {
     await this.repository.update(id, updates);
     const updated = await this.repository.findOne({ where: { id } });
@@ -74,6 +79,7 @@ export class TypeOrmAuthRepository implements AuthRepository {
 
     return {
       id: updated.id,
+      name: updated.name,
       email: updated.email,
       password: updated.password,
       role: updated.role,

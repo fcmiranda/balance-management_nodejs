@@ -23,7 +23,7 @@ async function seedTypeOrmDatabase() {
 
     if (!existingAdmin) {
       const hashedPassword = await authService.hashPassword(adminPassword);
-      await authRepository.createUser(adminEmail, hashedPassword, 'admin');
+      await authRepository.createUser('System Admin', adminEmail, hashedPassword, 'admin');
       console.log('✅ Admin user created successfully');
       console.log(`Email: ${adminEmail}`);
       console.log(`Password: ${adminPassword}`);
@@ -39,7 +39,7 @@ async function seedTypeOrmDatabase() {
 
     if (!existingClient) {
       const hashedPassword = await authService.hashPassword(clientPassword);
-      await authRepository.createUser(clientEmail, hashedPassword, 'client');
+      await authRepository.createUser('Test Client', clientEmail, hashedPassword, 'client');
       console.log('✅ Test client user created successfully');
       console.log(`Email: ${clientEmail}`);
       console.log(`Password: ${clientPassword}`);

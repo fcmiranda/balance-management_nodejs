@@ -42,7 +42,7 @@ async function seedInitialData() {
   const existingAdmin = await authRepository.findUserByEmail(adminEmail);
   if (!existingAdmin) {
     const hashedPassword = await authService.hashPassword(adminPassword);
-    await authRepository.createUser(adminEmail, hashedPassword, 'admin');
+    await authRepository.createUser('System Admin', adminEmail, hashedPassword, 'admin');
     console.log(`📝 Created admin user: ${adminEmail}`);
   }
 
@@ -53,7 +53,7 @@ async function seedInitialData() {
   const existingClient = await authRepository.findUserByEmail(clientEmail);
   if (!existingClient) {
     const hashedPassword = await authService.hashPassword(clientPassword);
-    await authRepository.createUser(clientEmail, hashedPassword, 'client');
+    await authRepository.createUser('Test Client', clientEmail, hashedPassword, 'client');
     console.log(`📝 Created client user: ${clientEmail}`);
   }
 }

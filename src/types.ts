@@ -1,26 +1,18 @@
 // DTOs for API communication
-export interface ClientDTO {
+export interface AccountDTO {
   id: number;
-  name: string;
-  email: string;
+  userId: number;
+  accountNumber: string;
   balance: number;
+  accountType: 'savings' | 'checking';
+  status: 'active' | 'inactive' | 'frozen';
 }
 
-export interface CreateClientRequest {
-  name: string;
-  email: string;
-}
-
-export interface UpdateClientRequest {
-  name: string;
-  email: string;
-}
-
-export interface DepositRequest {
+export interface AccountDepositRequest {
   amount: number;
 }
 
-export interface WithdrawalRequest {
+export interface AccountWithdrawRequest {
   amount: number;
 }
 
@@ -35,6 +27,7 @@ export interface LoginRequest {
 }
 
 export interface RegisterRequest {
+  name: string;
   email: string;
   password: string;
   role?: 'admin' | 'client';
@@ -44,6 +37,7 @@ export interface AuthResponse {
   token: string;
   user: {
     id: number;
+    name: string;
     email: string;
     role: string;
   };

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
-import { Client } from './entities/client.entity';
+import { Account } from './entities/account.entity';
 import { User } from './entities/user.entity';
 
 export const AppDataSource = new DataSource({
@@ -8,6 +8,6 @@ export const AppDataSource = new DataSource({
   database: 'database.sqlite',
   synchronize: process.env.NODE_ENV !== 'production',
   logging: process.env.NODE_ENV === 'development',
-  entities: [Client, User],
+  entities: [User, Account],
   migrations: ['src/infrastructure/database/migrations/*.ts'],
 });
