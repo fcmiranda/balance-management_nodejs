@@ -11,8 +11,9 @@ jest.mock('../../src/infrastructure/repositories/typeorm-auth-repository');
 
 // Setup container mock
 const mockContainer = {
+  getInstance: jest.fn(),
   getAuthUseCase: jest.fn(),
-};
+} as any;
 
 (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
 

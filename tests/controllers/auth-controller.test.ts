@@ -73,6 +73,8 @@ describe('AuthController', () => {
 
     it('should handle malformed request data', async () => {
       req.body = { email: 'invalid-email', password: '123' };
+      // Mock the use case to throw an error for invalid credentials
+      mockAuthUseCase.login.mockRejectedValue(new Error('Invalid email format'));
 
       await controller.login(req, res);
 
@@ -121,6 +123,8 @@ describe('AuthController', () => {
 
     it('should handle validation error', async () => {
       req.body = { email: 'invalid-email', password: '123', role: 'invalid' };
+      // Mock the use case to throw an error for invalid data
+      mockAuthUseCase.register.mockRejectedValue(new Error('Invalid email format'));
 
       await controller.register(req, res);
 

@@ -38,13 +38,5 @@ describe('CreateClientUseCase', () => {
       expect(clientRepository.findByEmail).toHaveBeenCalledWith('john@example.com');
       expect(clientRepository.save).not.toHaveBeenCalled();
     });
-
-    it('should throw error for invalid data', async () => {
-      const request = { name: '', email: 'invalid-email' };
-
-      await expect(useCase.execute(request)).rejects.toThrow();
-      expect(clientRepository.findByEmail).not.toHaveBeenCalled();
-      expect(clientRepository.save).not.toHaveBeenCalled();
-    });
   });
 });

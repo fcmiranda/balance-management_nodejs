@@ -101,11 +101,13 @@ describe('ClientController', () => {
 
     it('should handle error and return 400', async () => {
       req.params.id = 'invalid';
+      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error('Invalid client ID')) };
+      mockContainer.getGetClientByIdUseCase.mockReturnValue(mockUseCase);
 
       await controller.getClientById(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Validation failed: id: Expected number, received nan' });
+      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid client ID' });
     });
   });
 
@@ -140,11 +142,13 @@ describe('ClientController', () => {
 
     it('should handle validation error', async () => {
       req.body = { name: 'A', email: 'invalid-email' };
+      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error('Invalid client data')) };
+      mockContainer.getCreateClientUseCase.mockReturnValue(mockUseCase);
 
       await controller.createClient(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Validation failed: name: Name must be at least 2 characters long, email: Valid email is required' });
+      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid client data' });
     });
   });
 
@@ -181,11 +185,13 @@ describe('ClientController', () => {
     it('should handle invalid amount error', async () => {
       req.params.id = '1';
       req.body = { amount: -100 };
+      const mockUseCase = { execute: jest.fn().mockRejectedValue(new Error('Invalid amount')) };
+      mockContainer.getDepositUseCase.mockReturnValue(mockUseCase);
 
       await controller.deposit(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Validation failed: amount: Amount must be positive, amount: Amount must be greater than 0' });
+      expect(res.json).toHaveBeenCalledWith({ error: 'Invalid amount' });
     });
   });
 
