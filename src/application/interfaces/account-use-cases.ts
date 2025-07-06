@@ -43,11 +43,4 @@ export interface IAccountWithdrawUseCase
   extends CommandUseCase<AccountWithdrawRequest, AccountResponse> {}
 
 // Re-export types for convenience
-export type {
-  CreateAccountRequest,
-  GetAccountByIdRequest,
-  AccountDepositRequest,
-  AccountWithdrawRequest,
-  GetAccountsByUserIdRequest,
-  AccountResponse,
-};
+export type { AccountResponse };
