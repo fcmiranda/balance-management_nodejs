@@ -5,8 +5,6 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/app.ts",
-    "dev": "nodemon --exec ts-node src/app.ts",
-    "seed": "ts-node src/scripts/seed-database.ts",
     "seed:typeorm": "ts-node src/scripts/seed-typeorm-database.ts",
     "setup:typeorm": "ts-node src/scripts/setup-typeorm.ts",
     "biome:check": "biome check .",
