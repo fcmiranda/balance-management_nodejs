@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import type { IAuthUseCase } from '../application/interfaces/auth-use-cases';
-import { loginSchema, registerSchema } from '../domain/entities/auth';
 import { Container } from '../infrastructure/container';
 
 export class AuthController {
@@ -13,8 +12,8 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      const loginData = loginSchema.parse(req.body);
-      const result = await this.authUseCase.login(loginData);
+      // Request body is already validated by middleware
+      const result = await this.authUseCase.login(req.body);
 
       res.status(200).json(result);
     } catch (error) {
@@ -27,8 +26,8 @@ export class AuthController {
 
   async register(req: Request, res: Response): Promise<void> {
     try {
-      const registerData = registerSchema.parse(req.body);
-      const result = await this.authUseCase.register(registerData);
+      // Request body is already validated by middleware
+      const result = await this.authUseCase.register(req.body);
 
       res.status(201).json(result);
     } catch (error) {

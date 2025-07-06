@@ -1,7 +1,8 @@
-import type { AuthResponse, LoginRequest, RegisterRequest, User } from '../../domain/entities/auth';
+import type { AuthResponse, User } from '../../domain/entities/auth';
 import { DuplicateError, NotFoundError, ValidationError } from '../../domain/errors/domain-errors';
 import type { AuthRepository } from '../../domain/repositories/auth-repository';
 import type { AuthService } from '../../infrastructure/auth/auth-service';
+import type { LoginRequest, RegisterRequest } from '../../infrastructure/validation/schemas';
 
 export class AuthUseCase {
   constructor(

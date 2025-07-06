@@ -78,6 +78,18 @@ export const paginationQuerySchema = z.object({
     .optional(),
 });
 
+// Auth schemas
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+export const registerSchema = z.object({
+  email: z.string().email('Invalid email format'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  role: z.enum(['admin', 'client']).default('client'),
+});
+
 // Type exports for use in the application
 export type CreateClientRequest = z.infer<typeof createClientRequestSchema>;
 export type UpdateClientRequest = z.infer<typeof updateClientRequestSchema>;
@@ -88,3 +100,5 @@ export type WithdrawRequest = z.infer<typeof withdrawRequestSchema>;
 export type ClientResponse = z.infer<typeof clientResponseSchema>;
 export type ClientIdParam = z.infer<typeof clientIdParamSchema>;
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
+export type LoginRequest = z.infer<typeof loginSchema>;
+export type RegisterRequest = z.infer<typeof registerSchema>;

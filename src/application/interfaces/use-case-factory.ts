@@ -1,3 +1,4 @@
+import type { IAuthUseCase } from './auth-use-cases';
 import type {
   ICreateClientUseCase,
   IDeleteClientUseCase,
@@ -26,4 +27,5 @@ export interface IContainer {
   getDeleteClientUseCase(): IDeleteClientUseCase;
   getDepositUseCase(): IDepositUseCase;
   getWithdrawUseCase(): IWithdrawUseCase;
+  getAuthUseCase(): IAuthUseCase;
 }

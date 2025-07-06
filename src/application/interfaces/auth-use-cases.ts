@@ -1,4 +1,5 @@
-import type { AuthResponse, LoginRequest, RegisterRequest, User } from '../../domain/entities/auth';
+import type { AuthResponse, User } from '../../domain/entities/auth';
+import type { LoginRequest, RegisterRequest } from '../../infrastructure/validation/schemas';
 
 export interface IAuthUseCase {
   login(loginData: LoginRequest): Promise<AuthResponse>;

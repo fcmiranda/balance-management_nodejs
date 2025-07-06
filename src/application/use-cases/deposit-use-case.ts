@@ -1,10 +1,5 @@
 import { NotFoundError } from '../../domain/errors/domain-errors';
 import type { ClientRepository } from '../../domain/repositories/client-repository';
-import { validateData } from '../../infrastructure/validation/middleware';
-import {
-  clientResponseSchema,
-  depositRequestSchema,
-} from '../../infrastructure/validation/schemas';
 import type {
   ClientResponse,
   DepositRequest,
@@ -15,25 +10,19 @@ export class DepositUseCase implements IDepositUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}
 
   async execute(request: DepositRequest): Promise<ClientResponse> {
-    // Validate input data
-    const validatedRequest = validateData(depositRequestSchema, request);
-
-    const client = await this.clientRepository.findById(validatedRequest.clientId);
+    const client = await this.clientRepository.findById(request.clientId);
     if (!client) {
-      throw new NotFoundError('Client', validatedRequest.clientId);
+      throw new NotFoundError('Client', request.clientId);
     }
 
-    client.deposit(validatedRequest.amount);
+    client.deposit(request.amount);
     const updatedClient = await this.clientRepository.update(client);
 
-    const response = {
+    return {
       id: updatedClient.id || 0,
       name: updatedClient.name,
       email: updatedClient.email,
       balance: updatedClient.balance,
     };
-
-    // Validate response data
-    return validateData(clientResponseSchema, response);
   }
 }

@@ -2,15 +2,27 @@ import express from 'express';
 import { AuthController } from '../controllers/auth-controller';
 import { AuthMiddleware } from '../infrastructure/middleware/auth-middleware';
 import { createAuthRateLimiter } from '../infrastructure/middleware/security-middleware';
+import { validateBody } from '../infrastructure/validation/middleware';
+import { loginSchema, registerSchema } from '../infrastructure/validation/schemas';
 
 const router = express.Router();
 const authController = new AuthController();
 const authMiddleware = new AuthMiddleware();
 
 // Public routes (no authentication required)
-router.post('/login', createAuthRateLimiter(), authController.login.bind(authController));
+router.post(
+  '/login',
+  createAuthRateLimiter(),
+  validateBody(loginSchema),
+  authController.login.bind(authController),
+);
 
-router.post('/register', createAuthRateLimiter(), authController.register.bind(authController));
+router.post(
+  '/register',
+  createAuthRateLimiter(),
+  validateBody(registerSchema),
+  authController.register.bind(authController),
+);
 
 // Protected routes (authentication required)
 router.get('/me', authMiddleware.authenticate, authController.getCurrentUser.bind(authController));

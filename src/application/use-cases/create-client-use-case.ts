@@ -1,11 +1,6 @@
 import { Client } from '../../domain/entities/client';
 import { DuplicateError } from '../../domain/errors/domain-errors';
 import type { ClientRepository } from '../../domain/repositories/client-repository';
-import { validateData } from '../../infrastructure/validation/middleware';
-import {
-  clientResponseSchema,
-  createClientRequestSchema,
-} from '../../infrastructure/validation/schemas';
 import type {
   ClientResponse,
   CreateClientRequest,
@@ -16,26 +11,20 @@ export class CreateClientUseCase implements ICreateClientUseCase {
   constructor(private readonly clientRepository: ClientRepository) {}
 
   async execute(request: CreateClientRequest): Promise<ClientResponse> {
-    // Validate input data
-    const validatedRequest = validateData(createClientRequestSchema, request);
-
     // Check if client with email already exists
-    const existingClient = await this.clientRepository.findByEmail(validatedRequest.email);
+    const existingClient = await this.clientRepository.findByEmail(request.email);
     if (existingClient) {
-      throw new DuplicateError('Client', 'email', validatedRequest.email);
+      throw new DuplicateError('Client', 'email', request.email);
     }
 
-    const client = Client.create(validatedRequest.name, validatedRequest.email);
+    const client = Client.create(request.name, request.email);
     const savedClient = await this.clientRepository.save(client);
 
-    const response = {
+    return {
       id: savedClient.id || 0,
       name: savedClient.name,
       email: savedClient.email,
       balance: savedClient.balance,
     };
-
-    // Validate response data
-    return validateData(clientResponseSchema, response);
   }
 }

@@ -2,15 +2,6 @@ import type { Request, Response } from 'express';
 import type { IContainer } from '../application/interfaces/use-case-factory';
 import { DuplicateError, NotFoundError } from '../domain/errors/domain-errors';
 import { Container } from '../infrastructure/container';
-import { validateData } from '../infrastructure/validation/middleware';
-import {
-  createClientRequestSchema,
-  deleteClientRequestSchema,
-  depositRequestSchema,
-  getClientByIdRequestSchema,
-  updateClientRequestSchema,
-  withdrawRequestSchema,
-} from '../infrastructure/validation/schemas';
 
 export class ClientController {
   private readonly container: IContainer = Container.getInstance();
@@ -28,9 +19,7 @@ export class ClientController {
   async getClientById(req: Request, res: Response): Promise<Response> {
     try {
       // Params are already validated by middleware
-      const request = validateData(getClientByIdRequestSchema, {
-        id: Number.parseInt(req.params.id),
-      });
+      const request = { id: Number.parseInt(req.params.id) };
       const useCase = this.container.getGetClientByIdUseCase();
       const client = await useCase.execute(request);
 
@@ -47,7 +36,7 @@ export class ClientController {
   async createClient(req: Request, res: Response): Promise<Response> {
     try {
       // Body is already validated by middleware
-      const request = validateData(createClientRequestSchema, req.body);
+      const request = req.body;
       const useCase = this.container.getCreateClientUseCase();
       const client = await useCase.execute(request);
       return res.status(201).json(client);
@@ -62,11 +51,11 @@ export class ClientController {
   async updateClient(req: Request, res: Response): Promise<Response> {
     try {
       // Both body and params are already validated by middleware
-      const request = validateData(updateClientRequestSchema, {
+      const request = {
         id: Number.parseInt(req.params.id),
         name: req.body.name,
         email: req.body.email,
-      });
+      };
       const useCase = this.container.getUpdateClientUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
@@ -78,9 +67,7 @@ export class ClientController {
   async deleteClient(req: Request, res: Response): Promise<Response> {
     try {
       // Params are already validated by middleware
-      const request = validateData(deleteClientRequestSchema, {
-        id: Number.parseInt(req.params.id),
-      });
+      const request = { id: Number.parseInt(req.params.id) };
       const useCase = this.container.getDeleteClientUseCase();
       await useCase.execute(request);
       return res.status(204).send();
@@ -92,10 +79,10 @@ export class ClientController {
   async deposit(req: Request, res: Response): Promise<Response> {
     try {
       // Both body and params are already validated by middleware
-      const request = validateData(depositRequestSchema, {
+      const request = {
         clientId: Number.parseInt(req.params.id),
         amount: req.body.amount,
-      });
+      };
       const useCase = this.container.getDepositUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
@@ -110,10 +97,10 @@ export class ClientController {
   async withdraw(req: Request, res: Response): Promise<Response> {
     try {
       // Both body and params are already validated by middleware
-      const request = validateData(withdrawRequestSchema, {
+      const request = {
         clientId: Number.parseInt(req.params.id),
         amount: req.body.amount,
-      });
+      };
       const useCase = this.container.getWithdrawUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
