@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import type { IContainer } from '../application/interfaces/use-case-factory';
+import { DuplicateError, NotFoundError } from '../domain/errors/domain-errors';
 import { Container } from '../infrastructure/container';
 import { validateData } from '../infrastructure/validation/middleware';
 import {
@@ -51,6 +52,9 @@ export class ClientController {
       const client = await useCase.execute(request);
       return res.status(201).json(client);
     } catch (error) {
+      if (error instanceof DuplicateError) {
+        return res.status(409).json({ error: error.message });
+      }
       return res.status(400).json({ error: (error as Error).message });
     }
   }
@@ -96,6 +100,9 @@ export class ClientController {
       const client = await useCase.execute(request);
       return res.json(client);
     } catch (error) {
+      if (error instanceof NotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
       return res.status(400).json({ error: (error as Error).message });
     }
   }
@@ -111,6 +118,9 @@ export class ClientController {
       const client = await useCase.execute(request);
       return res.json(client);
     } catch (error) {
+      if (error instanceof NotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
       return res.status(400).json({ error: (error as Error).message });
     }
   }

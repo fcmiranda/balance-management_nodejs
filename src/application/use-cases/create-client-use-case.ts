@@ -1,4 +1,5 @@
 import { Client } from '../../domain/entities/client';
+import { DuplicateError } from '../../domain/errors/domain-errors';
 import type { ClientRepository } from '../../domain/repositories/client-repository';
 import { validateData } from '../../infrastructure/validation/middleware';
 import {
@@ -21,7 +22,7 @@ export class CreateClientUseCase implements ICreateClientUseCase {
     // Check if client with email already exists
     const existingClient = await this.clientRepository.findByEmail(validatedRequest.email);
     if (existingClient) {
-      throw new Error('Client with this email already exists');
+      throw new DuplicateError('Client', 'email', validatedRequest.email);
     }
 
     const client = Client.create(validatedRequest.name, validatedRequest.email);

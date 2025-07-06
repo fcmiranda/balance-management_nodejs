@@ -1,3 +1,4 @@
+import { NotFoundError } from '../../domain/errors/domain-errors';
 import type { ClientRepository } from '../../domain/repositories/client-repository';
 import { validateData } from '../../infrastructure/validation/middleware';
 import {
@@ -19,7 +20,7 @@ export class WithdrawUseCase implements IWithdrawUseCase {
 
     const client = await this.clientRepository.findById(validatedRequest.clientId);
     if (!client) {
-      throw new Error('Client not found');
+      throw new NotFoundError('Client', validatedRequest.clientId);
     }
 
     client.withdraw(validatedRequest.amount);

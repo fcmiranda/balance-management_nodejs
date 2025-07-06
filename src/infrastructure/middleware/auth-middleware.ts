@@ -88,3 +88,7 @@ export class AuthMiddleware {
     }
   };
 }
+
+// Export instance for backward compatibility
+const authMiddleware = new AuthMiddleware();
+export const authenticateToken = authMiddleware.authenticate;
