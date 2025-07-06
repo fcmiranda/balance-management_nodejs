@@ -1,3 +1,10 @@
+import { validateData } from '../../infrastructure/validation/middleware';
+import {
+  amountDomainSchema,
+  clientCreateDomainSchema,
+  clientUpdateDomainSchema,
+} from '../validation/domain-schemas';
+
 export class Client {
   private constructor(
     private _id: number | null,
@@ -7,9 +14,8 @@ export class Client {
   ) {}
 
   static create(name: string, email: string): Client {
-    Client.validateName(name);
-    Client.validateEmail(email);
-    return new Client(null, name.trim(), email.trim(), 0);
+    const validatedData = validateData(clientCreateDomainSchema, { name, email });
+    return new Client(null, validatedData.name, validatedData.email, 0);
   }
 
   static fromPersistence(id: number, name: string, email: string, balance: number): Client {
@@ -33,60 +39,34 @@ export class Client {
   }
 
   updateInfo(name: string, email: string): void {
-    Client.validateName(name);
-    Client.validateEmail(email);
-    this._name = name.trim();
-    this._email = email.trim();
+    const validatedData = validateData(clientUpdateDomainSchema, { name, email });
+    this._name = validatedData.name;
+    this._email = validatedData.email;
   }
 
   deposit(amount: number): void {
-    Client.validateAmount(amount);
-    this._balance += amount;
+    const validatedAmount = validateData(amountDomainSchema, amount);
+    this._balance += validatedAmount;
   }
 
   withdraw(amount: number): void {
-    Client.validateAmount(amount);
-    if (amount > this._balance) {
+    const validatedAmount = validateData(amountDomainSchema, amount);
+    if (validatedAmount > this._balance) {
       throw new Error('Insufficient balance');
     }
-    this._balance -= amount;
+    this._balance -= validatedAmount;
   }
 
   canWithdraw(amount: number): boolean {
-    return amount > 0 && amount <= this._balance;
-  }
-
-  private static validateName(name: string): void {
-    if (!name || name.trim().length === 0) {
-      throw new Error('Name is required');
-    }
-    if (name.trim().length < 2) {
-      throw new Error('Name must be at least 2 characters long');
-    }
-    if (name.trim().length > 100) {
-      throw new Error('Name cannot exceed 100 characters');
+    try {
+      const validatedAmount = validateData(amountDomainSchema, amount);
+      return validatedAmount <= this._balance;
+    } catch {
+      return false;
     }
   }
 
-  private static validateEmail(email: string): void {
-    if (!email || !Client.isValidEmail(email)) {
-      throw new Error('Valid email is required');
-    }
-  }
-
-  private static validateAmount(amount: number): void {
-    if (amount <= 0) {
-      throw new Error('Amount must be positive');
-    }
-    if (!Number.isFinite(amount)) {
-      throw new Error('Amount must be a valid number');
-    }
-  }
-
-  private static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+  // ...existing code...
 
   toJSON() {
     return {

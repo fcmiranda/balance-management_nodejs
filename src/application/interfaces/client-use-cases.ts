@@ -1,42 +1,14 @@
 import type { Client } from '../../domain/entities/client';
-import type { UseCase, QueryUseCase, CommandUseCase, CommandUseCaseVoid } from './use-case';
-
-// Request/Response DTOs
-export interface CreateClientRequest {
-  name: string;
-  email: string;
-}
-
-export interface UpdateClientRequest {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export interface GetClientByIdRequest {
-  id: number;
-}
-
-export interface DeleteClientRequest {
-  id: number;
-}
-
-export interface DepositRequest {
-  clientId: number;
-  amount: number;
-}
-
-export interface WithdrawRequest {
-  clientId: number;
-  amount: number;
-}
-
-export interface ClientResponse {
-  id: number;
-  name: string;
-  email: string;
-  balance: number;
-}
+import type {
+  ClientResponse,
+  CreateClientRequest,
+  DeleteClientRequest,
+  DepositRequest,
+  GetClientByIdRequest,
+  UpdateClientRequest,
+  WithdrawRequest,
+} from '../../infrastructure/validation/schemas';
+import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase, UseCase } from './use-case';
 
 export interface ICreateClientUseCase extends CommandUseCase<CreateClientRequest, ClientResponse> {}
 
@@ -52,3 +24,14 @@ export interface IDeleteClientUseCase extends CommandUseCaseVoid<DeleteClientReq
 export interface IDepositUseCase extends CommandUseCase<DepositRequest, ClientResponse> {}
 
 export interface IWithdrawUseCase extends CommandUseCase<WithdrawRequest, ClientResponse> {}
+
+// Re-export types for convenience
+export type {
+  CreateClientRequest,
+  UpdateClientRequest,
+  GetClientByIdRequest,
+  DeleteClientRequest,
+  DepositRequest,
+  WithdrawRequest,
+  ClientResponse,
+} from '../../infrastructure/validation/schemas';

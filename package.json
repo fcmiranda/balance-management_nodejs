@@ -16,13 +16,14 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "zod": "^3.25.74"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.10",
     "@types/sqlite3": "^3.1.11",
-    "@biomejs/biome": "^1.9.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.5.2",
     "ts-node": "^10.9.2",

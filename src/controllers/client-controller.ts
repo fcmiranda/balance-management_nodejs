@@ -1,14 +1,15 @@
 import type { Request, Response } from 'express';
-import { Container } from '../infrastructure/container';
 import type { IContainer } from '../application/interfaces/use-case-factory';
-import type {
-  CreateClientRequest,
-  UpdateClientRequest,
-  GetClientByIdRequest,
-  DeleteClientRequest,
-  DepositRequest,
-  WithdrawRequest,
-} from '../application/interfaces/client-use-cases';
+import { Container } from '../infrastructure/container';
+import { validateData } from '../infrastructure/validation/middleware';
+import {
+  createClientRequestSchema,
+  deleteClientRequestSchema,
+  depositRequestSchema,
+  getClientByIdRequestSchema,
+  updateClientRequestSchema,
+  withdrawRequestSchema,
+} from '../infrastructure/validation/schemas';
 
 export class ClientController {
   private readonly container: IContainer = Container.getInstance();
@@ -25,9 +26,10 @@ export class ClientController {
 
   async getClientById(req: Request, res: Response): Promise<Response> {
     try {
-      const request: GetClientByIdRequest = {
+      // Params are already validated by middleware
+      const request = validateData(getClientByIdRequestSchema, {
         id: Number.parseInt(req.params.id),
-      };
+      });
       const useCase = this.container.getGetClientByIdUseCase();
       const client = await useCase.execute(request);
 
@@ -43,10 +45,8 @@ export class ClientController {
 
   async createClient(req: Request, res: Response): Promise<Response> {
     try {
-      const request: CreateClientRequest = {
-        name: req.body.name,
-        email: req.body.email,
-      };
+      // Body is already validated by middleware
+      const request = validateData(createClientRequestSchema, req.body);
       const useCase = this.container.getCreateClientUseCase();
       const client = await useCase.execute(request);
       return res.status(201).json(client);
@@ -57,11 +57,12 @@ export class ClientController {
 
   async updateClient(req: Request, res: Response): Promise<Response> {
     try {
-      const request: UpdateClientRequest = {
+      // Both body and params are already validated by middleware
+      const request = validateData(updateClientRequestSchema, {
         id: Number.parseInt(req.params.id),
         name: req.body.name,
         email: req.body.email,
-      };
+      });
       const useCase = this.container.getUpdateClientUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
@@ -72,9 +73,10 @@ export class ClientController {
 
   async deleteClient(req: Request, res: Response): Promise<Response> {
     try {
-      const request: DeleteClientRequest = {
+      // Params are already validated by middleware
+      const request = validateData(deleteClientRequestSchema, {
         id: Number.parseInt(req.params.id),
-      };
+      });
       const useCase = this.container.getDeleteClientUseCase();
       await useCase.execute(request);
       return res.status(204).send();
@@ -85,10 +87,11 @@ export class ClientController {
 
   async deposit(req: Request, res: Response): Promise<Response> {
     try {
-      const request: DepositRequest = {
+      // Both body and params are already validated by middleware
+      const request = validateData(depositRequestSchema, {
         clientId: Number.parseInt(req.params.id),
         amount: req.body.amount,
-      };
+      });
       const useCase = this.container.getDepositUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
@@ -99,10 +102,11 @@ export class ClientController {
 
   async withdraw(req: Request, res: Response): Promise<Response> {
     try {
-      const request: WithdrawRequest = {
+      // Both body and params are already validated by middleware
+      const request = validateData(withdrawRequestSchema, {
         clientId: Number.parseInt(req.params.id),
         amount: req.body.amount,
-      };
+      });
       const useCase = this.container.getWithdrawUseCase();
       const client = await useCase.execute(request);
       return res.json(client);
