@@ -17,6 +17,18 @@ export const amountSchema = z
   .finite('Amount must be a valid number')
   .refine((val) => val > 0, 'Amount must be greater than 0');
 
+// User validation schemas
+export const userIdSchema = z.number().int().positive('User ID must be a positive integer');
+
+export const passwordSchema = z
+  .string()
+  .min(6, 'Password must be at least 6 characters long')
+  .max(100, 'Password cannot exceed 100 characters');
+
+export const roleSchema = z.enum(['admin', 'client'], {
+  errorMap: () => ({ message: 'Role must be either "admin" or "client"' }),
+});
+
 // Request DTOs validation schemas
 export const createClientRequestSchema = z.object({
   name: nameSchema,
@@ -102,6 +114,21 @@ export const registerSchema = z.object({
   role: z.enum(['admin', 'client']).default('client'),
 });
 
+// User schemas
+export const createUserRequestSchema = z.object({
+  name: nameSchema,
+  email: emailSchema,
+  password: passwordSchema,
+  role: roleSchema.optional(),
+});
+
+export const updateUserRequestSchema = z.object({
+  name: nameSchema.optional(),
+  email: emailSchema.optional(),
+  password: passwordSchema.optional(),
+  role: roleSchema.optional(),
+});
+
 // Type exports for use in the application
 export type CreateClientRequest = z.infer<typeof createClientRequestSchema>;
 export type UpdateClientRequest = z.infer<typeof updateClientRequestSchema>;
@@ -116,3 +143,5 @@ export type AccountIdParam = z.infer<typeof accountIdParamSchema>;
 export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
+export type CreateUserRequest = z.infer<typeof createUserRequestSchema>;
+export type UpdateUserRequest = z.infer<typeof updateUserRequestSchema>;

@@ -5,7 +5,7 @@ import { testUserData } from '../test-utils';
 // Mock the Container and its dependencies BEFORE importing anything else
 jest.mock('../../src/infrastructure/container');
 jest.mock('../../src/infrastructure/auth/auth-service');
-jest.mock('../../src/infrastructure/repositories/typeorm-client-repository');
+jest.mock('../../src/infrastructure/repositories/typeorm-account-repository');
 jest.mock('../../src/infrastructure/repositories/typeorm-auth-repository');
 
 // Import Container after mocking
@@ -22,13 +22,13 @@ const mockAuthUseCase = {
 const mockContainer = {
   getInstance: jest.fn(),
   getAuthUseCase: jest.fn().mockReturnValue(mockAuthUseCase),
-  getGetAllClientsUseCase: jest.fn(),
-  getCreateClientUseCase: jest.fn(),
-  getDepositUseCase: jest.fn(),
-  getWithdrawUseCase: jest.fn(),
-  getGetClientByIdUseCase: jest.fn(),
-  getUpdateClientUseCase: jest.fn(),
-  getDeleteClientUseCase: jest.fn(),
+  getGetAccountsByUserIdUseCase: jest.fn(),
+  getAccountDepositUseCase: jest.fn(),
+  getAccountWithdrawUseCase: jest.fn(),
+  getUserByIdUseCase: jest.fn(),
+  getCreateUserUseCase: jest.fn(),
+  getUpdateUserUseCase: jest.fn(),
+  getDeleteUserUseCase: jest.fn(),
 } as unknown;
 
 // Mock the Container getInstance method

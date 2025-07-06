@@ -5,7 +5,12 @@ import {
   ValidationError,
 } from '../../src/domain/errors/domain-errors';
 import { Container } from '../../src/infrastructure/container';
-import { createMockRequest, createMockResponse, createMockUser, testUserData } from '../test-utils';
+import {
+  createMockRequest,
+  createMockResponse,
+  createMockUser,
+  testUserData,
+} from '../test-utils.js';
 
 // Mock the Container
 jest.mock('../../src/infrastructure/container');
