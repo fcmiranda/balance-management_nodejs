@@ -1,16 +1,14 @@
 import type { Request, Response } from 'express';
-import { AuthUseCase } from '../application/use-cases/auth-use-case';
+import type { IAuthUseCase } from '../application/interfaces/auth-use-cases';
 import { loginSchema, registerSchema } from '../domain/entities/auth';
-import { AuthService } from '../infrastructure/auth/auth-service';
-import { SQLiteAuthRepository } from '../infrastructure/repositories/sqlite-auth-repository';
+import { Container } from '../infrastructure/container';
 
 export class AuthController {
-  private authUseCase: AuthUseCase;
+  private readonly authUseCase: IAuthUseCase;
 
   constructor() {
-    const authRepository = new SQLiteAuthRepository();
-    const authService = new AuthService();
-    this.authUseCase = new AuthUseCase(authRepository, authService);
+    const container = Container.getInstance();
+    this.authUseCase = container.getAuthUseCase();
   }
 
   async login(req: Request, res: Response): Promise<void> {

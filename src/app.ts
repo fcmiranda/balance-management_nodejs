@@ -1,6 +1,7 @@
 import 'dotenv/config';
+import 'reflect-metadata';
 import express from 'express';
-import { Database } from './infrastructure/database/database';
+import { TypeOrmDatabase } from './infrastructure/database/typeorm-database';
 import { handleError } from './infrastructure/middleware/error-handler';
 import {
   createCorsMiddleware,
@@ -13,8 +14,17 @@ import { routes } from './routes/index';
 
 const app = express();
 
-// Initialize database
-Database.getInstance();
+// Initialize TypeORM database
+const initializeDatabase = async () => {
+  try {
+    const database = TypeOrmDatabase.getInstance();
+    await database.initialize();
+    console.log('TypeORM database initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize TypeORM database:', error);
+    process.exit(1);
+  }
+};
 
 // Security middleware
 app.use(createHelmetMiddleware());
@@ -46,13 +56,25 @@ app.use(handleError);
 
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
-  console.log(`Server Listening on PORT: ${PORT}`);
-});
+// Start server after database initialization
+const startServer = async () => {
+  await initializeDatabase();
+
+  app.listen(PORT, () => {
+    console.log(`Server Listening on PORT: ${PORT}`);
+  });
+};
 
 // Graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('Shutting down gracefully...');
-  Database.getInstance().close();
+  const database = TypeOrmDatabase.getInstance();
+  await database.close();
   process.exit(0);
+});
+
+// Start the application
+startServer().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 });

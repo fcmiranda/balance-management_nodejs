@@ -1,4 +1,4 @@
-import type { AuthResponse, LoginRequest, RegisterRequest } from '../../domain/entities/auth';
+import type { AuthResponse, LoginRequest, RegisterRequest, User } from '../../domain/entities/auth';
 import { DuplicateError, NotFoundError, ValidationError } from '../../domain/errors/domain-errors';
 import type { AuthRepository } from '../../domain/repositories/auth-repository';
 import type { AuthService } from '../../infrastructure/auth/auth-service';
@@ -76,17 +76,13 @@ export class AuthUseCase {
     };
   }
 
-  async getCurrentUser(userId: number): Promise<{ id: number; email: string; role: string }> {
+  async getCurrentUser(userId: number): Promise<User> {
     const user = await this.authRepository.findUserById(userId);
 
     if (!user) {
       throw new NotFoundError('User', userId);
     }
 
-    return {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-    };
+    return user;
   }
 }

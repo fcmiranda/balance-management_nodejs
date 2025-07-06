@@ -17,7 +17,11 @@
     "removeComments": true,
     "noImplicitAny": false,
     "allowJs": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "useDefineForClassFields": false,
+    "strictPropertyInitialization": false
   },
   "include": [
     "src/**/*"

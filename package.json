@@ -7,10 +7,17 @@
     "start": "ts-node src/app.ts",
     "dev": "nodemon --exec ts-node src/app.ts",
     "seed": "ts-node src/scripts/seed-database.ts",
+    "seed:typeorm": "ts-node src/scripts/seed-typeorm-database.ts",
+    "setup:typeorm": "ts-node src/scripts/setup-typeorm.ts",
     "biome:check": "biome check .",
     "biome:fix": "biome check --write .",
     "biome:format": "biome format --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typeorm": "typeorm-ts-node-esm -d ormconfig.ts",
+    "migration:generate": "typeorm-ts-node-esm migration:generate -d ormconfig.ts",
+    "migration:create": "typeorm-ts-node-esm migration:create",
+    "migration:run": "typeorm-ts-node-esm migration:run -d ormconfig.ts",
+    "migration:revert": "typeorm-ts-node-esm migration:revert -d ormconfig.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +31,9 @@
     "express-rate-limit": "^7.5.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7",
+    "typeorm": "^0.3.25",
     "zod": "^3.25.74"
   },
   "devDependencies": {
