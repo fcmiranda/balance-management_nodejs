@@ -22,10 +22,10 @@ export interface CommandUseCaseVoid<TRequest> {
 
 // For simple operations with basic parameters
 export interface SimpleUseCase<TResponse> {
-  execute(...args: any[]): Promise<TResponse>;
+  execute(...args: unknown[]): Promise<TResponse>;
 }
 
 // For operations that don't return anything
 export interface VoidUseCase {
-  execute(...args: any[]): Promise<void>;
+  execute(...args: unknown[]): Promise<void>;
 }

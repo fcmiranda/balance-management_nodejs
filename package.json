@@ -5,6 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/app.ts",
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "seed": "ts-node src/scripts/seed-database.ts",
     "biome:check": "biome check .",
     "biome:fix": "biome check --write .",
     "biome:format": "biome format --write .",
@@ -15,13 +17,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
     "express": "^4.21.2",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
     "sqlite3": "^5.1.7",
     "zod": "^3.25.74"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.0.10",
     "@types/sqlite3": "^3.1.11",
     "husky": "^9.0.11",

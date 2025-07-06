@@ -1,15 +1,15 @@
-import type { ClientRepository } from '../domain/repositories/client-repository';
-import { SqliteClientRepository } from '../infrastructure/repositories/sqlite-client-repository';
-import type { IContainer } from '../application/interfaces/use-case-factory';
 import type {
   ICreateClientUseCase,
+  IDeleteClientUseCase,
+  IDepositUseCase,
   IGetAllClientsUseCase,
   IGetClientByIdUseCase,
   IUpdateClientUseCase,
-  IDeleteClientUseCase,
-  IDepositUseCase,
   IWithdrawUseCase,
 } from '../application/interfaces/client-use-cases';
+import type { IContainer } from '../application/interfaces/use-case-factory';
+import type { ClientRepository } from '../domain/repositories/client-repository';
+import { SqliteClientRepository } from '../infrastructure/repositories/sqlite-client-repository';
 
 import { CreateClientUseCase } from '../application/use-cases/create-client-use-case';
 import { DeleteClientUseCase } from '../application/use-cases/delete-client-use-case';

@@ -1,15 +1,50 @@
+import 'dotenv/config';
 import express from 'express';
 import { Database } from './infrastructure/database/database';
+import { handleError } from './infrastructure/middleware/error-handler';
+import {
+  createCorsMiddleware,
+  createHelmetMiddleware,
+  createRateLimiter,
+  requestLogger,
+  sanitizeInput,
+} from './infrastructure/middleware/security-middleware';
 import { routes } from './routes/index';
 
 const app = express();
 
+// Initialize database
 Database.getInstance();
 
-app.use(express.json());
+// Security middleware
+app.use(createHelmetMiddleware());
+app.use(createCorsMiddleware());
+app.use(createRateLimiter());
+
+// Request processing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(sanitizeInput);
+app.use(requestLogger);
+
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
+
+// API routes
 app.use('/api', routes);
 
-const PORT = 8080;
+// Error handling middleware (must be last)
+app.use(handleError);
+
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server Listening on PORT: ${PORT}`);

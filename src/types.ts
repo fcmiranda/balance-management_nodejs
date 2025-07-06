@@ -27,3 +27,32 @@ export interface WithdrawalRequest {
 export interface ErrorResponse {
   error: string;
 }
+
+// Authentication DTOs
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  role?: 'admin' | 'client';
+}
+
+export interface AuthResponse {
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    role: string;
+  };
+}
+
+export interface JwtPayload {
+  userId: number;
+  email: string;
+  role: string;
+  iat?: number;
+  exp?: number;
+}

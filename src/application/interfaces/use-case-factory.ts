@@ -1,10 +1,10 @@
 import type {
   ICreateClientUseCase,
+  IDeleteClientUseCase,
+  IDepositUseCase,
   IGetAllClientsUseCase,
   IGetClientByIdUseCase,
   IUpdateClientUseCase,
-  IDeleteClientUseCase,
-  IDepositUseCase,
   IWithdrawUseCase,
 } from './client-use-cases';
 

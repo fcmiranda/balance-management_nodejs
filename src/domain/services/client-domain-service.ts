@@ -1,5 +1,5 @@
-import type { ClientRepository } from '../repositories/client-repository';
 import { DuplicateError } from '../errors/domain-errors';
+import type { ClientRepository } from '../repositories/client-repository';
 
 export class ClientDomainService {
   constructor(private readonly clientRepository: ClientRepository) {}
