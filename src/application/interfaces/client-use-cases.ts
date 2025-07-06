@@ -1,6 +1,5 @@
-import type { Client } from '../../domain/entities/client';
+import type { ClientResponse } from '../../domain/entities/client';
 import type {
-  ClientResponse,
   CreateClientRequest,
   DeleteClientRequest,
   DepositRequest,
@@ -8,7 +7,8 @@ import type {
   UpdateClientRequest,
   WithdrawRequest,
 } from '../../infrastructure/validation/schemas';
-import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase, UseCase } from './use-case';
+
+import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase } from './use-case';
 
 export interface ICreateClientUseCase extends CommandUseCase<CreateClientRequest, ClientResponse> {}
 
@@ -33,5 +33,6 @@ export type {
   DeleteClientRequest,
   DepositRequest,
   WithdrawRequest,
-  ClientResponse,
 } from '../../infrastructure/validation/schemas';
+
+export type { ClientResponse } from '../../domain/entities/client';

@@ -77,3 +77,10 @@ export class Client {
     };
   }
 }
+
+export interface ClientResponse {
+  id: number;
+  name: string;
+  email: string;
+  balance: number;
+}
