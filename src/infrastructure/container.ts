@@ -1,5 +1,15 @@
 import type { ClientRepository } from '../domain/repositories/client-repository';
 import { SqliteClientRepository } from '../infrastructure/repositories/sqlite-client-repository';
+import type { IContainer } from '../application/interfaces/use-case-factory';
+import type {
+  ICreateClientUseCase,
+  IGetAllClientsUseCase,
+  IGetClientByIdUseCase,
+  IUpdateClientUseCase,
+  IDeleteClientUseCase,
+  IDepositUseCase,
+  IWithdrawUseCase,
+} from '../application/interfaces/client-use-cases';
 
 import { CreateClientUseCase } from '../application/use-cases/create-client-use-case';
 import { DeleteClientUseCase } from '../application/use-cases/delete-client-use-case';
@@ -9,17 +19,17 @@ import { GetClientByIdUseCase } from '../application/use-cases/get-client-by-id-
 import { UpdateClientUseCase } from '../application/use-cases/update-client-use-case';
 import { WithdrawUseCase } from '../application/use-cases/withdraw-use-case';
 
-export class Container {
+export class Container implements IContainer {
   private static instance: Container;
-  private clientRepository: ClientRepository;
+  private readonly clientRepository: ClientRepository;
 
-  private createClientUseCase: CreateClientUseCase;
-  private getAllClientsUseCase: GetAllClientsUseCase;
-  private getClientByIdUseCase: GetClientByIdUseCase;
-  private updateClientUseCase: UpdateClientUseCase;
-  private deleteClientUseCase: DeleteClientUseCase;
-  private depositUseCase: DepositUseCase;
-  private withdrawUseCase: WithdrawUseCase;
+  private readonly createClientUseCase: ICreateClientUseCase;
+  private readonly getAllClientsUseCase: IGetAllClientsUseCase;
+  private readonly getClientByIdUseCase: IGetClientByIdUseCase;
+  private readonly updateClientUseCase: IUpdateClientUseCase;
+  private readonly deleteClientUseCase: IDeleteClientUseCase;
+  private readonly depositUseCase: IDepositUseCase;
+  private readonly withdrawUseCase: IWithdrawUseCase;
 
   private constructor() {
     this.clientRepository = new SqliteClientRepository();
@@ -44,31 +54,31 @@ export class Container {
     return this.clientRepository;
   }
 
-  public getCreateClientUseCase(): CreateClientUseCase {
+  public getCreateClientUseCase(): ICreateClientUseCase {
     return this.createClientUseCase;
   }
 
-  public getGetAllClientsUseCase(): GetAllClientsUseCase {
+  public getGetAllClientsUseCase(): IGetAllClientsUseCase {
     return this.getAllClientsUseCase;
   }
 
-  public getGetClientByIdUseCase(): GetClientByIdUseCase {
+  public getGetClientByIdUseCase(): IGetClientByIdUseCase {
     return this.getClientByIdUseCase;
   }
 
-  public getUpdateClientUseCase(): UpdateClientUseCase {
+  public getUpdateClientUseCase(): IUpdateClientUseCase {
     return this.updateClientUseCase;
   }
 
-  public getDeleteClientUseCase(): DeleteClientUseCase {
+  public getDeleteClientUseCase(): IDeleteClientUseCase {
     return this.deleteClientUseCase;
   }
 
-  public getDepositUseCase(): DepositUseCase {
+  public getDepositUseCase(): IDepositUseCase {
     return this.depositUseCase;
   }
 
-  public getWithdrawUseCase(): WithdrawUseCase {
+  public getWithdrawUseCase(): IWithdrawUseCase {
     return this.withdrawUseCase;
   }
 }

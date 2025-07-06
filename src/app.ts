@@ -4,7 +4,6 @@ import { routes } from './routes/index';
 
 const app = express();
 
-// Initialize database
 Database.getInstance();
 
 app.use(express.json());

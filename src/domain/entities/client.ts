@@ -7,12 +7,8 @@ export class Client {
   ) {}
 
   static create(name: string, email: string): Client {
-    if (!name || name.trim().length === 0) {
-      throw new Error('Name is required');
-    }
-    if (!email || !Client.isValidEmail(email)) {
-      throw new Error('Valid email is required');
-    }
+    Client.validateName(name);
+    Client.validateEmail(email);
     return new Client(null, name.trim(), email.trim(), 0);
   }
 
@@ -37,31 +33,54 @@ export class Client {
   }
 
   updateInfo(name: string, email: string): void {
-    if (!name || name.trim().length === 0) {
-      throw new Error('Name is required');
-    }
-    if (!email || !Client.isValidEmail(email)) {
-      throw new Error('Valid email is required');
-    }
+    Client.validateName(name);
+    Client.validateEmail(email);
     this._name = name.trim();
     this._email = email.trim();
   }
 
   deposit(amount: number): void {
-    if (amount <= 0) {
-      throw new Error('Deposit amount must be positive');
-    }
+    Client.validateAmount(amount);
     this._balance += amount;
   }
 
   withdraw(amount: number): void {
-    if (amount <= 0) {
-      throw new Error('Withdrawal amount must be positive');
-    }
+    Client.validateAmount(amount);
     if (amount > this._balance) {
       throw new Error('Insufficient balance');
     }
     this._balance -= amount;
+  }
+
+  canWithdraw(amount: number): boolean {
+    return amount > 0 && amount <= this._balance;
+  }
+
+  private static validateName(name: string): void {
+    if (!name || name.trim().length === 0) {
+      throw new Error('Name is required');
+    }
+    if (name.trim().length < 2) {
+      throw new Error('Name must be at least 2 characters long');
+    }
+    if (name.trim().length > 100) {
+      throw new Error('Name cannot exceed 100 characters');
+    }
+  }
+
+  private static validateEmail(email: string): void {
+    if (!email || !Client.isValidEmail(email)) {
+      throw new Error('Valid email is required');
+    }
+  }
+
+  private static validateAmount(amount: number): void {
+    if (amount <= 0) {
+      throw new Error('Amount must be positive');
+    }
+    if (!Number.isFinite(amount)) {
+      throw new Error('Amount must be a valid number');
+    }
   }
 
   private static isValidEmail(email: string): boolean {

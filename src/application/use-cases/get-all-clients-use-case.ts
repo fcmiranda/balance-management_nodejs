@@ -1,10 +1,16 @@
-import type { Client } from '../../domain/entities/client';
 import type { ClientRepository } from '../../domain/repositories/client-repository';
+import type { IGetAllClientsUseCase, ClientResponse } from '../interfaces/client-use-cases';
 
-export class GetAllClientsUseCase {
-  constructor(private clientRepository: ClientRepository) {}
+export class GetAllClientsUseCase implements IGetAllClientsUseCase {
+  constructor(private readonly clientRepository: ClientRepository) {}
 
-  async execute(): Promise<Client[]> {
-    return await this.clientRepository.findAll();
+  async execute(): Promise<ClientResponse[]> {
+    const clients = await this.clientRepository.findAll();
+    return clients.map((client) => ({
+      id: client.id || 0,
+      name: client.name,
+      email: client.email,
+      balance: client.balance,
+    }));
   }
 }

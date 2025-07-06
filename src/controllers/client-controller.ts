@@ -1,20 +1,23 @@
 import type { Request, Response } from 'express';
 import { Container } from '../infrastructure/container';
+import type { IContainer } from '../application/interfaces/use-case-factory';
 import type {
   CreateClientRequest,
-  DepositRequest,
   UpdateClientRequest,
-  WithdrawalRequest,
-} from '../types';
+  GetClientByIdRequest,
+  DeleteClientRequest,
+  DepositRequest,
+  WithdrawRequest,
+} from '../application/interfaces/client-use-cases';
 
 export class ClientController {
-  private container = Container.getInstance();
+  private readonly container: IContainer = Container.getInstance();
 
   async getAllClients(_req: Request, res: Response): Promise<Response> {
     try {
       const useCase = this.container.getGetAllClientsUseCase();
       const clients = await useCase.execute();
-      return res.json(clients.map((client) => client.toJSON()));
+      return res.json(clients);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
@@ -22,15 +25,17 @@ export class ClientController {
 
   async getClientById(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number.parseInt(req.params.id);
+      const request: GetClientByIdRequest = {
+        id: Number.parseInt(req.params.id),
+      };
       const useCase = this.container.getGetClientByIdUseCase();
-      const client = await useCase.execute(id);
+      const client = await useCase.execute(request);
 
       if (!client) {
         return res.status(404).json({ error: 'Client not found' });
       }
 
-      return res.json(client.toJSON());
+      return res.json(client);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
@@ -38,10 +43,13 @@ export class ClientController {
 
   async createClient(req: Request, res: Response): Promise<Response> {
     try {
-      const { name, email }: CreateClientRequest = req.body;
+      const request: CreateClientRequest = {
+        name: req.body.name,
+        email: req.body.email,
+      };
       const useCase = this.container.getCreateClientUseCase();
-      const client = await useCase.execute(name, email);
-      return res.status(201).json(client.toJSON());
+      const client = await useCase.execute(request);
+      return res.status(201).json(client);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
@@ -49,11 +57,14 @@ export class ClientController {
 
   async updateClient(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number.parseInt(req.params.id);
-      const { name, email }: UpdateClientRequest = req.body;
+      const request: UpdateClientRequest = {
+        id: Number.parseInt(req.params.id),
+        name: req.body.name,
+        email: req.body.email,
+      };
       const useCase = this.container.getUpdateClientUseCase();
-      const client = await useCase.execute(id, name, email);
-      return res.json(client.toJSON());
+      const client = await useCase.execute(request);
+      return res.json(client);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
@@ -61,9 +72,11 @@ export class ClientController {
 
   async deleteClient(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number.parseInt(req.params.id);
+      const request: DeleteClientRequest = {
+        id: Number.parseInt(req.params.id),
+      };
       const useCase = this.container.getDeleteClientUseCase();
-      await useCase.execute(id);
+      await useCase.execute(request);
       return res.status(204).send();
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
@@ -72,11 +85,13 @@ export class ClientController {
 
   async deposit(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number.parseInt(req.params.id);
-      const { amount }: DepositRequest = req.body;
+      const request: DepositRequest = {
+        clientId: Number.parseInt(req.params.id),
+        amount: req.body.amount,
+      };
       const useCase = this.container.getDepositUseCase();
-      const client = await useCase.execute(id, amount);
-      return res.json(client.toJSON());
+      const client = await useCase.execute(request);
+      return res.json(client);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
@@ -84,11 +99,13 @@ export class ClientController {
 
   async withdraw(req: Request, res: Response): Promise<Response> {
     try {
-      const id = Number.parseInt(req.params.id);
-      const { amount }: WithdrawalRequest = req.body;
+      const request: WithdrawRequest = {
+        clientId: Number.parseInt(req.params.id),
+        amount: req.body.amount,
+      };
       const useCase = this.container.getWithdrawUseCase();
-      const client = await useCase.execute(id, amount);
-      return res.json(client.toJSON());
+      const client = await useCase.execute(request);
+      return res.json(client);
     } catch (error) {
       return res.status(400).json({ error: (error as Error).message });
     }
