@@ -4,15 +4,10 @@ import {
   NotFoundError,
   ValidationError,
 } from '../../src/domain/errors/domain-errors';
-import { Container } from '../../src/infrastructure/container';
 import { createMockRequest, createMockResponse, createMockUser, testUserData } from '../test-utils';
-
-// Mock the Container
-jest.mock('../../src/infrastructure/container');
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let mockContainer: jest.Mocked<Container>;
   let mockAuthUseCase: any;
   let req: any;
   let res: any;
@@ -24,14 +19,7 @@ describe('AuthController', () => {
       getCurrentUser: jest.fn(),
     };
 
-    mockContainer = {
-      getInstance: jest.fn(),
-      getAuthUseCase: jest.fn().mockReturnValue(mockAuthUseCase),
-    } as any;
-
-    (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
-
-    controller = new AuthController();
+    controller = new AuthController(mockAuthUseCase);
     req = createMockRequest();
     res = createMockResponse();
   });

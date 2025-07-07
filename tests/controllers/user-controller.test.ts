@@ -5,19 +5,24 @@ import {
   NotFoundError,
   ValidationError,
 } from '@domain/errors/domain-errors';
-import { Container } from '@infrastructure/container';
 import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
 import express from 'express';
 import request from 'supertest';
 
-// Mock the container
-jest.mock('@infrastructure/container');
+const mockGetUserByIdUseCase = {
+  execute: jest.fn(),
+};
 
-const mockContainer = {
-  getUserByIdUseCase: jest.fn(),
-  getCreateUserUseCase: jest.fn(),
-  getUpdateUserUseCase: jest.fn(),
-  getDeleteUserUseCase: jest.fn(),
+const mockCreateUserUseCase = {
+  execute: jest.fn(),
+};
+
+const mockUpdateUserUseCase = {
+  execute: jest.fn(),
+};
+
+const mockDeleteUserUseCase = {
+  execute: jest.fn(),
 };
 
 const mockUserResponse = {
@@ -35,9 +40,13 @@ describe('UserController', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
 
-    userController = new UserController(mockContainer as any);
+    userController = new UserController(
+      mockGetUserByIdUseCase,
+      mockCreateUserUseCase,
+      mockUpdateUserUseCase,
+      mockDeleteUserUseCase,
+    );
     app = express();
     app.use(express.json());
 
@@ -50,10 +59,7 @@ describe('UserController', () => {
 
   describe('GET /users/:id', () => {
     it('should return user when found', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockResolvedValue(mockUserResponse),
-      };
-      mockContainer.getUserByIdUseCase.mockReturnValue(mockUseCase);
+      mockGetUserByIdUseCase.execute.mockResolvedValue(mockUserResponse);
 
       app.get('/users/:id', (req, res) => {
         userController.getUserById(req, res);
@@ -63,14 +69,11 @@ describe('UserController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockUserResponse);
-      expect(mockUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(mockGetUserByIdUseCase.execute).toHaveBeenCalledWith({ id: 1 });
     });
 
     it('should return 404 when user not found', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockResolvedValue(null),
-      };
-      mockContainer.getUserByIdUseCase.mockReturnValue(mockUseCase);
+      mockGetUserByIdUseCase.execute.mockResolvedValue(null);
 
       app.get('/users/:id', (req, res) => {
         userController.getUserById(req, res);
@@ -96,10 +99,7 @@ describe('UserController', () => {
 
   describe('POST /users', () => {
     it('should create user successfully', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockResolvedValue(mockUserResponse),
-      };
-      mockContainer.getCreateUserUseCase.mockReturnValue(mockUseCase);
+      mockCreateUserUseCase.execute.mockResolvedValue(mockUserResponse);
 
       app.post('/users', (req, res) => {
         userController.createUser(req, res);
@@ -116,14 +116,13 @@ describe('UserController', () => {
 
       expect(response.status).toBe(201);
       expect(response.body).toEqual(mockUserResponse);
-      expect(mockUseCase.execute).toHaveBeenCalledWith(userData);
+      expect(mockCreateUserUseCase.execute).toHaveBeenCalledWith(userData);
     });
 
     it('should return 400 for validation errors', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockRejectedValue(new ValidationError('Validation failed', ['name'])),
-      };
-      mockContainer.getCreateUserUseCase.mockReturnValue(mockUseCase);
+      mockCreateUserUseCase.execute.mockRejectedValue(
+        new ValidationError('Validation failed', ['name']),
+      );
 
       app.post('/users', (req, res) => {
         userController.createUser(req, res);
@@ -139,12 +138,9 @@ describe('UserController', () => {
     });
 
     it('should return 409 for duplicate email', async () => {
-      const mockUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new DuplicateError('User', 'email', 'john@example.com')),
-      };
-      mockContainer.getCreateUserUseCase.mockReturnValue(mockUseCase);
+      mockCreateUserUseCase.execute.mockRejectedValue(
+        new DuplicateError('User', 'email', 'john@example.com'),
+      );
 
       app.post('/users', (req, res) => {
         userController.createUser(req, res);
@@ -162,10 +158,7 @@ describe('UserController', () => {
   describe('PUT /users/:id', () => {
     it('should update user successfully', async () => {
       const updatedUser = { ...mockUserResponse, name: 'John Updated' };
-      const mockUseCase = {
-        execute: jest.fn().mockResolvedValue(updatedUser),
-      };
-      mockContainer.getUpdateUserUseCase.mockReturnValue(mockUseCase);
+      mockUpdateUserUseCase.execute.mockResolvedValue(updatedUser);
 
       app.put('/users/:id', (req, res) => {
         userController.updateUser(req, res);
@@ -175,17 +168,14 @@ describe('UserController', () => {
 
       expect(response.status).toBe(200);
       expect(response.body.name).toBe('John Updated');
-      expect(mockUseCase.execute).toHaveBeenCalledWith({
+      expect(mockUpdateUserUseCase.execute).toHaveBeenCalledWith({
         id: 1,
         name: 'John Updated',
       });
     });
 
     it('should return 404 when user not found', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockRejectedValue(new NotFoundError('User', 999)),
-      };
-      mockContainer.getUpdateUserUseCase.mockReturnValue(mockUseCase);
+      mockUpdateUserUseCase.execute.mockRejectedValue(new NotFoundError('User', 999));
 
       app.put('/users/:id', (req, res) => {
         userController.updateUser(req, res);
@@ -200,10 +190,7 @@ describe('UserController', () => {
 
   describe('DELETE /users/:id', () => {
     it('should delete user successfully', async () => {
-      const mockUseCase = {
-        execute: jest.fn().mockResolvedValue(undefined),
-      };
-      mockContainer.getDeleteUserUseCase.mockReturnValue(mockUseCase);
+      mockDeleteUserUseCase.execute.mockResolvedValue(undefined);
 
       app.delete('/users/:id', (req, res) => {
         userController.deleteUser(req, res);
@@ -212,16 +199,13 @@ describe('UserController', () => {
       const response = await request(app).delete('/users/1');
 
       expect(response.status).toBe(204);
-      expect(mockUseCase.execute).toHaveBeenCalledWith({ id: 1 });
+      expect(mockDeleteUserUseCase.execute).toHaveBeenCalledWith({ id: 1 });
     });
 
     it('should return 400 when user has active accounts', async () => {
-      const mockUseCase = {
-        execute: jest
-          .fn()
-          .mockRejectedValue(new InvalidOperationError('delete user', 'User has active accounts')),
-      };
-      mockContainer.getDeleteUserUseCase.mockReturnValue(mockUseCase);
+      mockDeleteUserUseCase.execute.mockRejectedValue(
+        new InvalidOperationError('delete user', 'User has active accounts'),
+      );
 
       app.delete('/users/:id', (req, res) => {
         userController.deleteUser(req, res);

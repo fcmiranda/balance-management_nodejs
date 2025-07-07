@@ -1,14 +1,8 @@
 import type { IAuthUseCase } from '@application/interfaces/auth-use-cases';
-import { Container } from '@infrastructure/container';
 import type { Request, Response } from 'express';
 
 export class AuthController {
-  private readonly authUseCase: IAuthUseCase;
-
-  constructor() {
-    const container = Container.getInstance();
-    this.authUseCase = container.getAuthUseCase();
-  }
+  constructor(private readonly authUseCase: IAuthUseCase) {}
 
   async login(req: Request, res: Response): Promise<void> {
     try {

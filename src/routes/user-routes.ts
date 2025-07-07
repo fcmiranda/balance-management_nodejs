@@ -1,5 +1,4 @@
 import { UserController } from '@controllers/user-controller';
-import { Container } from '@infrastructure/container';
 import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
 import { validateRequest } from '@infrastructure/validation/middleware';
 import {
@@ -7,10 +6,11 @@ import {
   updateUserRequestSchema,
 } from '@infrastructure/validation/schemas';
 import { Router } from 'express';
+import { DIFactory } from '../infrastructure/di/di-factory';
 
 const router = Router();
-const container = Container.getInstance();
-const userController = new UserController(container);
+const diFactory = DIFactory.getInstance();
+const userController = diFactory.createUserController();
 
 /**
  * @swagger

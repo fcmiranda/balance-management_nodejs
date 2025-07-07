@@ -1,10 +1,19 @@
-import type { IContainer } from '@application/interfaces/use-case-factory';
+import type {
+  IAccountDepositUseCase,
+  IAccountWithdrawUseCase,
+  ICreateAccountUseCase,
+  IGetAccountsByUserIdUseCase,
+} from '@application/interfaces/account-use-cases';
 import { NotFoundError, UnauthorizedError } from '@domain/errors/domain-errors';
-import { Container } from '@infrastructure/container';
 import type { Request, Response } from 'express';
 
 export class AccountController {
-  private readonly container: IContainer = Container.getInstance();
+  constructor(
+    private readonly createAccountUseCase: ICreateAccountUseCase,
+    private readonly getAccountsByUserIdUseCase: IGetAccountsByUserIdUseCase,
+    private readonly accountDepositUseCase: IAccountDepositUseCase,
+    private readonly accountWithdrawUseCase: IAccountWithdrawUseCase,
+  ) {}
 
   async createAccount(req: Request, res: Response): Promise<Response> {
     try {
@@ -17,7 +26,7 @@ export class AccountController {
         name: req.body.name,
       };
 
-      const useCase = this.container.getCreateAccountUseCase();
+      const useCase = this.createAccountUseCase;
       const account = await useCase.execute(request);
       return res.status(201).json(account);
     } catch (error) {
@@ -34,7 +43,7 @@ export class AccountController {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
-      const useCase = this.container.getGetAccountsByUserIdUseCase();
+      const useCase = this.getAccountsByUserIdUseCase;
       const accounts = await useCase.execute({ userId: req.user.userId });
       return res.json(accounts);
     } catch (error) {
@@ -54,7 +63,7 @@ export class AccountController {
         userId: req.user.userId,
       };
 
-      const useCase = this.container.getAccountDepositUseCase();
+      const useCase = this.accountDepositUseCase;
       const account = await useCase.execute(request);
       return res.json(account);
     } catch (error) {
@@ -80,7 +89,7 @@ export class AccountController {
         userId: req.user.userId,
       };
 
-      const useCase = this.container.getAccountWithdrawUseCase();
+      const useCase = this.accountWithdrawUseCase;
       const account = await useCase.execute(request);
       return res.json(account);
     } catch (error) {

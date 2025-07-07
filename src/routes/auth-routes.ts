@@ -4,9 +4,11 @@ import { createAuthRateLimiter } from '@infrastructure/middleware/security-middl
 import { validateBody } from '@infrastructure/validation/middleware';
 import { loginSchema, registerSchema } from '@infrastructure/validation/schemas';
 import express from 'express';
+import { DIFactory } from '../infrastructure/di/di-factory';
 
 const router = express.Router();
-const authController = new AuthController();
+const diFactory = DIFactory.getInstance();
+const authController = diFactory.createAuthController();
 const authMiddleware = new AuthMiddleware();
 
 /**

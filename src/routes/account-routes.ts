@@ -8,9 +8,11 @@ import {
   createAccountRequestSchema,
 } from '@infrastructure/validation/schemas';
 import express from 'express';
+import { DIFactory } from '../infrastructure/di/di-factory';
 
 const router = express.Router();
-const accountController = new AccountController();
+const diFactory = DIFactory.getInstance();
+const accountController = diFactory.createAccountController();
 const authMiddleware = new AuthMiddleware();
 
 /**

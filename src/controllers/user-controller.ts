@@ -1,14 +1,24 @@
+import type {
+  ICreateUserUseCase,
+  IDeleteUserUseCase,
+  IGetUserByIdUseCase,
+  IUpdateUserUseCase,
+} from '@application/interfaces/user-use-cases';
 import {
   DuplicateError,
   InvalidOperationError,
   NotFoundError,
   ValidationError,
 } from '@domain/errors/domain-errors';
-import type { Container } from '@infrastructure/container';
 import type { Request, Response } from 'express';
 
 export class UserController {
-  constructor(private readonly container: Container) {}
+  constructor(
+    private readonly getUserByIdUseCase: IGetUserByIdUseCase,
+    private readonly createUserUseCase: ICreateUserUseCase,
+    private readonly updateUserUseCase: IUpdateUserUseCase,
+    private readonly deleteUserUseCase: IDeleteUserUseCase,
+  ) {}
 
   /**
    * GET /users/{id} - Get user details by ID
@@ -21,7 +31,7 @@ export class UserController {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
 
-      const useCase = this.container.getUserByIdUseCase();
+      const useCase = this.getUserByIdUseCase;
       const user = await useCase.execute({ id: userId });
 
       if (!user) {
@@ -49,7 +59,7 @@ export class UserController {
     try {
       const { name, email, password, role } = req.body;
 
-      const useCase = this.container.getCreateUserUseCase();
+      const useCase = this.createUserUseCase;
       const user = await useCase.execute({
         name,
         email,
@@ -95,7 +105,7 @@ export class UserController {
 
       const { name, email, password, role } = req.body;
 
-      const useCase = this.container.getUpdateUserUseCase();
+      const useCase = this.updateUserUseCase;
       const user = await useCase.execute({
         id: userId,
         name,
@@ -144,8 +154,7 @@ export class UserController {
         return res.status(400).json({ error: 'Invalid user ID' });
       }
 
-      const useCase = this.container.getDeleteUserUseCase();
-      await useCase.execute({ id: userId });
+      await this.deleteUserUseCase.execute({ id: userId });
 
       return res.status(204).send();
     } catch (error) {

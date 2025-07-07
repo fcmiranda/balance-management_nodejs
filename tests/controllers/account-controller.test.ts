@@ -2,16 +2,14 @@ import express from 'express';
 import request from 'supertest';
 import { AccountController } from '../../src/controllers/account-controller';
 import { NotFoundError } from '../../src/domain/errors/domain-errors';
-import { Container } from '../../src/infrastructure/container';
-
-// Mock the Container
-jest.mock('../../src/infrastructure/container');
 
 describe('AccountController - createAccount', () => {
   let app: express.Application;
   let accountController: AccountController;
-  let mockContainer: any;
   let mockCreateAccountUseCase: any;
+  let mockGetAccountsByUserIdUseCase: any;
+  let mockAccountDepositUseCase: any;
+  let mockAccountWithdrawUseCase: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -20,13 +18,24 @@ describe('AccountController - createAccount', () => {
       execute: jest.fn(),
     };
 
-    mockContainer = {
-      getCreateAccountUseCase: jest.fn().mockReturnValue(mockCreateAccountUseCase),
+    mockGetAccountsByUserIdUseCase = {
+      execute: jest.fn(),
     };
 
-    (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
+    mockAccountDepositUseCase = {
+      execute: jest.fn(),
+    };
 
-    accountController = new AccountController();
+    mockAccountWithdrawUseCase = {
+      execute: jest.fn(),
+    };
+
+    accountController = new AccountController(
+      mockCreateAccountUseCase,
+      mockGetAccountsByUserIdUseCase,
+      mockAccountDepositUseCase,
+      mockAccountWithdrawUseCase,
+    );
 
     // Setup Express app for testing
     app = express();
