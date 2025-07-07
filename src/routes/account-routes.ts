@@ -2,8 +2,8 @@ import { AccountController } from '@controllers/account-controller';
 import { AuthMiddleware } from '@infrastructure/middleware/auth-middleware';
 import { validateBody, validateParams } from '@infrastructure/validation/middleware';
 import {
-  accountIdParamSchema,
   accountDepositRequestSchema,
+  accountIdParamSchema,
   accountWithdrawRequestSchema,
   createAccountRequestSchema,
 } from '@infrastructure/validation/schemas';

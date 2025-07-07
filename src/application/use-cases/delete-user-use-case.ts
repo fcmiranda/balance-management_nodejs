@@ -1,7 +1,7 @@
 import type { DeleteUserRequest, IDeleteUserUseCase } from '@application/interfaces/user-use-cases';
-import { NotFoundError, InvalidOperationError } from '@domain/errors/domain-errors';
-import type { AuthRepository } from '@domain/repositories/auth-repository';
+import { InvalidOperationError, NotFoundError } from '@domain/errors/domain-errors';
 import type { AccountRepository } from '@domain/repositories/account-repository';
+import type { AuthRepository } from '@domain/repositories/auth-repository';
 
 export class DeleteUserUseCase implements IDeleteUserUseCase {
   constructor(

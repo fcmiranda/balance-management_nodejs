@@ -1,14 +1,14 @@
-import request from 'supertest';
-import express from 'express';
 import { UserController } from '@controllers/user-controller';
-import { Container } from '@infrastructure/container';
-import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
 import {
-  NotFoundError,
-  ValidationError,
   DuplicateError,
   InvalidOperationError,
+  NotFoundError,
+  ValidationError,
 } from '@domain/errors/domain-errors';
+import { Container } from '@infrastructure/container';
+import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
+import express from 'express';
+import request from 'supertest';
 
 // Mock the container
 jest.mock('@infrastructure/container');
@@ -42,7 +42,7 @@ describe('UserController', () => {
     app.use(express.json());
 
     // Mock auth middleware
-    app.use((req, res, next) => {
+    app.use((req, _res, next) => {
       req.user = { userId: 1, email: 'test@example.com', role: 'admin' };
       next();
     });

@@ -1,26 +1,26 @@
 import type {
-  ICreateAccountUseCase,
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
+  ICreateAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from '@application/interfaces/account-use-cases';
 import type { IAuthUseCase } from '@application/interfaces/auth-use-cases';
-import type {
-  IGetUserByIdUseCase,
-  ICreateUserUseCase,
-  IUpdateUserUseCase,
-  IDeleteUserUseCase,
-} from '@application/interfaces/user-use-cases';
 import type { IContainer } from '@application/interfaces/use-case-factory';
-import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
+import type {
+  ICreateUserUseCase,
+  IDeleteUserUseCase,
+  IGetUserByIdUseCase,
+  IUpdateUserUseCase,
+} from '@application/interfaces/user-use-cases';
 import { AccountDepositUseCase } from '@application/use-cases/account-deposit-use-case';
 import { AccountWithdrawUseCase } from '@application/use-cases/account-withdraw-use-case';
 import { AuthUseCase } from '@application/use-cases/auth-use-case';
+import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
+import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
+import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
 import { GetAccountsByUserIdUseCase } from '@application/use-cases/get-accounts-by-user-id-use-case';
 import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
-import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
 import { UpdateUserUseCase } from '@application/use-cases/update-user-use-case';
-import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
 import { AuthService } from './auth/auth-service';

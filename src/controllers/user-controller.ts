@@ -1,11 +1,11 @@
-import type { Request, Response } from 'express';
-import type { Container } from '@infrastructure/container';
 import {
-  NotFoundError,
-  ValidationError,
   DuplicateError,
   InvalidOperationError,
+  NotFoundError,
+  ValidationError,
 } from '@domain/errors/domain-errors';
+import type { Container } from '@infrastructure/container';
+import type { Request, Response } from 'express';
 
 export class UserController {
   constructor(private readonly container: Container) {}

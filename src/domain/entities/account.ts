@@ -1,7 +1,7 @@
 import {
-  amountDomainSchema,
   accountCreateDomainSchema,
   accountUpdateDomainSchema,
+  amountDomainSchema,
 } from '@domain/validation/domain-schemas';
 import { validateData } from '@infrastructure/validation/middleware';
 

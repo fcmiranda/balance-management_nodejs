@@ -1,9 +1,9 @@
 import type {
-  UpdateUserRequest,
   IUpdateUserUseCase,
+  UpdateUserRequest,
   UserResponse,
 } from '@application/interfaces/user-use-cases';
-import { NotFoundError, ValidationError, DuplicateError } from '@domain/errors/domain-errors';
+import { DuplicateError, NotFoundError, ValidationError } from '@domain/errors/domain-errors';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
 import type { AuthService } from '@infrastructure/auth/auth-service';
 

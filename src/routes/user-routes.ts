@@ -1,4 +1,3 @@
-import { Router } from 'express';
 import { UserController } from '@controllers/user-controller';
 import { Container } from '@infrastructure/container';
 import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
@@ -7,6 +6,7 @@ import {
   createUserRequestSchema,
   updateUserRequestSchema,
 } from '@infrastructure/validation/schemas';
+import { Router } from 'express';
 
 const router = Router();
 const container = Container.getInstance();

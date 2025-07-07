@@ -1,9 +1,9 @@
 import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
-import { NotFoundError } from '@domain/errors/domain-errors';
 import { Account } from '@domain/entities/account';
+import type { User } from '@domain/entities/auth';
+import { NotFoundError } from '@domain/errors/domain-errors';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
-import type { User } from '@domain/entities/auth';
 
 // Mock repositories
 const mockAccountRepository = {
@@ -50,7 +50,6 @@ describe('CreateAccountUseCase', () => {
         accountType: 'savings' as const,
       };
 
-      const createdAccount = Account.create(1, '1234567890', 'savings');
       const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0, 'savings', 'active');
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);

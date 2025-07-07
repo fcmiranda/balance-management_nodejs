@@ -1,15 +1,15 @@
 import type {
-  ICreateAccountUseCase,
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
+  ICreateAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from './account-use-cases';
 import type { IAuthUseCase } from './auth-use-cases';
 import type {
-  IGetUserByIdUseCase,
   ICreateUserUseCase,
-  IUpdateUserUseCase,
   IDeleteUserUseCase,
+  IGetUserByIdUseCase,
+  IUpdateUserUseCase,
 } from './user-use-cases';
 
 export interface IContainer {

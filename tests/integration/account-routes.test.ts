@@ -1,7 +1,7 @@
 import express from 'express';
 import request from 'supertest';
-import { Container } from '../../src/infrastructure/container';
 import { NotFoundError } from '../../src/domain/errors/domain-errors';
+import { Container } from '../../src/infrastructure/container';
 
 // Mock the Container and its dependencies
 jest.mock('../../src/infrastructure/container');
@@ -39,11 +39,11 @@ describe('Account Routes Integration - Create Account', () => {
 
     // Mock auth middleware
     const { AuthMiddleware } = require('../../src/infrastructure/middleware/auth-middleware');
-    AuthMiddleware.prototype.authenticate = jest.fn((req, res, next) => {
+    AuthMiddleware.prototype.authenticate = jest.fn((req, _res, next) => {
       req.user = { userId: 1, email: 'test@example.com', role: 'client' };
       next();
     });
-    AuthMiddleware.prototype.authorize = jest.fn(() => (req, res, next) => next());
+    AuthMiddleware.prototype.authorize = jest.fn(() => (_req, _res, next) => next());
 
     // Import routes after all mocks are set up
     const { routes } = require('../../src/routes/index');

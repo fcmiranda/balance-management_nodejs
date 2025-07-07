@@ -4,7 +4,7 @@ import type {
 } from '@application/interfaces/account-use-cases';
 import type { AccountResponse } from '@domain/entities/account';
 import { Account } from '@domain/entities/account';
-import { NotFoundError, DuplicateError } from '@domain/errors/domain-errors';
+import { DuplicateError, NotFoundError } from '@domain/errors/domain-errors';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
 

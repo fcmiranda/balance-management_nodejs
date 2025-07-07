@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { User } from './src/infrastructure/database/entities/user.entity';
 import { Account } from './src/infrastructure/database/entities/account.entity';
+import { User } from './src/infrastructure/database/entities/user.entity';
 
 export default new DataSource({
   type: 'sqlite',

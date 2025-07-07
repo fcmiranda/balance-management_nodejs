@@ -1,8 +1,8 @@
 import express from 'express';
 import request from 'supertest';
 import { AccountController } from '../../src/controllers/account-controller';
-import { Container } from '../../src/infrastructure/container';
 import { NotFoundError } from '../../src/domain/errors/domain-errors';
+import { Container } from '../../src/infrastructure/container';
 
 // Mock the Container
 jest.mock('../../src/infrastructure/container');
@@ -33,7 +33,7 @@ describe('AccountController - createAccount', () => {
     app.use(express.json());
 
     // Add middleware to simulate authenticated user
-    app.use((req, res, next) => {
+    app.use((req, _res, next) => {
       req.user = { userId: 1, email: 'test@example.com', role: 'client' };
       next();
     });
@@ -155,7 +155,7 @@ describe('AccountController - createAccount', () => {
       // Setup different user
       const differentUserApp = express();
       differentUserApp.use(express.json());
-      differentUserApp.use((req, res, next) => {
+      differentUserApp.use((req, _res, next) => {
         req.user = { userId: 42, email: 'other@example.com', role: 'client' };
         next();
       });

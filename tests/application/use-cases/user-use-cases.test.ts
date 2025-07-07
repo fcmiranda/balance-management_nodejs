@@ -1,18 +1,18 @@
-import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
 import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
-import { UpdateUserUseCase } from '@application/use-cases/update-user-use-case';
 import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
+import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
+import { UpdateUserUseCase } from '@application/use-cases/update-user-use-case';
+import { Account } from '@domain/entities/account';
+import type { User } from '@domain/entities/auth';
 import {
-  NotFoundError,
-  ValidationError,
   DuplicateError,
   InvalidOperationError,
+  NotFoundError,
+  ValidationError,
 } from '@domain/errors/domain-errors';
-import type { AuthRepository } from '@domain/repositories/auth-repository';
 import type { AccountRepository } from '@domain/repositories/account-repository';
+import type { AuthRepository } from '@domain/repositories/auth-repository';
 import type { AuthService } from '@infrastructure/auth/auth-service';
-import type { User } from '@domain/entities/auth';
-import { Account } from '@domain/entities/account';
 
 // Mock repositories and services
 const mockAuthRepository = {
