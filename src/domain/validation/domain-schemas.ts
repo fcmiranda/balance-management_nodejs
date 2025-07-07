@@ -1,47 +1,55 @@
 import { z } from 'zod';
+import { config } from '../../infrastructure/config/config';
 
-// Domain validation schemas
+// Domain validation schemas using configuration
 export const clientDomainSchema = z.object({
   id: z.number().int().positive().nullable(),
-  name: z.string().min(2).max(100).trim(),
-  email: z.string().email().toLowerCase().trim(),
-  balance: z.number().nonnegative(),
+  name: z.string().min(config.validation.nameMinLength).max(config.validation.nameMaxLength).trim(),
+  email: z.string().email().toLowerCase().trim().regex(new RegExp(config.validation.emailPattern)),
+  balance: z.number().min(0).max(config.validation.maxBalanceValue),
 });
 
 export const clientCreateDomainSchema = z.object({
-  name: z.string().min(2).max(100).trim(),
-  email: z.string().email().toLowerCase().trim(),
+  name: z.string().min(config.validation.nameMinLength).max(config.validation.nameMaxLength).trim(),
+  email: z.string().email().toLowerCase().trim().regex(new RegExp(config.validation.emailPattern)),
 });
 
 export const clientUpdateDomainSchema = z.object({
-  name: z.string().min(2).max(100).trim(),
-  email: z.string().email().toLowerCase().trim(),
+  name: z.string().min(config.validation.nameMinLength).max(config.validation.nameMaxLength).trim(),
+  email: z.string().email().toLowerCase().trim().regex(new RegExp(config.validation.emailPattern)),
 });
 
 export const amountDomainSchema = z
   .number()
-  .positive('Amount must be positive')
+  .min(config.validation.minTransactionAmount, 'Amount must be positive')
+  .max(config.validation.maxTransactionAmount)
   .finite('Amount must be a valid number');
 
-// Account validation schemas
+// Account validation schemas using configuration
 export const accountDomainSchema = z.object({
   id: z.number().int().positive().nullable(),
   userId: z.number().int().positive(),
   accountNumber: z
     .string()
-    .min(5)
-    .max(20)
-    .regex(/^[1-9]\d{9}$/, 'Account number must be a 10-digit number starting with 1-9'),
-  balance: z.number().nonnegative(),
+    .min(config.validation.accountNumberMinLength)
+    .max(config.validation.accountNumberMaxLength)
+    .regex(
+      new RegExp(config.validation.accountNumberPattern),
+      'Account number must be a 10-digit number starting with 1-9',
+    ),
+  balance: z.number().min(0).max(config.validation.maxBalanceValue),
 });
 
 export const accountCreateDomainSchema = z.object({
   userId: z.number().int().positive(),
   accountNumber: z
     .string()
-    .min(5)
-    .max(20)
-    .regex(/^[1-9]\d{9}$/, 'Account number must be a 10-digit number starting with 1-9'),
+    .min(config.validation.accountNumberMinLength)
+    .max(config.validation.accountNumberMaxLength)
+    .regex(
+      new RegExp(config.validation.accountNumberPattern),
+      'Account number must be a 10-digit number starting with 1-9',
+    ),
 });
 
 // Repository validation schemas

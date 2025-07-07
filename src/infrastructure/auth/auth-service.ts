@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from '../../domain/entities/auth';
+import { config } from '../config/config';
 
 export class AuthService {
   private readonly jwtSecret: string;
@@ -8,9 +9,9 @@ export class AuthService {
   private readonly bcryptRounds: number;
 
   constructor() {
-    this.jwtSecret = process.env.JWT_SECRET || 'fallback-secret';
-    this.jwtExpiresIn = process.env.JWT_EXPIRES_IN || '24h';
-    this.bcryptRounds = Number.parseInt(process.env.BCRYPT_ROUNDS || '12', 10);
+    this.jwtSecret = config.jwtSecret;
+    this.jwtExpiresIn = config.jwtExpiresIn;
+    this.bcryptRounds = config.bcryptRounds;
   }
 
   async hashPassword(password: string): Promise<string> {

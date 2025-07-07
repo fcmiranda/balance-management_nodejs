@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import 'reflect-metadata';
+import { config, configHelpers, validateConfig } from '@infrastructure/config/config';
 import { TypeOrmDatabase } from '@infrastructure/database/typeorm-database';
 import { handleError } from '@infrastructure/middleware/error-handler';
 import {
@@ -12,6 +13,9 @@ import {
 import { setupSwagger } from '@infrastructure/swagger/swagger-config';
 import { routes } from '@routes/index';
 import express from 'express';
+
+// Validate configuration on startup
+validateConfig();
 
 const app = express();
 
@@ -33,8 +37,8 @@ app.use(createCorsMiddleware());
 app.use(createRateLimiter());
 
 // Request processing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: config.limits.requestBodySizeLimit }));
+app.use(express.urlencoded({ extended: true, limit: config.limits.requestBodySizeLimit }));
 app.use(sanitizeInput);
 app.use(requestLogger);
 
@@ -48,7 +52,7 @@ app.get('/health', (_req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    environment: process.env.NODE_ENV || 'development',
+    environment: config.nodeEnv,
   });
 });
 
@@ -58,14 +62,16 @@ app.use('/api', routes);
 // Error handling middleware (must be last)
 app.use(handleError);
 
-const PORT = process.env.PORT || 8080;
+const PORT = config.port;
 
 // Start server after database initialization
 const startServer = async () => {
   await initializeDatabase();
 
   app.listen(PORT, () => {
-    console.log(`Server Listening on PORT: ${PORT}`);
+    console.log(`✅ Server is running on ${configHelpers.getServerUrl()}`);
+    console.log(`📊 Environment: ${config.nodeEnv}`);
+    console.log(`🔗 API Documentation: ${configHelpers.getServerUrl()}/api-docs`);
   });
 };
 

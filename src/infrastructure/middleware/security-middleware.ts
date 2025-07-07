@@ -2,14 +2,15 @@ import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { config } from '../config/config';
 
 /**
  * Rate limiting middleware
  */
 export const createRateLimiter = () => {
   return rateLimit({
-    windowMs: Number.parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes
-    max: Number.parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10), // 100 requests per window
+    windowMs: config.rateLimitWindowMs,
+    max: config.rateLimitMaxRequests,
     message: {
       error: 'Too many requests',
       message: 'Too many requests from this IP, please try again later',
@@ -28,8 +29,8 @@ export const createRateLimiter = () => {
  */
 export const createAuthRateLimiter = () => {
   return rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // 5 login attempts per window
+    windowMs: config.rateLimitAuthWindowMs,
+    max: config.rateLimitAuthMaxRequests,
     message: {
       error: 'Too many login attempts',
       message: 'Too many login attempts, please try again in 15 minutes',

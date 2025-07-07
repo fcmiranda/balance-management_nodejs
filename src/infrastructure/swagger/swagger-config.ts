@@ -1,6 +1,7 @@
 import type { Application } from 'express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
+import { config } from '../config/config';
 
 const options = {
   definition: {
@@ -39,13 +40,14 @@ const options = {
             name: {
               type: 'string',
               description: 'User name',
-              minLength: 2,
-              maxLength: 100,
+              minLength: config.validation.nameMinLength,
+              maxLength: config.validation.nameMaxLength,
             },
             email: {
               type: 'string',
               format: 'email',
               description: 'User email',
+              pattern: config.validation.emailPattern,
             },
             role: {
               type: 'string',
@@ -77,8 +79,8 @@ const options = {
             },
             accountNumber: {
               type: 'string',
-              pattern: '^[1-9]\\d{9}$',
-              description: 'Account number (10 digits starting with 1-9)',
+              pattern: config.validation.accountNumberPattern,
+              description: `Account number (${config.validation.accountNumberLength} digits starting with 1-9)`,
             },
             balance: {
               type: 'number',
@@ -105,10 +107,11 @@ const options = {
               type: 'string',
               format: 'email',
               description: 'User email',
+              pattern: config.validation.emailPattern,
             },
             password: {
               type: 'string',
-              minLength: 6,
+              minLength: config.validation.passwordMinLength,
               description: 'User password',
             },
           },
@@ -119,18 +122,19 @@ const options = {
           properties: {
             name: {
               type: 'string',
-              minLength: 2,
-              maxLength: 100,
+              minLength: config.validation.nameMinLength,
+              maxLength: config.validation.nameMaxLength,
               description: 'User name',
             },
             email: {
               type: 'string',
               format: 'email',
               description: 'User email',
+              pattern: config.validation.emailPattern,
             },
             password: {
               type: 'string',
-              minLength: 6,
+              minLength: config.validation.passwordMinLength,
               description: 'User password',
             },
             role: {
@@ -159,8 +163,8 @@ const options = {
           properties: {
             accountNumber: {
               type: 'string',
-              pattern: '^[1-9]\\d{9}$',
-              description: 'Account number (10 digits starting with 1-9)',
+              pattern: config.validation.accountNumberPattern,
+              description: `Account number (${config.validation.accountNumberLength} digits starting with 1-9)`,
             },
           },
         },
@@ -170,7 +174,8 @@ const options = {
           properties: {
             amount: {
               type: 'number',
-              minimum: 0.01,
+              minimum: config.validation.minTransactionAmount,
+              maximum: config.validation.maxTransactionAmount,
               description: 'Transaction amount',
             },
           },
@@ -180,14 +185,15 @@ const options = {
           properties: {
             name: {
               type: 'string',
-              minLength: 2,
-              maxLength: 100,
+              minLength: config.validation.nameMinLength,
+              maxLength: config.validation.nameMaxLength,
               description: 'User name',
             },
             email: {
               type: 'string',
               format: 'email',
               description: 'User email',
+              pattern: config.validation.emailPattern,
             },
           },
         },

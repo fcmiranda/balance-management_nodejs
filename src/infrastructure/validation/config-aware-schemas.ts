@@ -1,9 +1,12 @@
 import { z } from 'zod';
 import { config } from '../config/config';
 
-// Base schemas using configuration
-export const clientIdSchema = z.number().int().positive('Client ID must be a positive integer');
+/**
+ * Configuration-aware validation schemas
+ * These schemas use values from the configuration instead of hardcoded values
+ */
 
+// Base schemas using configuration
 export const nameSchema = z
   .string()
   .min(
@@ -19,9 +22,20 @@ export const nameSchema = z
 export const emailSchema = z
   .string()
   .email('Valid email is required')
-  .regex(new RegExp(config.validation.emailPattern), 'Invalid email format')
   .toLowerCase()
-  .trim();
+  .trim()
+  .regex(new RegExp(config.validation.emailPattern), 'Invalid email format');
+
+export const passwordSchema = z
+  .string()
+  .min(
+    config.validation.passwordMinLength,
+    `Password must be at least ${config.validation.passwordMinLength} characters long`,
+  )
+  .max(
+    config.validation.passwordMaxLength,
+    `Password cannot exceed ${config.validation.passwordMaxLength} characters`,
+  );
 
 export const amountSchema = z
   .number()
@@ -36,20 +50,52 @@ export const amountSchema = z
   .positive('Amount must be positive')
   .finite('Amount must be a valid number');
 
-// User validation schemas
-export const userIdSchema = z.number().int().positive('User ID must be a positive integer');
-
-export const passwordSchema = z
+export const accountNumberSchema = z
   .string()
   .min(
-    config.validation.passwordMinLength,
-    `Password must be at least ${config.validation.passwordMinLength} characters long`,
+    config.validation.accountNumberMinLength,
+    `Account number must be at least ${config.validation.accountNumberMinLength} characters`,
   )
   .max(
-    config.validation.passwordMaxLength,
-    `Password cannot exceed ${config.validation.passwordMaxLength} characters`,
+    config.validation.accountNumberMaxLength,
+    `Account number cannot exceed ${config.validation.accountNumberMaxLength} characters`,
+  )
+  .regex(
+    new RegExp(config.validation.accountNumberPattern),
+    `Account number must match pattern: ${config.validation.accountNumberPattern}`,
   );
 
+export const balanceSchema = z
+  .number()
+  .min(0, 'Balance cannot be negative')
+  .max(
+    config.validation.maxBalanceValue,
+    `Balance cannot exceed ${config.validation.maxBalanceValue}`,
+  )
+  .finite('Balance must be a valid number');
+
+// ID schemas using configuration
+export const positiveIntegerSchema = z
+  .number()
+  .int('Must be an integer')
+  .min(config.validation.minPositiveInteger, 'Must be a positive integer');
+
+export const clientIdSchema = positiveIntegerSchema.refine(
+  (val) => val > 0,
+  'Client ID must be a positive integer',
+);
+
+export const userIdSchema = positiveIntegerSchema.refine(
+  (val) => val > 0,
+  'User ID must be a positive integer',
+);
+
+export const accountIdSchema = positiveIntegerSchema.refine(
+  (val) => val > 0,
+  'Account ID must be a positive integer',
+);
+
+// Role schema
 export const roleSchema = z.enum(['admin', 'client'], {
   errorMap: () => ({ message: 'Role must be either "admin" or "client"' }),
 });
@@ -130,16 +176,16 @@ export const paginationQuerySchema = z.object({
     .optional(),
 });
 
-// Auth schemas
+// Auth schemas using configuration
 export const loginSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: emailSchema,
+  password: passwordSchema,
 });
 
 export const registerSchema = z.object({
   name: nameSchema,
-  email: z.string().email('Invalid email format'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: emailSchema,
+  password: passwordSchema,
   role: z.enum(['admin', 'client']).default('client'),
 });
 
@@ -168,10 +214,42 @@ export type WithdrawRequest = z.infer<typeof withdrawRequestSchema>;
 export type CreateAccountRequest = z.infer<typeof createAccountRequestSchema>;
 export type AccountDepositRequest = z.infer<typeof accountDepositRequestSchema>;
 export type AccountWithdrawRequest = z.infer<typeof accountWithdrawRequestSchema>;
-export type ClientIdParam = z.infer<typeof clientIdParamSchema>;
-export type AccountIdParam = z.infer<typeof accountIdParamSchema>;
-export type PaginationQuery = z.infer<typeof paginationQuerySchema>;
-export type LoginRequest = z.infer<typeof loginSchema>;
-export type RegisterRequest = z.infer<typeof registerSchema>;
 export type CreateUserRequest = z.infer<typeof createUserRequestSchema>;
 export type UpdateUserRequest = z.infer<typeof updateUserRequestSchema>;
+export type LoginRequest = z.infer<typeof loginSchema>;
+export type RegisterRequest = z.infer<typeof registerSchema>;
+
+/**
+ * Configuration validation helpers
+ * These functions validate that configuration values are appropriate for the schemas
+ */
+export const validateConfigurationRules = () => {
+  const { validation } = config;
+
+  // Validate that min values are less than max values
+  if (validation.nameMinLength >= validation.nameMaxLength) {
+    throw new Error('nameMinLength must be less than nameMaxLength');
+  }
+
+  if (validation.passwordMinLength >= validation.passwordMaxLength) {
+    throw new Error('passwordMinLength must be less than passwordMaxLength');
+  }
+
+  if (validation.accountNumberMinLength >= validation.accountNumberMaxLength) {
+    throw new Error('accountNumberMinLength must be less than accountNumberMaxLength');
+  }
+
+  if (validation.minTransactionAmount >= validation.maxTransactionAmount) {
+    throw new Error('minTransactionAmount must be less than maxTransactionAmount');
+  }
+
+  // Validate regex patterns
+  try {
+    new RegExp(validation.accountNumberPattern);
+    new RegExp(validation.emailPattern);
+  } catch (error) {
+    throw new Error(`Invalid regex pattern in configuration: ${error}`);
+  }
+
+  return true;
+};
