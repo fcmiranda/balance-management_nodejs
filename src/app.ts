@@ -9,6 +9,7 @@ import {
   requestLogger,
   sanitizeInput,
 } from '@infrastructure/middleware/security-middleware';
+import { setupSwagger } from '@infrastructure/swagger/swagger-config';
 import { routes } from '@routes/index';
 import express from 'express';
 
@@ -36,6 +37,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizeInput);
 app.use(requestLogger);
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // Health check endpoint
 app.get('/health', (_req, res) => {

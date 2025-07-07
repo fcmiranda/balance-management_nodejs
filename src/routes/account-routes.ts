@@ -13,6 +13,53 @@ const router = express.Router();
 const accountController = new AccountController();
 const authMiddleware = new AuthMiddleware();
 
+/**
+ * @swagger
+ * tags:
+ *   name: Accounts
+ *   description: Account management endpoints
+ */
+
+/**
+ * @swagger
+ * /accounts:
+ *   post:
+ *     summary: Create a new account
+ *     tags: [Accounts]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateAccountRequest'
+ *     responses:
+ *       201:
+ *         description: Account created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 // Routes with authentication and validation middleware
 router.post(
   '/accounts',
@@ -22,6 +69,36 @@ router.post(
   accountController.createAccount.bind(accountController),
 );
 
+/**
+ * @swagger
+ * /accounts:
+ *   get:
+ *     summary: Get user accounts
+ *     tags: [Accounts]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of user accounts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Account'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.get(
   '/accounts',
   authMiddleware.authenticate,
@@ -29,6 +106,59 @@ router.get(
   accountController.getUserAccounts.bind(accountController),
 );
 
+/**
+ * @swagger
+ * /accounts/{accountId}/deposit:
+ *   post:
+ *     summary: Deposit money to account
+ *     tags: [Accounts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Account ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TransactionRequest'
+ *     responses:
+ *       200:
+ *         description: Deposit successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *       400:
+ *         description: Invalid request data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.post(
   '/accounts/:accountId/deposit',
   authMiddleware.authenticate,
@@ -38,6 +168,59 @@ router.post(
   accountController.deposit.bind(accountController),
 );
 
+/**
+ * @swagger
+ * /accounts/{accountId}/withdraw:
+ *   post:
+ *     summary: Withdraw money from account
+ *     tags: [Accounts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Account ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TransactionRequest'
+ *     responses:
+ *       200:
+ *         description: Withdrawal successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Account'
+ *       400:
+ *         description: Invalid request data or insufficient funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.post(
   '/accounts/:accountId/withdraw',
   authMiddleware.authenticate,
