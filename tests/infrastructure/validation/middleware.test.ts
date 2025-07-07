@@ -67,10 +67,13 @@ describe('Validation Middleware', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: 'Validation failed',
+        message: 'Request validation failed',
         details: expect.arrayContaining([
           expect.stringContaining('name'),
           expect.stringContaining('age'),
         ]),
+        timestamp: expect.any(String),
+        path: undefined,
       });
       expect(mockNext).not.toHaveBeenCalled();
     });
@@ -90,6 +93,9 @@ describe('Validation Middleware', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: 'Invalid request body',
+        message: 'Validation error occurred',
+        timestamp: expect.any(String),
+        path: undefined,
       });
       expect(mockNext).not.toHaveBeenCalled();
     });
@@ -147,7 +153,7 @@ describe('Validation Middleware', () => {
       const req = {
         body: { name: 'John' },
         params: { id: '123e4567-e89b-12d3-a456-426614174000' },
-      } as Request;
+      } as unknown as Request;
       const res = mockResponse();
       const middleware = validateRequest(bodySchema, paramsSchema);
 
@@ -162,7 +168,7 @@ describe('Validation Middleware', () => {
       const req = {
         body: { name: 'John' },
         params: { id: 'invalid-uuid' },
-      } as Request;
+      } as unknown as Request;
       const res = mockResponse();
       const middleware = validateRequest(bodySchema);
 
@@ -178,7 +184,7 @@ describe('Validation Middleware', () => {
       const req = {
         body: { name: '' },
         params: { id: '123e4567-e89b-12d3-a456-426614174000' },
-      } as Request;
+      } as unknown as Request;
       const res = mockResponse();
       const middleware = validateRequest(bodySchema, paramsSchema);
 
@@ -187,7 +193,10 @@ describe('Validation Middleware', () => {
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
         error: 'Validation failed',
+        message: 'Request validation failed',
         details: expect.arrayContaining([expect.stringContaining('name')]),
+        timestamp: expect.any(String),
+        path: undefined,
       });
     });
   });

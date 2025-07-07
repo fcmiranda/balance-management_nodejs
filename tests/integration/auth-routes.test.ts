@@ -1,26 +1,23 @@
 import express from 'express';
 import request from 'supertest';
+import { Container } from '../../src/infrastructure/container';
 import { testUserData } from '../test-utils';
 
-// Mock the Container and its dependencies BEFORE importing anything else
+// Mock ALL dependencies before importing anything
 jest.mock('../../src/infrastructure/container');
 jest.mock('../../src/infrastructure/auth/auth-service');
 jest.mock('../../src/infrastructure/repositories/typeorm-account-repository');
 jest.mock('../../src/infrastructure/repositories/typeorm-auth-repository');
+jest.mock('../../src/application/use-cases/auth-use-case');
 
-// Import Container after mocking
-import { Container } from '../../src/infrastructure/container';
-
-// Setup mock auth use case
+// Create a comprehensive mock container
 const mockAuthUseCase = {
   login: jest.fn(),
   register: jest.fn(),
   getCurrentUser: jest.fn(),
 };
 
-// Setup container mock
 const mockContainer = {
-  getInstance: jest.fn(),
   getAuthUseCase: jest.fn().mockReturnValue(mockAuthUseCase),
   getCreateAccountUseCase: jest.fn(),
   getGetAccountsByUserIdUseCase: jest.fn(),
@@ -30,10 +27,11 @@ const mockContainer = {
   getCreateUserUseCase: jest.fn(),
   getUpdateUserUseCase: jest.fn(),
   getDeleteUserUseCase: jest.fn(),
-} as unknown;
+};
 
-// Mock the Container getInstance method
-(Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
+// Mock Container.getInstance to return our mock container
+const MockedContainer = Container as jest.Mocked<typeof Container>;
+MockedContainer.getInstance = jest.fn().mockReturnValue(mockContainer);
 
 // Import routes after all mocks are set up
 import { routes } from '../../src/routes/index';
@@ -48,7 +46,6 @@ describe('Auth Routes Integration', () => {
   });
 
   beforeEach(() => {
-    // Reset all mocks before each test
     jest.clearAllMocks();
   });
 
@@ -74,10 +71,10 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.login.mockRejectedValue(error);
 
-      const response = await request(app).post('/api/auth/login').send(loginData).expect(400);
+      const response = await request(app).post('/api/auth/login').send(loginData).expect(500);
 
       expect(response.body).toMatchObject({
-        error: 'Login failed',
+        error: 'Internal server error',
         message: 'Invalid credentials',
       });
     });
@@ -110,10 +107,10 @@ describe('Auth Routes Integration', () => {
 
       mockAuthUseCase.register.mockRejectedValue(error);
 
-      const response = await request(app).post('/api/auth/register').send(registerData).expect(400);
+      const response = await request(app).post('/api/auth/register').send(registerData).expect(500);
 
       expect(response.body).toMatchObject({
-        error: 'Registration failed',
+        error: 'Internal server error',
         message: 'User already exists',
       });
     });

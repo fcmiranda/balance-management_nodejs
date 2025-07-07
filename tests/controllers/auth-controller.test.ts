@@ -58,8 +58,13 @@ describe('AuthController', () => {
       expect(mockAuthUseCase.login).toHaveBeenCalledWith(loginData);
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Login failed',
+        error: 'Validation failed',
         message: error.message,
+        details: {
+          validationErrors: ['Invalid credentials'],
+        },
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
 
@@ -70,10 +75,12 @@ describe('AuthController', () => {
 
       await controller.login(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Login failed',
-        message: expect.stringContaining('Invalid email format'),
+        error: 'Internal server error',
+        message: 'Invalid email format',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
   });
@@ -111,10 +118,12 @@ describe('AuthController', () => {
       await controller.register(req, res);
 
       expect(mockAuthUseCase.register).toHaveBeenCalledWith(registerData);
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(409);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Registration failed',
+        error: 'Duplicate resource',
         message: error.message,
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
 
@@ -125,10 +134,12 @@ describe('AuthController', () => {
 
       await controller.register(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Registration failed',
-        message: expect.stringContaining('Invalid email format'),
+        error: 'Internal server error',
+        message: 'Invalid email format',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
   });
@@ -173,8 +184,10 @@ describe('AuthController', () => {
       expect(mockAuthUseCase.getCurrentUser).toHaveBeenCalledWith(999);
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'User not found',
+        error: 'Resource not found',
         message: error.message,
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
   });

@@ -126,7 +126,10 @@ describe('Account Routes Integration - Create Account', () => {
       const response = await request(app).post('/api/accounts').send(requestBody).expect(404);
 
       expect(response.body).toEqual({
-        error: 'User with id 1 not found',
+        error: 'Resource not found',
+        message: 'User with id 1 not found',
+        path: '/api/accounts',
+        timestamp: expect.any(String),
       });
     });
   });

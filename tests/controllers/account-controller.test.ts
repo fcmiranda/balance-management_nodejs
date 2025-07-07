@@ -114,7 +114,10 @@ describe('AccountController - createAccount', () => {
       const response = await request(unauthApp).post('/accounts').send(requestBody).expect(401);
 
       expect(response.body).toEqual({
-        error: 'User not authenticated',
+        error: 'Authentication required',
+        message: 'User not authenticated',
+        path: '/accounts',
+        timestamp: expect.any(String),
       });
       expect(mockCreateAccountUseCase.execute).not.toHaveBeenCalled();
     });
@@ -130,7 +133,10 @@ describe('AccountController - createAccount', () => {
       const response = await request(app).post('/accounts').send(requestBody).expect(404);
 
       expect(response.body).toEqual({
-        error: 'User with id 1 not found',
+        error: 'Resource not found',
+        message: 'User with id 1 not found',
+        path: '/accounts',
+        timestamp: expect.any(String),
       });
     });
 
@@ -142,10 +148,13 @@ describe('AccountController - createAccount', () => {
       const error = new Error('Unable to generate unique account number');
       mockCreateAccountUseCase.execute.mockRejectedValue(error);
 
-      const response = await request(app).post('/accounts').send(requestBody).expect(400);
+      const response = await request(app).post('/accounts').send(requestBody).expect(500);
 
       expect(response.body).toEqual({
-        error: 'Unable to generate unique account number',
+        error: 'Internal server error',
+        message: 'Unable to generate unique account number',
+        path: '/accounts',
+        timestamp: expect.any(String),
       });
     });
 

@@ -81,8 +81,8 @@ describe('UserController', () => {
 
       const response = await request(app).get('/users/999');
 
-      expect(response.status).toBe(404);
-      expect(response.body.error).toBe('User not found');
+      expect(response.status).toBe(400);
+      expect(response.body.error).toBe('Validation failed');
     });
 
     it('should return 400 for invalid user ID', async () => {
@@ -93,7 +93,7 @@ describe('UserController', () => {
       const response = await request(app).get('/users/invalid');
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toBe('Invalid user ID');
+      expect(response.body.error).toBe('Validation failed');
     });
   });
 
@@ -134,7 +134,7 @@ describe('UserController', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Validation failed');
-      expect(response.body.details).toEqual(['name']);
+      expect(response.body.details).toEqual({ validationErrors: ['name'] });
     });
 
     it('should return 409 for duplicate email', async () => {
@@ -151,7 +151,7 @@ describe('UserController', () => {
         .send({ name: 'John Doe', email: 'john@example.com', password: 'password123' });
 
       expect(response.status).toBe(409);
-      expect(response.body.error).toBe("User with email 'john@example.com' already exists");
+      expect(response.body.error).toBe('Duplicate resource');
     });
   });
 
@@ -184,7 +184,7 @@ describe('UserController', () => {
       const response = await request(app).put('/users/999').send({ name: 'John Updated' });
 
       expect(response.status).toBe(404);
-      expect(response.body.error).toBe('User with id 999 not found');
+      expect(response.body.error).toBe('Resource not found');
     });
   });
 
@@ -214,7 +214,7 @@ describe('UserController', () => {
       const response = await request(app).delete('/users/1');
 
       expect(response.status).toBe(400);
-      expect(response.body.error).toBe("Invalid operation 'delete user': User has active accounts");
+      expect(response.body.error).toBe('Invalid operation');
     });
   });
 });

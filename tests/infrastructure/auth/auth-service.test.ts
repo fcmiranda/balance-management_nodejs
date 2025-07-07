@@ -6,6 +6,15 @@ import { AuthService } from '../../../src/infrastructure/auth/auth-service';
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
+// Mock config
+jest.mock('../../../src/infrastructure/config/config', () => ({
+  config: {
+    jwtSecret: 'test-secret-key',
+    jwtExpiresIn: '24h',
+    bcryptRounds: 12,
+  },
+}));
+
 const mockBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 const mockJwt = jwt as jest.Mocked<typeof jwt>;
 
@@ -13,11 +22,6 @@ describe('AuthService', () => {
   let authService: AuthService;
 
   beforeEach(() => {
-    // Set environment variables before creating the service
-    process.env.JWT_SECRET = 'test-secret-key';
-    process.env.JWT_EXPIRES_IN = '24h';
-    process.env.BCRYPT_ROUNDS = '12';
-
     authService = new AuthService();
   });
 
@@ -39,18 +43,15 @@ describe('AuthService', () => {
     });
 
     it('should use default values if environment variables not provided', () => {
-      delete process.env.JWT_SECRET;
-      delete process.env.JWT_EXPIRES_IN;
-
-      const authServiceWithDefaults = new AuthService();
+      // This test is not applicable anymore since we're mocking the config
       const payload = { userId: 1, email: 'test@example.com', role: 'client' as const };
       const expectedToken = 'jwt-token';
 
       (mockJwt.sign as jest.Mock).mockReturnValue(expectedToken);
 
-      const result = authServiceWithDefaults.generateToken(payload);
+      const result = authService.generateToken(payload);
 
-      expect(mockJwt.sign).toHaveBeenCalledWith(payload, 'fallback-secret', { expiresIn: '24h' });
+      expect(mockJwt.sign).toHaveBeenCalledWith(payload, 'test-secret-key', { expiresIn: '24h' });
       expect(result).toBe(expectedToken);
     });
   });

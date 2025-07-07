@@ -61,7 +61,7 @@ describe('Auth Middleware', () => {
         error: 'Authentication required',
         message: 'No token provided',
         timestamp: expect.any(String),
-        path: expect.any(String),
+        path: '/test',
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -77,7 +77,7 @@ describe('Auth Middleware', () => {
         error: 'Authentication required',
         message: 'No token provided',
         timestamp: expect.any(String),
-        path: expect.any(String),
+        path: '/test',
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -99,7 +99,7 @@ describe('Auth Middleware', () => {
         error: 'Access denied',
         message: 'Invalid or expired token',
         timestamp: expect.any(String),
-        path: expect.any(String),
+        path: '/test',
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -144,7 +144,7 @@ describe('Auth Middleware', () => {
         error: 'Authentication required',
         message: 'Authentication required',
         timestamp: expect.any(String),
-        path: expect.any(String),
+        path: '/test',
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -161,7 +161,7 @@ describe('Auth Middleware', () => {
         error: 'Access denied',
         message: 'Insufficient permissions',
         timestamp: expect.any(String),
-        path: expect.any(String),
+        path: '/test',
       });
       expect(next).not.toHaveBeenCalled();
     });

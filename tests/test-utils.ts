@@ -74,6 +74,8 @@ interface MockRequest {
   query: Record<string, unknown>;
   headers: Record<string, unknown>;
   user?: unknown;
+  path?: string;
+  originalUrl?: string;
   [key: string]: unknown;
 }
 
@@ -83,6 +85,8 @@ export const createMockRequest = (overrides: Partial<MockRequest> = {}): MockReq
   query: {},
   headers: {},
   user: undefined,
+  path: '/test',
+  originalUrl: '/test',
   ...overrides,
 });
 
@@ -94,12 +98,12 @@ interface MockResponse {
 
 export const createMockUser = (overrides: Partial<User> = {}): User => ({
   id: overrides.id || 1,
+  name: overrides.name || 'Test User',
   email: overrides.email || 'test@example.com',
   password: overrides.password || 'hashedPassword',
   role: overrides.role || 'client',
   createdAt: overrides.createdAt || new Date(),
   updatedAt: overrides.updatedAt || new Date(),
-  name: '',
 });
 
 export const createMockResponse = (): MockResponse => {
