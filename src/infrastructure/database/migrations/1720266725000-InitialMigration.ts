@@ -27,25 +27,9 @@ export class InitialMigration1720266725000 implements MigrationInterface {
         FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE CASCADE
       )
     `);
-
-    // Create indexes for better performance
-    await queryRunner.query(`
-      CREATE INDEX "IDX_users_email" ON "users" ("email")
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX "IDX_accounts_userId" ON "accounts" ("userId")
-    `);
-
-    await queryRunner.query(`
-      CREATE INDEX "IDX_accounts_accountNumber" ON "accounts" ("accountNumber")
-    `);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`DROP INDEX "IDX_accounts_accountNumber"`);
-    await queryRunner.query(`DROP INDEX "IDX_accounts_userId"`);
-    await queryRunner.query(`DROP INDEX "IDX_users_email"`);
     await queryRunner.query(`DROP TABLE "accounts"`);
     await queryRunner.query(`DROP TABLE "users"`);
   }
