@@ -1,4 +1,5 @@
 #!/usr/bin/env ts-node
+import 'dotenv/config';
 import 'reflect-metadata';
 import { AuthService } from '@infrastructure/auth/auth-service';
 import { AppDataSource } from '@infrastructure/database/data-source';
