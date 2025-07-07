@@ -16,8 +16,6 @@ export class GetAccountsByUserIdUseCase implements IGetAccountsByUserIdUseCase {
       userId: account.userId,
       accountNumber: account.accountNumber,
       balance: account.balance,
-      accountType: account.accountType,
-      status: account.status,
     }));
   }
 }

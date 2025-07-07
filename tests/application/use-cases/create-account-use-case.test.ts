@@ -47,10 +47,9 @@ describe('CreateAccountUseCase', () => {
       const request = {
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings' as const,
       };
 
-      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0, 'savings', 'active');
+      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByAccountNumber.mockResolvedValue(null);
@@ -66,37 +65,13 @@ describe('CreateAccountUseCase', () => {
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
-        accountType: 'savings',
-        status: 'active',
       });
-    });
-
-    it('should create checking account successfully', async () => {
-      const request = {
-        userId: 1,
-        name: 'John Doe',
-        accountType: 'checking' as const,
-      };
-
-      const savedAccount = Account.fromPersistence(2, 1, '0987654321', 0, 'checking', 'active');
-
-      mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      mockAccountRepository.findByAccountNumber.mockResolvedValue(null);
-      mockAccountRepository.save.mockResolvedValue(savedAccount);
-
-      const result = await useCase.execute(request);
-
-      expect(result.accountType).toBe('checking');
-      expect(result.userId).toBe(1);
-      expect(result.balance).toBe(0);
-      expect(result.status).toBe('active');
     });
 
     it('should throw NotFoundError when user does not exist', async () => {
       const request = {
         userId: 999,
         name: 'John Doe',
-        accountType: 'savings' as const,
       };
 
       mockAuthRepository.findUserById.mockResolvedValue(null);
@@ -110,19 +85,11 @@ describe('CreateAccountUseCase', () => {
       const request = {
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings' as const,
       };
 
-      const existingAccount = Account.fromPersistence(
-        1,
-        2,
-        '1234567890',
-        100,
-        'checking',
-        'active',
-      );
+      const existingAccount = Account.fromPersistence(1, 2, '1234567890', 100);
 
-      const savedAccount = Account.fromPersistence(2, 1, '0987654321', 0, 'savings', 'active');
+      const savedAccount = Account.fromPersistence(2, 1, '0987654321', 0);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByAccountNumber
@@ -140,17 +107,9 @@ describe('CreateAccountUseCase', () => {
       const request = {
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings' as const,
       };
 
-      const existingAccount = Account.fromPersistence(
-        1,
-        2,
-        '1234567890',
-        100,
-        'checking',
-        'active',
-      );
+      const existingAccount = Account.fromPersistence(1, 2, '1234567890', 100);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       // Mock all attempts to return existing account (simulating collision)
@@ -167,10 +126,9 @@ describe('CreateAccountUseCase', () => {
       const request = {
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings' as const,
       };
 
-      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0, 'savings', 'active');
+      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByAccountNumber.mockResolvedValue(null);

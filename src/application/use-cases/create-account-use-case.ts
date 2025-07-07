@@ -25,7 +25,7 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
     const accountNumber = await this.generateUniqueAccountNumber();
 
     // Create the account domain entity
-    const account = Account.create(request.userId, accountNumber, request.accountType);
+    const account = Account.create(request.userId, accountNumber);
 
     // Save the account
     const savedAccount = await this.accountRepository.save(account);
@@ -36,8 +36,6 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
       userId: savedAccount.userId,
       accountNumber: savedAccount.accountNumber,
       balance: savedAccount.balance,
-      accountType: savedAccount.accountType,
-      status: savedAccount.status,
     };
   }
 

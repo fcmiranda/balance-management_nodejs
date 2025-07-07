@@ -4,7 +4,6 @@ export class InitialMigration1720266725000 implements MigrationInterface {
   name = 'InitialMigration1720266725000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Create normalized users table with name field
     await queryRunner.query(`
       CREATE TABLE "users" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -17,15 +16,12 @@ export class InitialMigration1720266725000 implements MigrationInterface {
       )
     `);
 
-    // Create accounts table that references users (normalized structure)
     await queryRunner.query(`
       CREATE TABLE "accounts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         "userId" INTEGER NOT NULL,
         "accountNumber" VARCHAR(20) NOT NULL UNIQUE,
         "balance" DECIMAL(10,2) NOT NULL DEFAULT 0,
-        "accountType" VARCHAR(20) NOT NULL DEFAULT 'savings',
-        "status" VARCHAR(20) NOT NULL DEFAULT 'active',
         "createdAt" DATETIME NOT NULL DEFAULT (datetime('now')),
         "updatedAt" DATETIME NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY ("userId") REFERENCES "users" ("id") ON DELETE CASCADE

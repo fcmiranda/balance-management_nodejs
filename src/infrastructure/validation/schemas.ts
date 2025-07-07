@@ -62,9 +62,6 @@ export const withdrawRequestSchema = z.object({
 // Account request schemas
 export const createAccountRequestSchema = z.object({
   name: nameSchema,
-  accountType: z.enum(['savings', 'checking'], {
-    errorMap: () => ({ message: 'Account type must be either "savings" or "checking"' }),
-  }),
 });
 
 export const accountDepositRequestSchema = z.object({

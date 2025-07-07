@@ -23,12 +23,6 @@ export class Account {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   balance!: number;
 
-  @Column({ type: 'varchar', length: 20, default: 'savings' })
-  accountType!: 'savings' | 'checking';
-
-  @Column({ type: 'varchar', length: 20, default: 'active' })
-  status!: 'active' | 'inactive' | 'frozen';
-
   @CreateDateColumn()
   createdAt!: Date;
 

@@ -19,8 +19,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
         entity.userId,
         entity.accountNumber,
         Number(entity.balance),
-        entity.accountType,
-        entity.status,
       ),
     );
   }
@@ -34,8 +32,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       entity.userId,
       entity.accountNumber,
       Number(entity.balance),
-      entity.accountType,
-      entity.status,
     );
   }
 
@@ -47,8 +43,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
         entity.userId,
         entity.accountNumber,
         Number(entity.balance),
-        entity.accountType,
-        entity.status,
       ),
     );
   }
@@ -62,8 +56,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       entity.userId,
       entity.accountNumber,
       Number(entity.balance),
-      entity.accountType,
-      entity.status,
     );
   }
 
@@ -72,8 +64,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       userId: account.userId,
       accountNumber: account.accountNumber,
       balance: account.balance,
-      accountType: account.accountType,
-      status: account.status,
     });
 
     const saved = await this.repository.save(entity);
@@ -82,8 +72,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       saved.userId,
       saved.accountNumber,
       Number(saved.balance),
-      saved.accountType,
-      saved.status,
     );
   }
 
@@ -96,8 +84,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       userId: account.userId,
       accountNumber: account.accountNumber,
       balance: account.balance,
-      accountType: account.accountType,
-      status: account.status,
     });
 
     const updated = await this.repository.findOne({ where: { id: account.id } });
@@ -110,8 +96,6 @@ export class TypeOrmAccountRepository implements AccountRepository {
       updated.userId,
       updated.accountNumber,
       Number(updated.balance),
-      updated.accountType,
-      updated.status,
     );
   }
 

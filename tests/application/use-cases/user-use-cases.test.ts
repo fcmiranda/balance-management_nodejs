@@ -230,19 +230,20 @@ describe('User Use Cases', () => {
       await expect(useCase.execute({ id: 999 })).rejects.toThrow(NotFoundError);
     });
 
-    it('should throw InvalidOperationError when user has active accounts', async () => {
-      const activeAccount = Account.create(1, 'ACC001', 'checking');
+    it('should allow deletion when user has accounts with zero balance', async () => {
+      const accountWithZeroBalance = Account.create(1, 'ACC001');
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      mockAccountRepository.findByUserId.mockResolvedValue([activeAccount]);
+      mockAccountRepository.findByUserId.mockResolvedValue([accountWithZeroBalance]);
       const useCase = new DeleteUserUseCase(mockAuthRepository, mockAccountRepository);
 
-      await expect(useCase.execute({ id: 1 })).rejects.toThrow(InvalidOperationError);
+      await useCase.execute({ id: 1 });
+
+      expect(mockAuthRepository.deleteUser).toHaveBeenCalledWith(1);
     });
 
     it('should throw InvalidOperationError when user has accounts with positive balance', async () => {
-      const accountWithBalance = Account.create(1, 'ACC001', 'checking');
+      const accountWithBalance = Account.create(1, 'ACC001');
       accountWithBalance.deposit(100);
-      accountWithBalance.updateInfo('checking', 'inactive');
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByUserId.mockResolvedValue([accountWithBalance]);
       const useCase = new DeleteUserUseCase(mockAuthRepository, mockAccountRepository);

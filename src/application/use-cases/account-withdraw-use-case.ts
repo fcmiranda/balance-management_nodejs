@@ -29,8 +29,6 @@ export class AccountWithdrawUseCase implements IAccountWithdrawUseCase {
       userId: updatedAccount.userId,
       accountNumber: updatedAccount.accountNumber,
       balance: updatedAccount.balance,
-      accountType: updatedAccount.accountType,
-      status: updatedAccount.status,
     };
   }
 }

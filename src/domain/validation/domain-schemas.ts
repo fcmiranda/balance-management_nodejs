@@ -29,19 +29,11 @@ export const accountDomainSchema = z.object({
   userId: z.number().int().positive(),
   accountNumber: z.string().min(5).max(20),
   balance: z.number().nonnegative(),
-  accountType: z.enum(['savings', 'checking']),
-  status: z.enum(['active', 'inactive', 'frozen']),
 });
 
 export const accountCreateDomainSchema = z.object({
   userId: z.number().int().positive(),
   accountNumber: z.string().min(5).max(20),
-  accountType: z.enum(['savings', 'checking']),
-});
-
-export const accountUpdateDomainSchema = z.object({
-  accountType: z.enum(['savings', 'checking']),
-  status: z.enum(['active', 'inactive', 'frozen']),
 });
 
 // Repository validation schemas
@@ -55,7 +47,6 @@ export type ClientCreateDomainData = z.infer<typeof clientCreateDomainSchema>;
 export type ClientUpdateDomainData = z.infer<typeof clientUpdateDomainSchema>;
 export type AccountDomainData = z.infer<typeof accountDomainSchema>;
 export type AccountCreateDomainData = z.infer<typeof accountCreateDomainSchema>;
-export type AccountUpdateDomainData = z.infer<typeof accountUpdateDomainSchema>;
 export type AmountDomainData = z.infer<typeof amountDomainSchema>;
 export type ClientIdDomainData = z.infer<typeof clientIdDomainSchema>;
 export type AccountIdDomainData = z.infer<typeof accountIdDomainSchema>;

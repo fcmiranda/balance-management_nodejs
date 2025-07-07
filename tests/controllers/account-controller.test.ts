@@ -47,7 +47,6 @@ describe('AccountController - createAccount', () => {
     it('should create account successfully', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const expectedResponse = {
@@ -55,8 +54,6 @@ describe('AccountController - createAccount', () => {
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
-        accountType: 'savings',
-        status: 'active',
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
@@ -67,14 +64,12 @@ describe('AccountController - createAccount', () => {
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings',
       });
     });
 
     it('should create checking account successfully', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'checking',
       };
 
       const expectedResponse = {
@@ -82,8 +77,6 @@ describe('AccountController - createAccount', () => {
         userId: 1,
         accountNumber: '0987654321',
         balance: 0,
-        accountType: 'checking',
-        status: 'active',
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
@@ -94,7 +87,6 @@ describe('AccountController - createAccount', () => {
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
         name: 'John Doe',
-        accountType: 'checking',
       });
     });
 
@@ -108,7 +100,6 @@ describe('AccountController - createAccount', () => {
 
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const response = await request(unauthApp).post('/accounts').send(requestBody).expect(401);
@@ -122,7 +113,6 @@ describe('AccountController - createAccount', () => {
     it('should return 404 when user does not exist', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const error = new NotFoundError('User', 1);
@@ -138,7 +128,6 @@ describe('AccountController - createAccount', () => {
     it('should return 400 for other errors', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const error = new Error('Unable to generate unique account number');
@@ -165,7 +154,6 @@ describe('AccountController - createAccount', () => {
 
       const requestBody = {
         name: 'Jane Smith',
-        accountType: 'checking',
       };
 
       const expectedResponse = {
@@ -173,8 +161,6 @@ describe('AccountController - createAccount', () => {
         userId: 42,
         accountNumber: '5555555555',
         balance: 0,
-        accountType: 'checking',
-        status: 'active',
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
@@ -184,7 +170,6 @@ describe('AccountController - createAccount', () => {
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 42,
         name: 'Jane Smith',
-        accountType: 'checking',
       });
     });
   });

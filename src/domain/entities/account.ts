@@ -1,8 +1,4 @@
-import {
-  accountCreateDomainSchema,
-  accountUpdateDomainSchema,
-  amountDomainSchema,
-} from '@domain/validation/domain-schemas';
+import { accountCreateDomainSchema, amountDomainSchema } from '@domain/validation/domain-schemas';
 import { validateData } from '@infrastructure/validation/middleware';
 
 export class Account {
@@ -11,28 +7,14 @@ export class Account {
     private _userId: number,
     private _accountNumber: string,
     private _balance: number,
-    private _accountType: 'savings' | 'checking',
-    private _status: 'active' | 'inactive' | 'frozen',
   ) {}
 
-  static create(
-    userId: number,
-    accountNumber: string,
-    accountType: 'savings' | 'checking' = 'savings',
-  ): Account {
+  static create(userId: number, accountNumber: string): Account {
     const validatedData = validateData(accountCreateDomainSchema, {
       userId,
       accountNumber,
-      accountType,
     });
-    return new Account(
-      null,
-      validatedData.userId,
-      validatedData.accountNumber,
-      0,
-      validatedData.accountType,
-      'active',
-    );
+    return new Account(null, validatedData.userId, validatedData.accountNumber, 0);
   }
 
   static fromPersistence(
@@ -40,10 +22,8 @@ export class Account {
     userId: number,
     accountNumber: string,
     balance: number,
-    accountType: 'savings' | 'checking',
-    status: 'active' | 'inactive' | 'frozen',
   ): Account {
-    return new Account(id, userId, accountNumber, balance, accountType, status);
+    return new Account(id, userId, accountNumber, balance);
   }
 
   get id(): number | null {
@@ -62,32 +42,12 @@ export class Account {
     return this._balance;
   }
 
-  get accountType(): 'savings' | 'checking' {
-    return this._accountType;
-  }
-
-  get status(): 'active' | 'inactive' | 'frozen' {
-    return this._status;
-  }
-
-  updateInfo(accountType: 'savings' | 'checking', status: 'active' | 'inactive' | 'frozen'): void {
-    const validatedData = validateData(accountUpdateDomainSchema, { accountType, status });
-    this._accountType = validatedData.accountType;
-    this._status = validatedData.status;
-  }
-
   deposit(amount: number): void {
-    if (this._status !== 'active') {
-      throw new Error('Cannot deposit to inactive or frozen account');
-    }
     const validatedAmount = validateData(amountDomainSchema, amount);
     this._balance += validatedAmount;
   }
 
   withdraw(amount: number): void {
-    if (this._status !== 'active') {
-      throw new Error('Cannot withdraw from inactive or frozen account');
-    }
     const validatedAmount = validateData(amountDomainSchema, amount);
     if (validatedAmount > this._balance) {
       throw new Error('Insufficient balance');
@@ -97,9 +57,6 @@ export class Account {
 
   canWithdraw(amount: number): boolean {
     try {
-      if (this._status !== 'active') {
-        return false;
-      }
       const validatedAmount = validateData(amountDomainSchema, amount);
       return validatedAmount <= this._balance;
     } catch {
@@ -113,8 +70,6 @@ export class Account {
       userId: this._userId,
       accountNumber: this._accountNumber,
       balance: this._balance,
-      accountType: this._accountType,
-      status: this._status,
     };
   }
 }
@@ -124,6 +79,4 @@ export interface AccountResponse {
   userId: number;
   accountNumber: string;
   balance: number;
-  accountType: 'savings' | 'checking';
-  status: 'active' | 'inactive' | 'frozen';
 }

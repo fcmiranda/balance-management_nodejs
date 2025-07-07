@@ -4,7 +4,6 @@ import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase } from './use-cas
 export interface CreateAccountRequest {
   userId: number;
   name: string;
-  accountType: 'savings' | 'checking';
 }
 
 export interface GetAccountByIdRequest {

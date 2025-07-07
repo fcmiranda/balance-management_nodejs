@@ -61,7 +61,6 @@ describe('Account Routes Integration - Create Account', () => {
     it('should create savings account successfully', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const expectedResponse = {
@@ -69,8 +68,6 @@ describe('Account Routes Integration - Create Account', () => {
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
-        accountType: 'savings',
-        status: 'active',
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
@@ -81,14 +78,12 @@ describe('Account Routes Integration - Create Account', () => {
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
         name: 'John Doe',
-        accountType: 'savings',
       });
     });
 
     it('should create checking account successfully', async () => {
       const requestBody = {
         name: 'Jane Smith',
-        accountType: 'checking',
       };
 
       const expectedResponse = {
@@ -96,8 +91,6 @@ describe('Account Routes Integration - Create Account', () => {
         userId: 1,
         accountNumber: '0987654321',
         balance: 0,
-        accountType: 'checking',
-        status: 'active',
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
@@ -108,14 +101,12 @@ describe('Account Routes Integration - Create Account', () => {
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
         name: 'Jane Smith',
-        accountType: 'checking',
       });
     });
 
     it('should return 400 for validation errors', async () => {
       const requestBody = {
         name: '', // Invalid name
-        accountType: 'invalid', // Invalid account type
       };
 
       const response = await request(app).post('/api/accounts').send(requestBody).expect(400);
@@ -127,7 +118,6 @@ describe('Account Routes Integration - Create Account', () => {
     it('should return 404 when user not found', async () => {
       const requestBody = {
         name: 'John Doe',
-        accountType: 'savings',
       };
 
       const error = new NotFoundError('User', 1);

@@ -4,8 +4,6 @@ export interface AccountDTO {
   userId: number;
   accountNumber: string;
   balance: number;
-  accountType: 'savings' | 'checking';
-  status: 'active' | 'inactive' | 'frozen';
 }
 
 export interface AccountDepositRequest {
