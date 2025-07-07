@@ -229,4 +229,44 @@ router.delete('/:id', authenticateToken, (req, res) => {
   userController.deleteUser(req, res);
 });
 
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users (Admin only)
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden - Admin role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.get('/', authenticateToken, (req, res) => {
+  // Only admin can list all users
+  if (req.user?.role !== 'admin') {
+    handleAuthorizationError('Admin role required', req, res);
+    return;
+  }
+
+  userController.listUsers(req, res);
+});
+
 export default router;

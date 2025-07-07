@@ -9,6 +9,7 @@ import type {
   ICreateUserUseCase,
   IDeleteUserUseCase,
   IGetUserByIdUseCase,
+  IListUsersUseCase,
   IUpdateUserUseCase,
 } from '@application/interfaces/user-use-cases';
 import { AccountController } from '@controllers/account-controller';
@@ -69,12 +70,14 @@ export class DIFactory {
     const createUserUseCase = this.container.getCreateUserUseCase();
     const updateUserUseCase = this.container.getUpdateUserUseCase();
     const deleteUserUseCase = this.container.getDeleteUserUseCase();
+    const listUsersUseCase = this.container.getListUsersUseCase();
 
     return new UserController(
       getUserByIdUseCase,
       createUserUseCase,
       updateUserUseCase,
       deleteUserUseCase,
+      listUsersUseCase,
     );
   }
 }

@@ -9,6 +9,7 @@ import type {
   ICreateUserUseCase,
   IDeleteUserUseCase,
   IGetUserByIdUseCase,
+  IListUsersUseCase,
   IUpdateUserUseCase,
 } from './user-use-cases';
 
@@ -23,4 +24,5 @@ export interface IContainer {
   getCreateUserUseCase(): ICreateUserUseCase;
   getUpdateUserUseCase(): IUpdateUserUseCase;
   getDeleteUserUseCase(): IDeleteUserUseCase;
+  getListUsersUseCase(): IListUsersUseCase;
 }

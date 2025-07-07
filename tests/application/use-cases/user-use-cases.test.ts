@@ -1,6 +1,7 @@
 import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
 import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
 import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
+import { ListUsersUseCase } from '@application/use-cases/list-users-use-case';
 import { UpdateUserUseCase } from '@application/use-cases/update-user-use-case';
 import { Account } from '@domain/entities/account';
 import type { User } from '@domain/entities/auth';
@@ -18,6 +19,7 @@ import type { AuthService } from '@infrastructure/auth/auth-service';
 const mockAuthRepository = {
   findUserById: jest.fn(),
   findUserByEmail: jest.fn(),
+  findAllUsers: jest.fn(),
   createUser: jest.fn(),
   updateUser: jest.fn(),
   deleteUser: jest.fn(),
@@ -85,6 +87,58 @@ describe('User Use Cases', () => {
 
       expect(result).toBeNull();
       expect(mockAuthRepository.findUserById).toHaveBeenCalledWith(999);
+    });
+  });
+
+  describe('ListUsersUseCase', () => {
+    it('should return all users successfully', async () => {
+      const users = [
+        mockUser,
+        {
+          id: 2,
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          password: 'hashedPassword2',
+          role: 'admin' as const,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ];
+
+      mockAuthRepository.findAllUsers.mockResolvedValue(users);
+      const useCase = new ListUsersUseCase(mockAuthRepository);
+
+      const result = await useCase.execute();
+
+      expect(result).toEqual([
+        {
+          id: mockUser.id,
+          name: mockUser.name,
+          email: mockUser.email,
+          role: mockUser.role,
+          createdAt: mockUser.createdAt,
+          updatedAt: mockUser.updatedAt,
+        },
+        {
+          id: 2,
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'admin',
+          createdAt: users[1].createdAt,
+          updatedAt: users[1].updatedAt,
+        },
+      ]);
+      expect(mockAuthRepository.findAllUsers).toHaveBeenCalledWith();
+    });
+
+    it('should return empty array when no users exist', async () => {
+      mockAuthRepository.findAllUsers.mockResolvedValue([]);
+      const useCase = new ListUsersUseCase(mockAuthRepository);
+
+      const result = await useCase.execute();
+
+      expect(result).toEqual([]);
+      expect(mockAuthRepository.findAllUsers).toHaveBeenCalledWith();
     });
   });
 

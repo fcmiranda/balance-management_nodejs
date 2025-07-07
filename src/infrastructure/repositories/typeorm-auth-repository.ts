@@ -27,6 +27,10 @@ export class TypeOrmAuthRepository
     return this.findEntityById(id);
   }
 
+  async findAllUsers(): Promise<DomainUser[]> {
+    return this.findAllEntities();
+  }
+
   async createUser(
     name: string,
     email: string,

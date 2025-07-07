@@ -10,6 +10,7 @@ import type {
   ICreateUserUseCase,
   IDeleteUserUseCase,
   IGetUserByIdUseCase,
+  IListUsersUseCase,
   IUpdateUserUseCase,
 } from '@application/interfaces/user-use-cases';
 import { AccountDepositUseCase } from '@application/use-cases/account-deposit-use-case';
@@ -20,6 +21,7 @@ import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
 import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
 import { GetAccountsByUserIdUseCase } from '@application/use-cases/get-accounts-by-user-id-use-case';
 import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
+import { ListUsersUseCase } from '@application/use-cases/list-users-use-case';
 import { UpdateUserUseCase } from '@application/use-cases/update-user-use-case';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
@@ -44,6 +46,7 @@ export class Container implements IContainer {
   private readonly createUserUseCaseInstance: ICreateUserUseCase;
   private readonly updateUserUseCaseInstance: IUpdateUserUseCase;
   private readonly deleteUserUseCaseInstance: IDeleteUserUseCase;
+  private readonly listUsersUseCaseInstance: IListUsersUseCase;
 
   private constructor() {
     this.accountRepository = new TypeOrmAccountRepository();
@@ -67,6 +70,7 @@ export class Container implements IContainer {
       this.authRepository,
       this.accountRepository,
     );
+    this.listUsersUseCaseInstance = new ListUsersUseCase(this.authRepository);
   }
 
   public static getInstance(): Container {
@@ -111,5 +115,9 @@ export class Container implements IContainer {
 
   public getDeleteUserUseCase(): IDeleteUserUseCase {
     return this.deleteUserUseCaseInstance;
+  }
+
+  public getListUsersUseCase(): IListUsersUseCase {
+    return this.listUsersUseCaseInstance;
   }
 }

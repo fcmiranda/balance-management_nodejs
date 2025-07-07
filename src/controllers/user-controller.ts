@@ -2,6 +2,7 @@ import type {
   ICreateUserUseCase,
   IDeleteUserUseCase,
   IGetUserByIdUseCase,
+  IListUsersUseCase,
   IUpdateUserUseCase,
 } from '@application/interfaces/user-use-cases';
 import {
@@ -17,7 +18,24 @@ export class UserController {
     private readonly createUserUseCase: ICreateUserUseCase,
     private readonly updateUserUseCase: IUpdateUserUseCase,
     private readonly deleteUserUseCase: IDeleteUserUseCase,
+    private readonly listUsersUseCase: IListUsersUseCase,
   ) {}
+
+  /**
+   * GET /users - Get all users
+   */
+  async listUsers(req: Request, res: Response): Promise<Response> {
+    try {
+      const useCase = this.listUsersUseCase;
+      const users = await useCase.execute();
+
+      sendData(users, res);
+      return res;
+    } catch (error) {
+      handleError(error, req, res);
+      return res;
+    }
+  }
 
   /**
    * GET /users/{id} - Get user details by ID

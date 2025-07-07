@@ -25,6 +25,10 @@ const mockDeleteUserUseCase = {
   execute: jest.fn(),
 };
 
+const mockListUsersUseCase = {
+  execute: jest.fn(),
+};
+
 const mockUserResponse = {
   id: 1,
   name: 'John Doe',
@@ -46,6 +50,7 @@ describe('UserController', () => {
       mockCreateUserUseCase,
       mockUpdateUserUseCase,
       mockDeleteUserUseCase,
+      mockListUsersUseCase,
     );
     app = express();
     app.use(express.json());
@@ -94,6 +99,48 @@ describe('UserController', () => {
 
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Validation failed');
+    });
+  });
+
+  describe('GET /users', () => {
+    it('should return all users successfully', async () => {
+      const usersResponse = [
+        mockUserResponse,
+        {
+          id: 2,
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          role: 'admin',
+          createdAt: '2025-07-06T22:06:00.946Z',
+          updatedAt: '2025-07-06T22:06:00.946Z',
+        },
+      ];
+
+      mockListUsersUseCase.execute.mockResolvedValue(usersResponse);
+
+      app.get('/users', (req, res) => {
+        userController.listUsers(req, res);
+      });
+
+      const response = await request(app).get('/users');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(usersResponse);
+      expect(mockListUsersUseCase.execute).toHaveBeenCalledWith();
+    });
+
+    it('should return empty array when no users exist', async () => {
+      mockListUsersUseCase.execute.mockResolvedValue([]);
+
+      app.get('/users', (req, res) => {
+        userController.listUsers(req, res);
+      });
+
+      const response = await request(app).get('/users');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([]);
+      expect(mockListUsersUseCase.execute).toHaveBeenCalledWith();
     });
   });
 

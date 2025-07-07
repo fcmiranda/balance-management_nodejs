@@ -42,5 +42,7 @@ export interface IUpdateUserUseCase extends CommandUseCase<UpdateUserRequest, Us
 
 export interface IDeleteUserUseCase extends CommandUseCase<DeleteUserRequest, void> {}
 
+export interface IListUsersUseCase extends CommandUseCase<void, UserResponse[]> {}
+
 // Re-export types for convenience
 export type { User };

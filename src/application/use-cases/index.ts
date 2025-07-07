@@ -12,3 +12,4 @@ export { GetUserByIdUseCase } from './get-user-by-id-use-case';
 export { CreateUserUseCase } from './create-user-use-case';
 export { UpdateUserUseCase } from './update-user-use-case';
 export { DeleteUserUseCase } from './delete-user-use-case';
+export { ListUsersUseCase } from './list-users-use-case';
