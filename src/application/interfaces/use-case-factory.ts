@@ -1,4 +1,5 @@
 import type {
+  ICreateAccountUseCase,
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
   IGetAccountsByUserIdUseCase,
@@ -13,6 +14,7 @@ import type {
 
 export interface IContainer {
   getAuthUseCase(): IAuthUseCase;
+  getCreateAccountUseCase(): ICreateAccountUseCase;
   getGetAccountsByUserIdUseCase(): IGetAccountsByUserIdUseCase;
   getAccountDepositUseCase(): IAccountDepositUseCase;
   getAccountWithdrawUseCase(): IAccountWithdrawUseCase;

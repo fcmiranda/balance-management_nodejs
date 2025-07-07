@@ -5,6 +5,7 @@ import {
   accountIdParamSchema,
   accountDepositRequestSchema,
   accountWithdrawRequestSchema,
+  createAccountRequestSchema,
 } from '@infrastructure/validation/schemas';
 import express from 'express';
 
@@ -13,6 +14,14 @@ const accountController = new AccountController();
 const authMiddleware = new AuthMiddleware();
 
 // Routes with authentication and validation middleware
+router.post(
+  '/accounts',
+  authMiddleware.authenticate,
+  authMiddleware.authorize(['client']), // Only clients can create accounts
+  validateBody(createAccountRequestSchema),
+  accountController.createAccount.bind(accountController),
+);
+
 router.get(
   '/accounts',
   authMiddleware.authenticate,

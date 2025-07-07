@@ -6,6 +6,29 @@ import type { Request, Response } from 'express';
 export class AccountController {
   private readonly container: IContainer = Container.getInstance();
 
+  async createAccount(req: Request, res: Response): Promise<Response> {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ error: 'User not authenticated' });
+      }
+
+      const request = {
+        userId: req.user.userId,
+        name: req.body.name,
+        accountType: req.body.accountType,
+      };
+
+      const useCase = this.container.getCreateAccountUseCase();
+      const account = await useCase.execute(request);
+      return res.status(201).json(account);
+    } catch (error) {
+      if (error instanceof NotFoundError) {
+        return res.status(404).json({ error: error.message });
+      }
+      return res.status(400).json({ error: (error as Error).message });
+    }
+  }
+
   async getUserAccounts(req: Request, res: Response): Promise<Response> {
     try {
       if (!req.user) {

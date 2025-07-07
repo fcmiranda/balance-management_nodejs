@@ -19,6 +19,7 @@ const mockAuthUseCase = {
 
 const mockContainer = {
   getAuthUseCase: jest.fn().mockReturnValue(mockAuthUseCase),
+  getCreateAccountUseCase: jest.fn(),
   getGetAccountsByUserIdUseCase: jest.fn(),
   getAccountDepositUseCase: jest.fn(),
   getAccountWithdrawUseCase: jest.fn(),

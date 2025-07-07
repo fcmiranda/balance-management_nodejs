@@ -60,6 +60,13 @@ export const withdrawRequestSchema = z.object({
 });
 
 // Account request schemas
+export const createAccountRequestSchema = z.object({
+  name: nameSchema,
+  accountType: z.enum(['savings', 'checking'], {
+    errorMap: () => ({ message: 'Account type must be either "savings" or "checking"' }),
+  }),
+});
+
 export const accountDepositRequestSchema = z.object({
   amount: amountSchema,
 });
@@ -136,6 +143,7 @@ export type GetClientByIdRequest = z.infer<typeof getClientByIdRequestSchema>;
 export type DeleteClientRequest = z.infer<typeof deleteClientRequestSchema>;
 export type DepositRequest = z.infer<typeof depositRequestSchema>;
 export type WithdrawRequest = z.infer<typeof withdrawRequestSchema>;
+export type CreateAccountRequest = z.infer<typeof createAccountRequestSchema>;
 export type AccountDepositRequest = z.infer<typeof accountDepositRequestSchema>;
 export type AccountWithdrawRequest = z.infer<typeof accountWithdrawRequestSchema>;
 export type ClientIdParam = z.infer<typeof clientIdParamSchema>;

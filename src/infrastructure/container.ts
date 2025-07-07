@@ -1,4 +1,5 @@
 import type {
+  ICreateAccountUseCase,
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
   IGetAccountsByUserIdUseCase,
@@ -11,6 +12,7 @@ import type {
   IDeleteUserUseCase,
 } from '@application/interfaces/user-use-cases';
 import type { IContainer } from '@application/interfaces/use-case-factory';
+import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
 import { AccountDepositUseCase } from '@application/use-cases/account-deposit-use-case';
 import { AccountWithdrawUseCase } from '@application/use-cases/account-withdraw-use-case';
 import { AuthUseCase } from '@application/use-cases/auth-use-case';
@@ -32,6 +34,7 @@ export class Container implements IContainer {
   private readonly authService: AuthService;
 
   private readonly authUseCase: IAuthUseCase;
+  private readonly createAccountUseCase: ICreateAccountUseCase;
   private readonly getAccountsByUserIdUseCase: IGetAccountsByUserIdUseCase;
   private readonly accountDepositUseCase: IAccountDepositUseCase;
   private readonly accountWithdrawUseCase: IAccountWithdrawUseCase;
@@ -48,6 +51,10 @@ export class Container implements IContainer {
     this.authService = new AuthService();
 
     this.authUseCase = new AuthUseCase(this.authRepository, this.authService);
+    this.createAccountUseCase = new CreateAccountUseCase(
+      this.accountRepository,
+      this.authRepository,
+    );
     this.getAccountsByUserIdUseCase = new GetAccountsByUserIdUseCase(this.accountRepository);
     this.accountDepositUseCase = new AccountDepositUseCase(this.accountRepository);
     this.accountWithdrawUseCase = new AccountWithdrawUseCase(this.accountRepository);
@@ -71,6 +78,10 @@ export class Container implements IContainer {
 
   public getAuthUseCase(): IAuthUseCase {
     return this.authUseCase;
+  }
+
+  public getCreateAccountUseCase(): ICreateAccountUseCase {
+    return this.createAccountUseCase;
   }
 
   public getGetAccountsByUserIdUseCase(): IGetAccountsByUserIdUseCase {
