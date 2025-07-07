@@ -87,7 +87,12 @@ describe('Auth Routes Integration', () => {
       const registerData = testUserData.valid;
       const authResponse = {
         token: 'jwt-token',
-        user: { id: 1, email: registerData.email, role: registerData.role },
+        user: {
+          id: 1,
+          name: registerData.name,
+          email: registerData.email,
+          role: registerData.role,
+        },
       };
 
       mockAuthUseCase.register.mockResolvedValue(authResponse);

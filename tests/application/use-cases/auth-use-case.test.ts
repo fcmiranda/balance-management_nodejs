@@ -45,6 +45,7 @@ describe('AuthUseCase', () => {
         token: expectedToken,
         user: {
           id: mockUser.id,
+          name: mockUser.name,
           email: mockUser.email,
           role: mockUser.role,
         },
@@ -93,6 +94,7 @@ describe('AuthUseCase', () => {
       expect(authRepository.findUserByEmail).toHaveBeenCalledWith(registerData.email);
       expect(authService.hashPassword).toHaveBeenCalledWith(registerData.password);
       expect(authRepository.createUser).toHaveBeenCalledWith(
+        registerData.name,
         registerData.email,
         hashedPassword,
         registerData.role,
@@ -106,6 +108,7 @@ describe('AuthUseCase', () => {
         token: expectedToken,
         user: {
           id: newUser.id,
+          name: newUser.name,
           email: newUser.email,
           role: newUser.role,
         },

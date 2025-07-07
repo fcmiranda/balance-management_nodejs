@@ -5,12 +5,7 @@ import {
   ValidationError,
 } from '../../src/domain/errors/domain-errors';
 import { Container } from '../../src/infrastructure/container';
-import {
-  createMockRequest,
-  createMockResponse,
-  createMockUser,
-  testUserData,
-} from '../test-utils.js';
+import { createMockRequest, createMockResponse, createMockUser, testUserData } from '../test-utils';
 
 // Mock the Container
 jest.mock('../../src/infrastructure/container');
@@ -100,7 +95,12 @@ describe('AuthController', () => {
       const registerData = testUserData.valid;
       const authResponse = {
         token: 'jwt-token',
-        user: { id: 1, email: registerData.email, role: registerData.role },
+        user: {
+          id: 1,
+          name: registerData.name,
+          email: registerData.email,
+          role: registerData.role,
+        },
       };
 
       req.body = registerData;

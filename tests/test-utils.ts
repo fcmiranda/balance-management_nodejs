@@ -1,24 +1,14 @@
 import type { User } from '../src/domain/entities/auth';
-import { Client } from '../src/domain/entities/client';
 import type { AuthRepository } from '../src/domain/repositories/auth-repository';
-import type { ClientRepository } from '../src/domain/repositories/client-repository';
 import type { AuthService } from '../src/infrastructure/auth/auth-service';
-
-// Mock Client Repository
-export const mockClientRepository = (): jest.Mocked<ClientRepository> => ({
-  findAll: jest.fn(),
-  findById: jest.fn(),
-  findByEmail: jest.fn(),
-  save: jest.fn(),
-  update: jest.fn(),
-  delete: jest.fn(),
-});
 
 // Mock Auth Repository
 export const mockAuthRepository = (): jest.Mocked<AuthRepository> => ({
   findUserByEmail: jest.fn(),
   findUserById: jest.fn(),
   createUser: jest.fn(),
+  updateUser: jest.fn(),
+  deleteUser: jest.fn(),
 });
 
 // Mock Auth Service
@@ -28,25 +18,6 @@ export const mockAuthService = () => ({
   hashPassword: jest.fn(),
   comparePassword: jest.fn(),
   extractTokenFromHeader: jest.fn(),
-});
-
-// Test Data Factories
-export const createMockClient = (overrides: Partial<Client> = {}): Client => {
-  return Client.fromPersistence(
-    overrides.id || 1,
-    overrides.name || 'Test Client',
-    overrides.email || 'test@example.com',
-    overrides.balance || 1000,
-  );
-};
-
-export const createMockUser = (overrides: Partial<User> = {}): User => ({
-  id: overrides.id || 1,
-  email: overrides.email || 'test@example.com',
-  password: overrides.password || 'hashedPassword',
-  role: overrides.role || 'client',
-  createdAt: overrides.createdAt || new Date(),
-  updatedAt: overrides.updatedAt || new Date(),
 });
 
 // Test Client Data
@@ -66,16 +37,19 @@ export const testClientData = {
 // Test User Data
 export const testUserData = {
   valid: {
+    name: 'John Doe',
     email: 'user@example.com',
     password: 'password123',
     role: 'client' as const,
   },
   admin: {
+    name: 'Admin User',
     email: 'admin@example.com',
     password: 'admin123',
     role: 'admin' as const,
   },
   invalid: {
+    name: 'Invalid User',
     email: 'invalid-email',
     password: '123',
     role: 'invalid' as const,
@@ -117,6 +91,16 @@ interface MockResponse {
   json: jest.Mock;
   send: jest.Mock;
 }
+
+export const createMockUser = (overrides: Partial<User> = {}): User => ({
+  id: overrides.id || 1,
+  email: overrides.email || 'test@example.com',
+  password: overrides.password || 'hashedPassword',
+  role: overrides.role || 'client',
+  createdAt: overrides.createdAt || new Date(),
+  updatedAt: overrides.updatedAt || new Date(),
+  name: '',
+});
 
 export const createMockResponse = (): MockResponse => {
   const res = {} as MockResponse;
