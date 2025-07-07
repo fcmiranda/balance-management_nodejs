@@ -27,13 +27,21 @@ export const amountDomainSchema = z
 export const accountDomainSchema = z.object({
   id: z.number().int().positive().nullable(),
   userId: z.number().int().positive(),
-  accountNumber: z.string().min(5).max(20),
+  accountNumber: z
+    .string()
+    .min(5)
+    .max(20)
+    .regex(/^[1-9]\d{9}$/, 'Account number must be a 10-digit number starting with 1-9'),
   balance: z.number().nonnegative(),
 });
 
 export const accountCreateDomainSchema = z.object({
   userId: z.number().int().positive(),
-  accountNumber: z.string().min(5).max(20),
+  accountNumber: z
+    .string()
+    .min(5)
+    .max(20)
+    .regex(/^[1-9]\d{9}$/, 'Account number must be a 10-digit number starting with 1-9'),
 });
 
 // Repository validation schemas

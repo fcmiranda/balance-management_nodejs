@@ -231,7 +231,7 @@ describe('User Use Cases', () => {
     });
 
     it('should allow deletion when user has accounts with zero balance', async () => {
-      const accountWithZeroBalance = Account.create(1, 'ACC001');
+      const accountWithZeroBalance = Account.create(1, '1234567890');
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByUserId.mockResolvedValue([accountWithZeroBalance]);
       const useCase = new DeleteUserUseCase(mockAuthRepository, mockAccountRepository);
@@ -242,7 +242,7 @@ describe('User Use Cases', () => {
     });
 
     it('should throw InvalidOperationError when user has accounts with positive balance', async () => {
-      const accountWithBalance = Account.create(1, 'ACC001');
+      const accountWithBalance = Account.create(1, '1234567890');
       accountWithBalance.deposit(100);
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByUserId.mockResolvedValue([accountWithBalance]);
