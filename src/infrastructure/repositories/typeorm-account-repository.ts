@@ -1,108 +1,52 @@
-import { Account as DomainAccount } from '@domain/entities/account';
+import type { Account as DomainAccount } from '@domain/entities/account';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { Repository } from 'typeorm';
 import { AppDataSource } from '../database/data-source';
 import { Account } from '../database/entities/account.entity';
+import { AccountMapper } from '../mappers/account-mapper';
+import { BaseRepository } from './base-repository';
 
-export class TypeOrmAccountRepository implements AccountRepository {
-  private repository: Repository<Account>;
+export class TypeOrmAccountRepository
+  extends BaseRepository<DomainAccount, Account>
+  implements AccountRepository
+{
+  protected repository: Repository<Account>;
+  protected mapper: AccountMapper;
 
   constructor() {
+    super();
     this.repository = AppDataSource.getRepository(Account);
+    this.mapper = new AccountMapper();
   }
 
   async findAll(): Promise<DomainAccount[]> {
-    const entities = await this.repository.find();
-    return entities.map((entity) =>
-      DomainAccount.fromPersistence(
-        entity.id,
-        entity.userId,
-        entity.accountNumber,
-        Number(entity.balance),
-      ),
-    );
+    return this.findAllEntities();
   }
 
   async findById(id: number): Promise<DomainAccount | null> {
-    const entity = await this.repository.findOne({ where: { id } });
-    if (!entity) return null;
-
-    return DomainAccount.fromPersistence(
-      entity.id,
-      entity.userId,
-      entity.accountNumber,
-      Number(entity.balance),
-    );
+    return this.findEntityById(id);
   }
 
   async findByUserId(userId: number): Promise<DomainAccount[]> {
-    const entities = await this.repository.find({ where: { userId } });
-    return entities.map((entity) =>
-      DomainAccount.fromPersistence(
-        entity.id,
-        entity.userId,
-        entity.accountNumber,
-        Number(entity.balance),
-      ),
-    );
+    return this.findEntitiesByWhere({ userId } as any);
   }
 
   async findByAccountNumber(accountNumber: string): Promise<DomainAccount | null> {
-    const entity = await this.repository.findOne({ where: { accountNumber } });
-    if (!entity) return null;
-
-    return DomainAccount.fromPersistence(
-      entity.id,
-      entity.userId,
-      entity.accountNumber,
-      Number(entity.balance),
-    );
+    return this.findEntityByWhere({ accountNumber } as any);
   }
 
   async save(account: DomainAccount): Promise<DomainAccount> {
-    const entity = this.repository.create({
-      userId: account.userId,
-      accountNumber: account.accountNumber,
-      balance: account.balance,
-    });
-
-    const saved = await this.repository.save(entity);
-    return DomainAccount.fromPersistence(
-      saved.id,
-      saved.userId,
-      saved.accountNumber,
-      Number(saved.balance),
-    );
+    return this.saveEntity(account);
   }
 
   async update(account: DomainAccount): Promise<DomainAccount> {
     if (!account.id) {
       throw new Error('Account ID is required for update');
     }
-
-    await this.repository.update(account.id, {
-      userId: account.userId,
-      accountNumber: account.accountNumber,
-      balance: account.balance,
-    });
-
-    const updated = await this.repository.findOne({ where: { id: account.id } });
-    if (!updated) {
-      throw new Error('Account not found after update');
-    }
-
-    return DomainAccount.fromPersistence(
-      updated.id,
-      updated.userId,
-      updated.accountNumber,
-      Number(updated.balance),
-    );
+    return this.updateEntityById(account.id, account);
   }
 
   async delete(id: number): Promise<void> {
-    const result = await this.repository.delete(id);
-    if (result.affected === 0) {
-      throw new Error('Account not found');
-    }
+    return this.deleteEntityById(id);
   }
 }
