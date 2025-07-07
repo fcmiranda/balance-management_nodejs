@@ -1,6 +1,7 @@
 import type { JwtPayload } from '@domain/entities/auth';
 import type { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../auth/auth-service';
+import { handleAuthError, handleAuthorizationError } from './standard-error-handler';
 
 // Extend Express Request to include user
 declare global {
@@ -26,10 +27,7 @@ export class AuthMiddleware {
       const token = this.authService.extractTokenFromHeader(req.headers.authorization);
 
       if (!token) {
-        res.status(401).json({
-          error: 'Access denied',
-          message: 'No token provided',
-        });
+        handleAuthError('No token provided', req, res);
         return;
       }
 
@@ -37,10 +35,7 @@ export class AuthMiddleware {
       req.user = decoded;
       next();
     } catch (_error) {
-      res.status(403).json({
-        error: 'Access denied',
-        message: 'Invalid or expired token',
-      });
+      handleAuthorizationError('Invalid or expired token', req, res);
     }
   };
 
@@ -50,18 +45,12 @@ export class AuthMiddleware {
   authorize = (roles: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
       if (!req.user) {
-        res.status(401).json({
-          error: 'Access denied',
-          message: 'Authentication required',
-        });
+        handleAuthError('Authentication required', req, res);
         return;
       }
 
       if (!roles.includes(req.user.role)) {
-        res.status(403).json({
-          error: 'Access denied',
-          message: 'Insufficient permissions',
-        });
+        handleAuthorizationError('Insufficient permissions', req, res);
         return;
       }
 

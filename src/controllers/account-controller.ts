@@ -4,7 +4,11 @@ import type {
   ICreateAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from '@application/interfaces/account-use-cases';
-import { NotFoundError, UnauthorizedError } from '@domain/errors/domain-errors';
+import {
+  handleAuthError,
+  handleError,
+  sendData,
+} from '@infrastructure/middleware/standard-error-handler';
 import type { Request, Response } from 'express';
 
 export class AccountController {
@@ -18,7 +22,8 @@ export class AccountController {
   async createAccount(req: Request, res: Response): Promise<Response> {
     try {
       if (!req.user) {
-        return res.status(401).json({ error: 'User not authenticated' });
+        handleAuthError('User not authenticated', req, res);
+        return res;
       }
 
       const request = {
@@ -28,33 +33,36 @@ export class AccountController {
 
       const useCase = this.createAccountUseCase;
       const account = await useCase.execute(request);
-      return res.status(201).json(account);
+      sendData(account, res, 201);
+      return res;
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-      return res.status(400).json({ error: (error as Error).message });
+      handleError(error, req, res);
+      return res;
     }
   }
 
   async getUserAccounts(req: Request, res: Response): Promise<Response> {
     try {
       if (!req.user) {
-        return res.status(401).json({ error: 'User not authenticated' });
+        handleAuthError('User not authenticated', req, res);
+        return res;
       }
 
       const useCase = this.getAccountsByUserIdUseCase;
       const accounts = await useCase.execute({ userId: req.user.userId });
-      return res.json(accounts);
+      sendData(accounts, res);
+      return res;
     } catch (error) {
-      return res.status(400).json({ error: (error as Error).message });
+      handleError(error, req, res);
+      return res;
     }
   }
 
   async deposit(req: Request, res: Response): Promise<Response> {
     try {
       if (!req.user) {
-        return res.status(401).json({ error: 'User not authenticated' });
+        handleAuthError('User not authenticated', req, res);
+        return res;
       }
 
       const request = {
@@ -65,22 +73,19 @@ export class AccountController {
 
       const useCase = this.accountDepositUseCase;
       const account = await useCase.execute(request);
-      return res.json(account);
+      sendData(account, res);
+      return res;
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-      if (error instanceof UnauthorizedError) {
-        return res.status(403).json({ error: error.message });
-      }
-      return res.status(400).json({ error: (error as Error).message });
+      handleError(error, req, res);
+      return res;
     }
   }
 
   async withdraw(req: Request, res: Response): Promise<Response> {
     try {
       if (!req.user) {
-        return res.status(401).json({ error: 'User not authenticated' });
+        handleAuthError('User not authenticated', req, res);
+        return res;
       }
 
       const request = {
@@ -91,15 +96,11 @@ export class AccountController {
 
       const useCase = this.accountWithdrawUseCase;
       const account = await useCase.execute(request);
-      return res.json(account);
+      sendData(account, res);
+      return res;
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-      if (error instanceof UnauthorizedError) {
-        return res.status(403).json({ error: error.message });
-      }
-      return res.status(400).json({ error: (error as Error).message });
+      handleError(error, req, res);
+      return res;
     }
   }
 }

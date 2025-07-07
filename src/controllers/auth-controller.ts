@@ -1,4 +1,9 @@
 import type { IAuthUseCase } from '@application/interfaces/auth-use-cases';
+import {
+  handleAuthError,
+  handleError,
+  sendData,
+} from '@infrastructure/middleware/standard-error-handler';
 import type { Request, Response } from 'express';
 
 export class AuthController {
@@ -9,12 +14,9 @@ export class AuthController {
       // Request body is already validated by middleware
       const result = await this.authUseCase.login(req.body);
 
-      res.status(200).json(result);
+      sendData(result, res, 200);
     } catch (error) {
-      res.status(400).json({
-        error: 'Login failed',
-        message: error instanceof Error ? error.message : 'Invalid credentials',
-      });
+      handleError(error, req, res);
     }
   }
 
@@ -23,40 +25,29 @@ export class AuthController {
       // Request body is already validated by middleware
       const result = await this.authUseCase.register(req.body);
 
-      res.status(201).json(result);
+      sendData(result, res, 201);
     } catch (error) {
-      res.status(400).json({
-        error: 'Registration failed',
-        message: error instanceof Error ? error.message : 'Registration failed',
-      });
+      handleError(error, req, res);
     }
   }
 
   async getCurrentUser(req: Request, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({
-          error: 'Unauthorized',
-          message: 'Authentication required',
-        });
+        handleAuthError('Authentication required', req, res);
         return;
       }
 
       const user = await this.authUseCase.getCurrentUser(req.user.userId);
-      res.status(200).json(user);
+      sendData(user, res, 200);
     } catch (error) {
-      res.status(404).json({
-        error: 'User not found',
-        message: error instanceof Error ? error.message : 'User not found',
-      });
+      handleError(error, req, res);
     }
   }
 
   async logout(_req: Request, res: Response): Promise<void> {
     // For JWT, logout is handled client-side by removing the token
     // In a more complex implementation, you might maintain a blacklist
-    res.status(200).json({
-      message: 'Logged out successfully',
-    });
+    sendData({ message: 'Logged out successfully' }, res, 200);
   }
 }

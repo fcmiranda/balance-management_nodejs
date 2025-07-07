@@ -58,8 +58,10 @@ describe('Auth Middleware', () => {
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Access denied',
+        error: 'Authentication required',
         message: 'No token provided',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -72,8 +74,10 @@ describe('Auth Middleware', () => {
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Access denied',
+        error: 'Authentication required',
         message: 'No token provided',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -94,6 +98,8 @@ describe('Auth Middleware', () => {
       expect(res.json).toHaveBeenCalledWith({
         error: 'Access denied',
         message: 'Invalid or expired token',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -135,8 +141,10 @@ describe('Auth Middleware', () => {
 
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Access denied',
+        error: 'Authentication required',
         message: 'Authentication required',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
       expect(next).not.toHaveBeenCalled();
     });
@@ -152,6 +160,8 @@ describe('Auth Middleware', () => {
       expect(res.json).toHaveBeenCalledWith({
         error: 'Access denied',
         message: 'Insufficient permissions',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
       expect(next).not.toHaveBeenCalled();
     });

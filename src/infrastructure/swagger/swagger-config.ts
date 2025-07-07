@@ -196,13 +196,35 @@ const options = {
           properties: {
             error: {
               type: 'string',
-              description: 'Error type',
+              description: 'Error type or category',
+              example: 'Validation failed',
             },
             message: {
               type: 'string',
-              description: 'Error message',
+              description: 'Human-readable error message',
+              example: 'The request validation failed',
+            },
+            details: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+              description: 'Optional detailed error information',
+              example: ['name: String must contain at least 1 character(s)'],
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              description: 'When the error occurred',
+              example: '2025-07-07T12:00:00.000Z',
+            },
+            path: {
+              type: 'string',
+              description: 'API endpoint path where error occurred',
+              example: '/api/users/123',
             },
           },
+          required: ['error', 'message', 'timestamp', 'path'],
         },
       },
     },

@@ -155,8 +155,10 @@ describe('AuthController', () => {
       expect(mockAuthUseCase.getCurrentUser).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(401);
       expect(res.json).toHaveBeenCalledWith({
-        error: 'Unauthorized',
+        error: 'Authentication required',
         message: 'Authentication required',
+        timestamp: expect.any(String),
+        path: expect.any(String),
       });
     });
 

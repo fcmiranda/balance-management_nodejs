@@ -1,11 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import { ZodError, type z } from 'zod';
-
-// Validation error response interface
-interface ValidationErrorResponse {
-  error: string;
-  details?: string[];
-}
+import type { StandardErrorResponse } from '../middleware/standard-error-handler';
 
 // Validation target types
 type ValidationTarget = 'body' | 'params' | 'query' | 'headers';
@@ -30,24 +25,38 @@ const VALIDATION_CONTEXTS: Record<ValidationTarget, string> = {
  * Centralized validation error handler
  * Processes ZodError and creates consistent error responses
  */
-function handleValidationError(error: unknown, res: Response, target: ValidationTarget): void {
+function handleValidationError(
+  error: unknown,
+  req: Request,
+  res: Response,
+  target: ValidationTarget,
+): void {
+  const timestamp = new Date().toISOString();
+  const path = req.originalUrl || req.path;
+
   if (error instanceof ZodError) {
     const errorMessages = error.errors.map((err) => {
-      const path = err.path.length > 0 ? `${err.path.join('.')}: ` : '';
-      return `${path}${err.message}`;
+      const pathStr = err.path.length > 0 ? `${err.path.join('.')}: ` : '';
+      return `${pathStr}${err.message}`;
     });
 
-    const response: ValidationErrorResponse = {
+    const response: StandardErrorResponse = {
       error: VALIDATION_CONTEXTS[target],
+      message: 'Request validation failed',
       details: errorMessages,
+      timestamp,
+      path,
     };
     res.status(400).json(response);
     return;
   }
 
   // Handle non-Zod errors
-  const response: ValidationErrorResponse = {
+  const response: StandardErrorResponse = {
     error: ERROR_MESSAGES[target],
+    message: 'Validation error occurred',
+    timestamp,
+    path,
   };
   res.status(400).json(response);
 }
@@ -89,7 +98,7 @@ export function validate(
 
       next();
     } catch (error) {
-      handleValidationError(error, res, target);
+      handleValidationError(error, req, res, target);
     }
   };
 }

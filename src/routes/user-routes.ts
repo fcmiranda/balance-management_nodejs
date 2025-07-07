@@ -1,5 +1,6 @@
 import { UserController } from '@controllers/user-controller';
 import { authenticateToken } from '@infrastructure/middleware/auth-middleware';
+import { handleAuthorizationError } from '@infrastructure/middleware/standard-error-handler';
 import { validateRequest } from '@infrastructure/validation/middleware';
 import {
   createUserRequestSchema,
@@ -101,7 +102,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 router.post('/', authenticateToken, validateRequest(createUserRequestSchema), (req, res) => {
   // Only admin can create users
   if (req.user?.role !== 'admin') {
-    res.status(403).json({ error: 'Access denied. Admin role required.' });
+    handleAuthorizationError('Admin role required', req, res);
     return;
   }
 
@@ -166,7 +167,7 @@ router.put('/:id', authenticateToken, validateRequest(updateUserRequestSchema), 
 
   // Users can only update their own profile, or admin can update any user
   if (req.user?.role !== 'admin' && req.user?.userId !== userId) {
-    res.status(403).json({ error: 'Access denied. You can only update your own profile.' });
+    handleAuthorizationError('You can only update your own profile', req, res);
     return;
   }
 
@@ -221,7 +222,7 @@ router.put('/:id', authenticateToken, validateRequest(updateUserRequestSchema), 
 router.delete('/:id', authenticateToken, (req, res) => {
   // Only admin can delete users
   if (req.user?.role !== 'admin') {
-    res.status(403).json({ error: 'Access denied. Admin role required.' });
+    handleAuthorizationError('Admin role required', req, res);
     return;
   }
 

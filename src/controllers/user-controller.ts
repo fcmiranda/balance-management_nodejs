@@ -5,11 +5,10 @@ import type {
   IUpdateUserUseCase,
 } from '@application/interfaces/user-use-cases';
 import {
-  DuplicateError,
-  InvalidOperationError,
-  NotFoundError,
-  ValidationError,
-} from '@domain/errors/domain-errors';
+  handleError,
+  handleValidationError,
+  sendData,
+} from '@infrastructure/middleware/standard-error-handler';
 import type { Request, Response } from 'express';
 
 export class UserController {
@@ -28,27 +27,32 @@ export class UserController {
       const userId = Number.parseInt(req.params.id);
 
       if (Number.isNaN(userId)) {
-        return res.status(400).json({ error: 'Invalid user ID' });
+        handleValidationError('Invalid user ID', 'User ID must be a valid number', req, res);
+        return res;
       }
 
       const useCase = this.getUserByIdUseCase;
       const user = await useCase.execute({ id: userId });
 
       if (!user) {
-        return res.status(404).json({ error: 'User not found' });
+        handleValidationError('User not found', 'No user found with the provided ID', req, res);
+        return res;
       }
 
-      return res.json({
+      const userResponse = {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-      });
+      };
+
+      sendData(userResponse, res);
+      return res;
     } catch (error) {
-      console.error('Error getting user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      handleError(error, req, res);
+      return res;
     }
   }
 
@@ -67,28 +71,20 @@ export class UserController {
         role: role || 'client',
       });
 
-      return res.status(201).json({
+      const userResponse = {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-      });
+      };
+
+      sendData(userResponse, res, 201);
+      return res;
     } catch (error) {
-      if (error instanceof ValidationError) {
-        return res.status(400).json({
-          error: error.message,
-          details: error.validationErrors,
-        });
-      }
-
-      if (error instanceof DuplicateError) {
-        return res.status(409).json({ error: error.message });
-      }
-
-      console.error('Error creating user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      handleError(error, req, res);
+      return res;
     }
   }
 
@@ -100,7 +96,8 @@ export class UserController {
       const userId = Number.parseInt(req.params.id);
 
       if (Number.isNaN(userId)) {
-        return res.status(400).json({ error: 'Invalid user ID' });
+        handleValidationError('Invalid user ID', 'User ID must be a valid number', req, res);
+        return res;
       }
 
       const { name, email, password, role } = req.body;
@@ -114,32 +111,20 @@ export class UserController {
         role,
       });
 
-      return res.json({
+      const userResponse = {
         id: user.id,
         name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-      });
+      };
+
+      sendData(userResponse, res);
+      return res;
     } catch (error) {
-      if (error instanceof ValidationError) {
-        return res.status(400).json({
-          error: error.message,
-          details: error.validationErrors,
-        });
-      }
-
-      if (error instanceof DuplicateError) {
-        return res.status(409).json({ error: error.message });
-      }
-
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-
-      console.error('Error updating user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      handleError(error, req, res);
+      return res;
     }
   }
 
@@ -151,23 +136,17 @@ export class UserController {
       const userId = Number.parseInt(req.params.id);
 
       if (Number.isNaN(userId)) {
-        return res.status(400).json({ error: 'Invalid user ID' });
+        handleValidationError('Invalid user ID', 'User ID must be a valid number', req, res);
+        return res;
       }
 
       await this.deleteUserUseCase.execute({ id: userId });
 
-      return res.status(204).send();
+      res.status(204).send();
+      return res;
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        return res.status(404).json({ error: error.message });
-      }
-
-      if (error instanceof InvalidOperationError) {
-        return res.status(400).json({ error: error.message });
-      }
-
-      console.error('Error deleting user:', error);
-      return res.status(500).json({ error: 'Internal server error' });
+      handleError(error, req, res);
+      return res;
     }
   }
 }
