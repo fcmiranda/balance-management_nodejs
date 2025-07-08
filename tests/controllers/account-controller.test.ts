@@ -54,48 +54,58 @@ describe('AccountController - createAccount', () => {
 
   describe('POST /accounts', () => {
     it('should create account successfully', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
+      const currentDate = new Date();
       const expectedResponse = {
         id: 1,
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
+        createdAt: currentDate,
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
 
       const response = await request(app).post('/accounts').send(requestBody).expect(201);
 
-      expect(response.body).toEqual(expectedResponse);
+      expect(response.body).toEqual({
+        id: 1,
+        userId: 1,
+        accountNumber: '1234567890',
+        balance: 0,
+        createdAt: currentDate.toISOString(),
+      });
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
-        name: 'John Doe',
       });
     });
 
     it('should create checking account successfully', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
+      const currentDate = new Date();
       const expectedResponse = {
         id: 2,
         userId: 1,
         accountNumber: '0987654321',
         balance: 0,
+        createdAt: currentDate,
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
 
       const response = await request(app).post('/accounts').send(requestBody).expect(201);
 
-      expect(response.body).toEqual(expectedResponse);
+      expect(response.body).toEqual({
+        id: 2,
+        userId: 1,
+        accountNumber: '0987654321',
+        balance: 0,
+        createdAt: currentDate.toISOString(),
+      });
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
-        name: 'John Doe',
       });
     });
 
@@ -107,9 +117,7 @@ describe('AccountController - createAccount', () => {
         accountController.createAccount(req, res);
       });
 
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
       const response = await request(unauthApp).post('/accounts').send(requestBody).expect(401);
 
@@ -123,9 +131,7 @@ describe('AccountController - createAccount', () => {
     });
 
     it('should return 404 when user does not exist', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
       const error = new NotFoundError('User', 1);
       mockCreateAccountUseCase.execute.mockRejectedValue(error);
@@ -141,9 +147,7 @@ describe('AccountController - createAccount', () => {
     });
 
     it('should return 400 for other errors', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
       const error = new Error('Unable to generate unique account number');
       mockCreateAccountUseCase.execute.mockRejectedValue(error);
@@ -163,16 +167,14 @@ describe('AccountController - createAccount', () => {
       const differentUserApp = express();
       differentUserApp.use(express.json());
       differentUserApp.use((req, _res, next) => {
-        req.user = { userId: 42, email: 'other@example.com', role: 'client' };
+        (req as any).user = { userId: 42, email: 'other@example.com', role: 'client' };
         next();
       });
       differentUserApp.post('/accounts', (req, res) => {
         accountController.createAccount(req, res);
       });
 
-      const requestBody = {
-        name: 'Jane Smith',
-      };
+      const requestBody = {};
 
       const expectedResponse = {
         id: 3,
@@ -187,7 +189,6 @@ describe('AccountController - createAccount', () => {
 
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 42,
-        name: 'Jane Smith',
       });
     });
   });

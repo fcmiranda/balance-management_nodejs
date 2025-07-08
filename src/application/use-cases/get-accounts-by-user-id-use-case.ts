@@ -16,6 +16,7 @@ export class GetAccountsByUserIdUseCase implements IGetAccountsByUserIdUseCase {
       userId: account.userId,
       accountNumber: account.accountNumber,
       balance: account.balance,
+      createdAt: account.createdAt,
     }));
   }
 }

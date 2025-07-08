@@ -6,6 +6,7 @@ import type { AuthService } from '../src/infrastructure/auth/auth-service';
 export const mockAuthRepository = (): jest.Mocked<AuthRepository> => ({
   findUserByEmail: jest.fn(),
   findUserById: jest.fn(),
+  findAllUsers: jest.fn(),
   createUser: jest.fn(),
   updateUser: jest.fn(),
   deleteUser: jest.fn(),

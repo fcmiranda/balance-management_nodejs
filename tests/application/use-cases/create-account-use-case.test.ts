@@ -19,6 +19,7 @@ const mockAccountRepository = {
 const mockAuthRepository = {
   findUserById: jest.fn(),
   findUserByEmail: jest.fn(),
+  findAllUsers: jest.fn(),
   createUser: jest.fn(),
   updateUser: jest.fn(),
   deleteUser: jest.fn(),
@@ -49,7 +50,8 @@ describe('CreateAccountUseCase', () => {
         name: 'John Doe',
       };
 
-      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0);
+      const currentDate = new Date();
+      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0, currentDate);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByAccountNumber.mockResolvedValue(null);
@@ -65,6 +67,7 @@ describe('CreateAccountUseCase', () => {
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
+        createdAt: currentDate,
       });
     });
 

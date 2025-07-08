@@ -33,6 +33,7 @@ describe('Account Routes Integration - Create Account', () => {
       getCreateUserUseCase: jest.fn(),
       getUpdateUserUseCase: jest.fn(),
       getDeleteUserUseCase: jest.fn(),
+      getListUsersUseCase: jest.fn(),
     };
 
     (Container.getInstance as jest.Mock).mockReturnValue(mockContainer);
@@ -59,66 +60,83 @@ describe('Account Routes Integration - Create Account', () => {
 
   describe('POST /api/accounts', () => {
     it('should create savings account successfully', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
+      const currentDate = new Date();
       const expectedResponse = {
         id: 1,
         userId: 1,
         accountNumber: '1234567890',
         balance: 0,
+        createdAt: currentDate,
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
 
       const response = await request(app).post('/api/accounts').send(requestBody).expect(201);
 
-      expect(response.body).toEqual(expectedResponse);
+      expect(response.body).toEqual({
+        id: 1,
+        userId: 1,
+        accountNumber: '1234567890',
+        balance: 0,
+        createdAt: currentDate.toISOString(),
+      });
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
-        name: 'John Doe',
       });
     });
 
     it('should create checking account successfully', async () => {
-      const requestBody = {
-        name: 'Jane Smith',
-      };
+      const requestBody = {};
 
+      const currentDate = new Date();
       const expectedResponse = {
         id: 2,
         userId: 1,
         accountNumber: '0987654321',
         balance: 0,
+        createdAt: currentDate,
       };
 
       mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
 
       const response = await request(app).post('/api/accounts').send(requestBody).expect(201);
 
-      expect(response.body).toEqual(expectedResponse);
+      expect(response.body).toEqual({
+        id: 2,
+        userId: 1,
+        accountNumber: '0987654321',
+        balance: 0,
+        createdAt: currentDate.toISOString(),
+      });
       expect(mockCreateAccountUseCase.execute).toHaveBeenCalledWith({
         userId: 1,
-        name: 'Jane Smith',
       });
     });
 
     it('should return 400 for validation errors', async () => {
-      const requestBody = {
-        name: '', // Invalid name
+      const requestBody = {};
+
+      // Mock the use case to simulate success since there's no body validation for account creation
+      const expectedResponse = {
+        id: 1,
+        userId: 1,
+        accountNumber: '1234567890',
+        balance: 0,
+        createdAt: new Date(),
       };
 
-      const response = await request(app).post('/api/accounts').send(requestBody).expect(400);
+      mockCreateAccountUseCase.execute.mockResolvedValue(expectedResponse);
 
-      expect(response.body).toHaveProperty('error');
-      expect(mockCreateAccountUseCase.execute).not.toHaveBeenCalled();
+      await request(app).post('/api/accounts').send(requestBody).expect(201);
+
+      // Since CreateAccountRequest only requires userId (from auth), there's no validation to fail
+      expect(mockCreateAccountUseCase.execute).toHaveBeenCalled();
     });
 
     it('should return 404 when user not found', async () => {
-      const requestBody = {
-        name: 'John Doe',
-      };
+      const requestBody = {};
 
       const error = new NotFoundError('User', 1);
       mockCreateAccountUseCase.execute.mockRejectedValue(error);

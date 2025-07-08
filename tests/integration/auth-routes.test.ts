@@ -27,6 +27,7 @@ const mockContainer = {
   getCreateUserUseCase: jest.fn(),
   getUpdateUserUseCase: jest.fn(),
   getDeleteUserUseCase: jest.fn(),
+  getListUsersUseCase: jest.fn(),
 };
 
 // Mock Container.getInstance to return our mock container

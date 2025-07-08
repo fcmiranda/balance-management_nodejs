@@ -7,6 +7,7 @@ export class Account {
     private _userId: number,
     private _accountNumber: string,
     private _balance: number,
+    private _createdAt?: Date,
   ) {}
 
   static create(userId: number, accountNumber: string): Account {
@@ -22,8 +23,9 @@ export class Account {
     userId: number,
     accountNumber: string,
     balance: number,
+    createdAt?: Date,
   ): Account {
-    return new Account(id, userId, accountNumber, balance);
+    return new Account(id, userId, accountNumber, balance, createdAt);
   }
 
   get id(): number | null {
@@ -40,6 +42,10 @@ export class Account {
 
   get balance(): number {
     return this._balance;
+  }
+
+  get createdAt(): Date | undefined {
+    return this._createdAt;
   }
 
   deposit(amount: number): void {
@@ -70,6 +76,7 @@ export class Account {
       userId: this._userId,
       accountNumber: this._accountNumber,
       balance: this._balance,
+      createdAt: this._createdAt,
     };
   }
 }
@@ -79,4 +86,5 @@ export interface AccountResponse {
   userId: number;
   accountNumber: string;
   balance: number;
+  createdAt?: Date;
 }

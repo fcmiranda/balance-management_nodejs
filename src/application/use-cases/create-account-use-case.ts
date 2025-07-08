@@ -36,6 +36,7 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
       userId: savedAccount.userId,
       accountNumber: savedAccount.accountNumber,
       balance: savedAccount.balance,
+      createdAt: savedAccount.createdAt,
     };
   }
 

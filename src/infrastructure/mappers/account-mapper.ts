@@ -16,6 +16,7 @@ export class AccountMapper extends EntityMapper<DomainAccount, DatabaseAccount> 
       entity.userId,
       entity.accountNumber,
       Number(entity.balance), // Ensure proper type conversion from decimal
+      entity.createdAt,
     );
   }
 

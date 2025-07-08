@@ -29,6 +29,7 @@ export class AccountDepositUseCase implements IAccountDepositUseCase {
       userId: updatedAccount.userId,
       accountNumber: updatedAccount.accountNumber,
       balance: updatedAccount.balance,
+      createdAt: updatedAccount.createdAt,
     };
   }
 }

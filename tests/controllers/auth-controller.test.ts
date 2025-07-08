@@ -147,6 +147,14 @@ describe('AuthController', () => {
   describe('getCurrentUser', () => {
     it('should return current user', async () => {
       const user = createMockUser({ id: 1, email: 'test@example.com' });
+      const expectedUserResponse = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
 
       req.user = { userId: 1, email: 'test@example.com', role: 'client' };
       mockAuthUseCase.getCurrentUser.mockResolvedValue(user);
@@ -155,7 +163,7 @@ describe('AuthController', () => {
 
       expect(mockAuthUseCase.getCurrentUser).toHaveBeenCalledWith(1);
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(user);
+      expect(res.json).toHaveBeenCalledWith(expectedUserResponse);
     });
 
     it('should return 401 if no user in request', async () => {
