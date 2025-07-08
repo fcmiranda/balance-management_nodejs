@@ -48,23 +48,29 @@ export class Account {
     return this._createdAt;
   }
 
+  private roundToTwoDecimals(value: number): number {
+    return Number((Math.round(value * 100) / 100).toFixed(2));
+  }
+
   deposit(amount: number): void {
     const validatedAmount = validateData(amountDomainSchema, amount);
-    this._balance += validatedAmount;
+    this._balance = this.roundToTwoDecimals(this._balance + validatedAmount);
   }
 
   withdraw(amount: number): void {
     const validatedAmount = validateData(amountDomainSchema, amount);
-    if (validatedAmount > this._balance) {
+    const newBalance = this.roundToTwoDecimals(this._balance - validatedAmount);
+    if (newBalance < 0) {
       throw new Error('Insufficient balance');
     }
-    this._balance -= validatedAmount;
+    this._balance = newBalance;
   }
 
   canWithdraw(amount: number): boolean {
     try {
       const validatedAmount = validateData(amountDomainSchema, amount);
-      return validatedAmount <= this._balance;
+      const newBalance = this.roundToTwoDecimals(this._balance - validatedAmount);
+      return newBalance >= 0;
     } catch {
       return false;
     }
