@@ -11,7 +11,7 @@ Neste projeto esta sendo utilizada a base de dados sqlite com a seguinte tabela:
 
 No projeto foi disponibilizada uma API de Clientes com os metodos abaixo realizando acoes diretas na base de dados:
 
-	GET    clientes                - LISTAR TODOS OS CLIENTES CADASTRADOSx
+	GET    clientes                - LISTAR TODOS OS CLIENTES CADASTRADOS
 	GET    clientes/{ID}           - RETORNAR OS DETALHES DE UM DETERMINADO CLIENTES PELO ID
 	POST   clientes                - REALIZA O CADASTRO DE UM NOVO CLIENTE
 	PUT    clientes/{ID}           - EDITA O CADASTRO DE UM CLIENTE JÁ EXISTENTE
