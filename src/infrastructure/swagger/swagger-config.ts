@@ -20,14 +20,6 @@ const options = {
 - **Segurança Robusta** - Rate limiting, validação de dados e middleware de autenticação
 - **Documentação Interativa** - Swagger UI com exemplos e schemas completos
 
-### Arquitetura:
-Este sistema foi desenvolvido usando **Clean Architecture** com:
-- TypeScript para tipagem forte
-- TypeORM para persistência de dados
-- Zod para validação de schemas
-- JWT para autenticação
-- Middleware de segurança (Helmet, CORS, Rate Limiting)
-
 ### Como usar a API:
 1. **Registre-se** usando \`POST /auth/register\` ou faça login com \`POST /auth/login\`
 2. **Use o token** retornado no header Authorization como \`Bearer {token}\`
@@ -38,18 +30,18 @@ Este sistema foi desenvolvido usando **Clean Architecture** com:
 - **admin**: Pode gerenciar usuários além das funcionalidades de cliente
 
 ### Endpoints Disponíveis:
-- **Autenticação**: /auth/* (registro, login, perfil, logout)
+- **Autenticação**: /auth/* (registro, login, perfil)
 - **Usuários**: /users/* (CRUD - apenas admins)
 - **Contas**: /accounts/* (CRUD e operações bancárias)
 - **Sistema**: /health (verificação de saúde)
       `,
       contact: {
-        name: 'Itaú Engineering Team',
-        email: 'engineering@itau.com.br',
+        name: '',
+        email: '',
       },
       license: {
-        name: 'MIT',
-        url: 'https://opensource.org/licenses/MIT',
+        name: '',
+        url: '',
       },
     },
     servers: [
