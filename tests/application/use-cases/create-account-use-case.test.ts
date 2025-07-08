@@ -66,14 +66,11 @@ describe('CreateAccountUseCase', () => {
 
       const result = await useCase.execute({ userId });
 
-      // Validar formato do número da conta
       expect(result.accountNumber).toMatch(/^[1-9]\d{9}$/);
       expect(result.accountNumber).toHaveLength(10);
 
-      // Validar que contém o componente do usuário (23 de 123)
       expect(result.accountNumber.substring(1, 3)).toBe('23');
 
-      // Validar que o primeiro dígito não é zero
       expect(result.accountNumber[0]).not.toBe('0');
     });
 
@@ -93,7 +90,6 @@ describe('CreateAccountUseCase', () => {
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
 
-      // Primeira criação de conta
       jest.spyOn(Date, 'now').mockImplementation(() => firstDate.getTime());
       mockAccountRepository.save.mockImplementation((account) =>
         Promise.resolve(
@@ -108,7 +104,6 @@ describe('CreateAccountUseCase', () => {
       );
       const firstResult = await useCase.execute({ userId });
 
-      // Segunda criação de conta
       jest.spyOn(Date, 'now').mockImplementation(() => secondDate.getTime());
       mockAccountRepository.save.mockImplementation((account) =>
         Promise.resolve(
@@ -124,7 +119,7 @@ describe('CreateAccountUseCase', () => {
       const secondResult = await useCase.execute({ userId });
 
       expect(firstResult.accountNumber).not.toBe(secondResult.accountNumber);
-      // Ambos devem ter o mesmo componente de usuário
+
       expect(firstResult.accountNumber.substring(1, 3)).toBe('23');
       expect(secondResult.accountNumber.substring(1, 3)).toBe('23');
     });
@@ -151,7 +146,6 @@ describe('CreateAccountUseCase', () => {
         updatedAt: mockDate,
       };
 
-      // Primeira conta
       mockAuthRepository.findUserById.mockResolvedValueOnce(firstUser);
       mockAccountRepository.save.mockImplementation((account) =>
         Promise.resolve(
@@ -166,14 +160,13 @@ describe('CreateAccountUseCase', () => {
       );
       const firstResult = await useCase.execute({ userId: firstUserId });
 
-      // Segunda conta
       mockAuthRepository.findUserById.mockResolvedValueOnce(secondUser);
       const secondResult = await useCase.execute({ userId: secondUserId });
 
       expect(firstResult.accountNumber).not.toBe(secondResult.accountNumber);
-      // Validar diferentes componentes de usuário
-      expect(firstResult.accountNumber.substring(1, 3)).toBe('23'); // 123 % 100
-      expect(secondResult.accountNumber.substring(1, 3)).toBe('56'); // 456 % 100
+
+      expect(firstResult.accountNumber.substring(1, 3)).toBe('23');
+      expect(secondResult.accountNumber.substring(1, 3)).toBe('56');
     });
 
     it('should throw NotFoundError when user does not exist', async () => {

@@ -9,7 +9,31 @@ const options = {
     info: {
       title: 'Client Balance Management API',
       version: '1.0.0',
-      description: 'API for managing client accounts and balances',
+      description: `
+## Sistema de Gerenciamento de Saldo de Clientes
+
+### Funcionalidades:
+- **Autenticação JWT** com controle de acesso baseado em roles
+- **Gerenciamento de Usuários** (Admin) - CRUD completo
+- **Gerenciamento de Contas** - Criação, listagem e exclusão
+- **Operações Bancárias** - Depósito e saque com validações
+- **Segurança** - Rate limiting, validação robusta e middleware de autenticação
+
+### Autenticação:
+Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use o token retornado no header Authorization como \`Bearer {token}\`.
+
+### Roles:
+- **client**: Pode gerenciar suas próprias contas e realizar operações bancárias
+- **admin**: Pode gerenciar usuários além das funcionalidades de cliente
+      `,
+      contact: {
+        name: 'API Support',
+        email: 'support@example.com',
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT',
+      },
     },
     servers: [
       {
@@ -160,6 +184,7 @@ const options = {
         CreateAccountRequest: {
           type: 'object',
           properties: {},
+          description: 'Empty object - account is created automatically for the authenticated user',
         },
         TransactionRequest: {
           type: 'object',
