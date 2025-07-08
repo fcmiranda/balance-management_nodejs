@@ -31,7 +31,7 @@ async function seedTypeOrmDatabase() {
     }
 
     const clientEmail = 'client@test.com';
-    const clientPassword = 'client123';
+    const clientPassword = '123123';
 
     const existingClient = await authRepository.findUserByEmail(clientEmail);
 
