@@ -1,9 +1,9 @@
-import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
-import { Account } from '@domain/entities/account';
-import type { User } from '@domain/entities/auth';
-import { NotFoundError } from '@domain/errors/domain-errors';
-import type { AccountRepository } from '@domain/repositories/account-repository';
-import type { AuthRepository } from '@domain/repositories/auth-repository';
+import { CreateAccountUseCase } from '../../../src/application/use-cases/create-account-use-case';
+import { Account } from '../../../src/domain/entities/account';
+import type { User } from '../../../src/domain/entities/auth';
+import { NotFoundError } from '../../../src/domain/errors/domain-errors';
+import type { AccountRepository } from '../../../src/domain/repositories/account-repository';
+import type { AuthRepository } from '../../../src/domain/repositories/auth-repository';
 
 const mockAccountRepository = {
   findAll: jest.fn(),
@@ -24,123 +24,165 @@ const mockAuthRepository = {
   deleteUser: jest.fn(),
 } as jest.Mocked<AuthRepository>;
 
-const mockUser: User = {
-  id: 1,
-  name: 'John Doe',
-  email: 'john@example.com',
-  password: 'hashedPassword',
-  role: 'client',
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
-
 describe('CreateAccountUseCase', () => {
   let useCase: CreateAccountUseCase;
+  const mockDate = new Date('2025-07-08T10:00:00.000Z');
 
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(Date, 'now').mockImplementation(() => mockDate.getTime());
     useCase = new CreateAccountUseCase(mockAccountRepository, mockAuthRepository);
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   describe('execute', () => {
-    it('should create account successfully', async () => {
-      const request = {
-        userId: 1,
-        name: 'John Doe',
+    it('should create account with valid number format', async () => {
+      const userId = 123;
+      const mockUser: User = {
+        id: userId,
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'hash',
+        role: 'client',
+        createdAt: mockDate,
+        updatedAt: mockDate,
       };
 
-      const currentDate = new Date();
-      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0, currentDate);
+      mockAuthRepository.findUserById.mockResolvedValue(mockUser);
+      mockAccountRepository.save.mockImplementation((account) =>
+        Promise.resolve(
+          Account.fromPersistence(
+            1,
+            account.userId,
+            account.accountNumber,
+            account.balance,
+            mockDate,
+          ),
+        ),
+      );
+
+      const result = await useCase.execute({ userId });
+
+      // Validar formato do número da conta
+      expect(result.accountNumber).toMatch(/^[1-9]\d{9}$/);
+      expect(result.accountNumber).toHaveLength(10);
+
+      // Validar que contém o componente do usuário (23 de 123)
+      expect(result.accountNumber.substring(1, 3)).toBe('23');
+
+      // Validar que o primeiro dígito não é zero
+      expect(result.accountNumber[0]).not.toBe('0');
+    });
+
+    it('should generate different account numbers for same user in different timestamps', async () => {
+      const userId = 123;
+      const mockUser: User = {
+        id: userId,
+        name: 'Test User',
+        email: 'test@example.com',
+        password: 'hash',
+        role: 'client',
+        createdAt: mockDate,
+        updatedAt: mockDate,
+      };
+      const firstDate = new Date('2025-07-08T10:00:00.000Z');
+      const secondDate = new Date('2025-07-08T10:00:01.000Z');
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      mockAccountRepository.findByAccountNumber.mockResolvedValue(null);
-      mockAccountRepository.save.mockResolvedValue(savedAccount);
 
-      const result = await useCase.execute(request);
+      // Primeira criação de conta
+      jest.spyOn(Date, 'now').mockImplementation(() => firstDate.getTime());
+      mockAccountRepository.save.mockImplementation((account) =>
+        Promise.resolve(
+          Account.fromPersistence(
+            1,
+            account.userId,
+            account.accountNumber,
+            account.balance,
+            firstDate,
+          ),
+        ),
+      );
+      const firstResult = await useCase.execute({ userId });
 
-      expect(mockAuthRepository.findUserById).toHaveBeenCalledWith(1);
-      expect(mockAccountRepository.findByAccountNumber).toHaveBeenCalled();
-      expect(mockAccountRepository.save).toHaveBeenCalledWith(expect.any(Account));
-      expect(result).toEqual({
-        id: 1,
-        userId: 1,
-        accountNumber: '1234567890',
-        balance: 0,
-        createdAt: currentDate,
-      });
+      // Segunda criação de conta
+      jest.spyOn(Date, 'now').mockImplementation(() => secondDate.getTime());
+      mockAccountRepository.save.mockImplementation((account) =>
+        Promise.resolve(
+          Account.fromPersistence(
+            2,
+            account.userId,
+            account.accountNumber,
+            account.balance,
+            secondDate,
+          ),
+        ),
+      );
+      const secondResult = await useCase.execute({ userId });
+
+      expect(firstResult.accountNumber).not.toBe(secondResult.accountNumber);
+      // Ambos devem ter o mesmo componente de usuário
+      expect(firstResult.accountNumber.substring(1, 3)).toBe('23');
+      expect(secondResult.accountNumber.substring(1, 3)).toBe('23');
+    });
+
+    it('should generate different account numbers for different users', async () => {
+      const firstUserId = 123;
+      const secondUserId = 456;
+      const firstUser: User = {
+        id: firstUserId,
+        name: 'First User',
+        email: 'first@example.com',
+        password: 'hash',
+        role: 'client',
+        createdAt: mockDate,
+        updatedAt: mockDate,
+      };
+      const secondUser: User = {
+        id: secondUserId,
+        name: 'Second User',
+        email: 'second@example.com',
+        password: 'hash',
+        role: 'client',
+        createdAt: mockDate,
+        updatedAt: mockDate,
+      };
+
+      // Primeira conta
+      mockAuthRepository.findUserById.mockResolvedValueOnce(firstUser);
+      mockAccountRepository.save.mockImplementation((account) =>
+        Promise.resolve(
+          Account.fromPersistence(
+            1,
+            account.userId,
+            account.accountNumber,
+            account.balance,
+            mockDate,
+          ),
+        ),
+      );
+      const firstResult = await useCase.execute({ userId: firstUserId });
+
+      // Segunda conta
+      mockAuthRepository.findUserById.mockResolvedValueOnce(secondUser);
+      const secondResult = await useCase.execute({ userId: secondUserId });
+
+      expect(firstResult.accountNumber).not.toBe(secondResult.accountNumber);
+      // Validar diferentes componentes de usuário
+      expect(firstResult.accountNumber.substring(1, 3)).toBe('23'); // 123 % 100
+      expect(secondResult.accountNumber.substring(1, 3)).toBe('56'); // 456 % 100
     });
 
     it('should throw NotFoundError when user does not exist', async () => {
-      const request = {
-        userId: 999,
-        name: 'John Doe',
-      };
-
+      const userId = 999;
       mockAuthRepository.findUserById.mockResolvedValue(null);
 
-      await expect(useCase.execute(request)).rejects.toThrow(NotFoundError);
-      expect(mockAuthRepository.findUserById).toHaveBeenCalledWith(999);
+      await expect(useCase.execute({ userId })).rejects.toThrow(new NotFoundError('User', userId));
+
       expect(mockAccountRepository.save).not.toHaveBeenCalled();
-    });
-
-    it('should generate unique account number when first attempt conflicts', async () => {
-      const request = {
-        userId: 1,
-        name: 'John Doe',
-      };
-
-      const existingAccount = Account.fromPersistence(1, 2, '1234567890', 100);
-
-      const savedAccount = Account.fromPersistence(2, 1, '0987654321', 0);
-
-      mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      mockAccountRepository.findByAccountNumber
-        .mockResolvedValueOnce(existingAccount)
-        .mockResolvedValueOnce(null);
-      mockAccountRepository.save.mockResolvedValue(savedAccount);
-
-      const result = await useCase.execute(request);
-
-      expect(mockAccountRepository.findByAccountNumber).toHaveBeenCalledTimes(2);
-      expect(result.accountNumber).toBe('0987654321');
-    });
-
-    it('should throw error when unable to generate unique account number', async () => {
-      const request = {
-        userId: 1,
-        name: 'John Doe',
-      };
-
-      const existingAccount = Account.fromPersistence(1, 2, '1234567890', 100);
-
-      mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-
-      mockAccountRepository.findByAccountNumber.mockResolvedValue(existingAccount);
-
-      await expect(useCase.execute(request)).rejects.toThrow(
-        'Unable to generate unique account number after multiple attempts',
-      );
-      expect(mockAccountRepository.findByAccountNumber).toHaveBeenCalledTimes(10);
-      expect(mockAccountRepository.save).not.toHaveBeenCalled();
-    });
-
-    it('should generate 10-digit account number', async () => {
-      const request = {
-        userId: 1,
-        name: 'John Doe',
-      };
-
-      const savedAccount = Account.fromPersistence(1, 1, '1234567890', 0);
-
-      mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      mockAccountRepository.findByAccountNumber.mockResolvedValue(null);
-      mockAccountRepository.save.mockResolvedValue(savedAccount);
-
-      await useCase.execute(request);
-
-      const saveCall = mockAccountRepository.save.mock.calls[0][0];
-      expect(saveCall.accountNumber).toMatch(/^\d{10}$/);
-      expect(saveCall.accountNumber[0]).not.toBe('0');
     });
   });
 });
