@@ -2,6 +2,7 @@ import type {
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
   ICreateAccountUseCase,
+  IDeleteAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from '@application/interfaces/account-use-cases';
 import {
@@ -17,6 +18,7 @@ export class AccountController {
     private readonly getAccountsByUserIdUseCase: IGetAccountsByUserIdUseCase,
     private readonly accountDepositUseCase: IAccountDepositUseCase,
     private readonly accountWithdrawUseCase: IAccountWithdrawUseCase,
+    private readonly deleteAccountUseCase: IDeleteAccountUseCase,
   ) {}
 
   async createAccount(req: Request, res: Response): Promise<Response> {
@@ -96,6 +98,28 @@ export class AccountController {
       const useCase = this.accountWithdrawUseCase;
       const account = await useCase.execute(request);
       sendData(account, res);
+      return res;
+    } catch (error) {
+      handleError(error, req, res);
+      return res;
+    }
+  }
+
+  async delete(req: Request, res: Response): Promise<Response> {
+    try {
+      if (!req.user) {
+        handleAuthError('User not authenticated', req, res);
+        return res;
+      }
+
+      const request = {
+        accountId: Number.parseInt(req.params.accountId),
+        userId: req.user.userId,
+      };
+
+      const useCase = this.deleteAccountUseCase;
+      await useCase.execute(request);
+      res.status(204).send();
       return res;
     } catch (error) {
       handleError(error, req, res);

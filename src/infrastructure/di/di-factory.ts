@@ -2,6 +2,7 @@ import type {
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
   ICreateAccountUseCase,
+  IDeleteAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from '@application/interfaces/account-use-cases';
 import type { IAuthUseCase } from '@application/interfaces/auth-use-cases';
@@ -53,12 +54,14 @@ export class DIFactory {
     const getAccountsByUserIdUseCase = this.container.getGetAccountsByUserIdUseCase();
     const accountDepositUseCase = this.container.getAccountDepositUseCase();
     const accountWithdrawUseCase = this.container.getAccountWithdrawUseCase();
+    const deleteAccountUseCase = this.container.getDeleteAccountUseCase();
 
     return new AccountController(
       createAccountUseCase,
       getAccountsByUserIdUseCase,
       accountDepositUseCase,
       accountWithdrawUseCase,
+      deleteAccountUseCase,
     );
   }
 

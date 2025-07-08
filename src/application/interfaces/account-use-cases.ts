@@ -25,6 +25,11 @@ export interface GetAccountsByUserIdRequest {
   userId: number;
 }
 
+export interface DeleteAccountRequest {
+  accountId: number;
+  userId: number;
+}
+
 export interface ICreateAccountUseCase
   extends CommandUseCase<CreateAccountRequest, AccountResponse> {}
 
@@ -39,5 +44,7 @@ export interface IAccountDepositUseCase
 
 export interface IAccountWithdrawUseCase
   extends CommandUseCase<AccountWithdrawRequest, AccountResponse> {}
+
+export interface IDeleteAccountUseCase extends CommandUseCaseVoid<DeleteAccountRequest> {}
 
 export type { AccountResponse };

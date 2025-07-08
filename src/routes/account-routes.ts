@@ -230,4 +230,49 @@ router.post(
   accountController.withdraw.bind(accountController),
 );
 
+/**
+ * @swagger
+ * /accounts/{accountId}:
+ *   delete:
+ *     summary: Delete an account
+ *     tags: [Accounts]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: accountId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Account ID
+ *     responses:
+ *       204:
+ *         description: Account deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       404:
+ *         description: Account not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+router.delete(
+  '/accounts/:accountId',
+  authMiddleware.authenticate,
+  authMiddleware.authorize(['client']),
+  validateParams(accountIdParamSchema),
+  accountController.delete.bind(accountController),
+);
+
 export { router as accountRoutes };

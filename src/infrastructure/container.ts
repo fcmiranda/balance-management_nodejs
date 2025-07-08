@@ -2,6 +2,7 @@ import type {
   IAccountDepositUseCase,
   IAccountWithdrawUseCase,
   ICreateAccountUseCase,
+  IDeleteAccountUseCase,
   IGetAccountsByUserIdUseCase,
 } from '@application/interfaces/account-use-cases';
 import type { IAuthUseCase } from '@application/interfaces/auth-use-cases';
@@ -18,6 +19,7 @@ import { AccountWithdrawUseCase } from '@application/use-cases/account-withdraw-
 import { AuthUseCase } from '@application/use-cases/auth-use-case';
 import { CreateAccountUseCase } from '@application/use-cases/create-account-use-case';
 import { CreateUserUseCase } from '@application/use-cases/create-user-use-case';
+import { DeleteAccountUseCase } from '@application/use-cases/delete-account-use-case';
 import { DeleteUserUseCase } from '@application/use-cases/delete-user-use-case';
 import { GetAccountsByUserIdUseCase } from '@application/use-cases/get-accounts-by-user-id-use-case';
 import { GetUserByIdUseCase } from '@application/use-cases/get-user-by-id-use-case';
@@ -40,6 +42,7 @@ export class Container implements IContainer {
   private readonly getAccountsByUserIdUseCase: IGetAccountsByUserIdUseCase;
   private readonly accountDepositUseCase: IAccountDepositUseCase;
   private readonly accountWithdrawUseCase: IAccountWithdrawUseCase;
+  private readonly deleteAccountUseCase: IDeleteAccountUseCase;
 
   private readonly getUserByIdUseCaseInstance: IGetUserByIdUseCase;
   private readonly createUserUseCaseInstance: ICreateUserUseCase;
@@ -60,6 +63,7 @@ export class Container implements IContainer {
     this.getAccountsByUserIdUseCase = new GetAccountsByUserIdUseCase(this.accountRepository);
     this.accountDepositUseCase = new AccountDepositUseCase(this.accountRepository);
     this.accountWithdrawUseCase = new AccountWithdrawUseCase(this.accountRepository);
+    this.deleteAccountUseCase = new DeleteAccountUseCase(this.accountRepository);
 
     this.getUserByIdUseCaseInstance = new GetUserByIdUseCase(this.authRepository);
     this.createUserUseCaseInstance = new CreateUserUseCase(this.authRepository, this.authService);
@@ -96,6 +100,10 @@ export class Container implements IContainer {
 
   public getAccountWithdrawUseCase(): IAccountWithdrawUseCase {
     return this.accountWithdrawUseCase;
+  }
+
+  public getDeleteAccountUseCase(): IDeleteAccountUseCase {
+    return this.deleteAccountUseCase;
   }
 
   public getUserByIdUseCase(): IGetUserByIdUseCase {
