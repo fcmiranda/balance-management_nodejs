@@ -10,6 +10,7 @@ describe('AccountController - createAccount', () => {
   let mockGetAccountsByUserIdUseCase: any;
   let mockAccountDepositUseCase: any;
   let mockAccountWithdrawUseCase: any;
+  let mockDeleteAccountUseCase: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -30,11 +31,16 @@ describe('AccountController - createAccount', () => {
       execute: jest.fn(),
     };
 
+    mockDeleteAccountUseCase = {
+      execute: jest.fn(),
+    };
+
     accountController = new AccountController(
       mockCreateAccountUseCase,
       mockGetAccountsByUserIdUseCase,
       mockAccountDepositUseCase,
       mockAccountWithdrawUseCase,
+      mockDeleteAccountUseCase,
     );
 
     app = express();

@@ -21,6 +21,7 @@ const mockContainer = {
   getGetAccountsByUserIdUseCase: jest.fn(),
   getAccountDepositUseCase: jest.fn(),
   getAccountWithdrawUseCase: jest.fn(),
+  getDeleteAccountUseCase: jest.fn(),
   getUserByIdUseCase: jest.fn(),
   getCreateUserUseCase: jest.fn(),
   getUpdateUserUseCase: jest.fn(),
