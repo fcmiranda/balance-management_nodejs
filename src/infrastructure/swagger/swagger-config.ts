@@ -12,23 +12,40 @@ const options = {
       description: `
 ## Sistema de Gerenciamento de Saldo de Clientes
 
-### Funcionalidades:
-- **Autenticação JWT** com controle de acesso baseado em roles
-- **Gerenciamento de Usuários** (Admin) - CRUD completo
-- **Gerenciamento de Contas** - Criação, listagem e exclusão
-- **Operações Bancárias** - Depósito e saque com validações
-- **Segurança** - Rate limiting, validação robusta e middleware de autenticação
+### Funcionalidades Principais:
+- **Autenticação JWT** com controle de acesso baseado em roles (client/admin)
+- **Gerenciamento de Usuários** (Admin) - CRUD completo com validações
+- **Gerenciamento de Contas Bancárias** - Criação, listagem e exclusão
+- **Operações Bancárias** - Depósito e saque com validações de saldo
+- **Segurança Robusta** - Rate limiting, validação de dados e middleware de autenticação
+- **Documentação Interativa** - Swagger UI com exemplos e schemas completos
 
-### Autenticação:
-Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use o token retornado no header Authorization como \`Bearer {token}\`.
+### Arquitetura:
+Este sistema foi desenvolvido usando **Clean Architecture** com:
+- TypeScript para tipagem forte
+- TypeORM para persistência de dados
+- Zod para validação de schemas
+- JWT para autenticação
+- Middleware de segurança (Helmet, CORS, Rate Limiting)
 
-### Roles:
+### Como usar a API:
+1. **Registre-se** usando \`POST /auth/register\` ou faça login com \`POST /auth/login\`
+2. **Use o token** retornado no header Authorization como \`Bearer {token}\`
+3. **Gerencie contas** e realize operações bancárias conforme suas permissões
+
+### Roles e Permissões:
 - **client**: Pode gerenciar suas próprias contas e realizar operações bancárias
 - **admin**: Pode gerenciar usuários além das funcionalidades de cliente
+
+### Endpoints Disponíveis:
+- **Autenticação**: /auth/* (registro, login, perfil, logout)
+- **Usuários**: /users/* (CRUD - apenas admins)
+- **Contas**: /accounts/* (CRUD e operações bancárias)
+- **Sistema**: /health (verificação de saúde)
       `,
       contact: {
-        name: 'API Support',
-        email: 'support@example.com',
+        name: 'Itaú Engineering Team',
+        email: 'engineering@itau.com.br',
       },
       license: {
         name: 'MIT',
@@ -41,8 +58,12 @@ Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use
         description: 'Development server',
       },
       {
-        url: 'https://api.example.com/api',
+        url: 'https://client-balance-api.itau.com.br/api',
         description: 'Production server',
+      },
+      {
+        url: 'https://staging-client-balance-api.itau.com.br/api',
+        description: 'Staging server',
       },
     ],
     components: {
@@ -215,6 +236,34 @@ Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use
             },
           },
         },
+        CreateUserRequest: {
+          type: 'object',
+          required: ['name', 'email', 'password', 'role'],
+          properties: {
+            name: {
+              type: 'string',
+              minLength: config.validation.nameMinLength,
+              maxLength: config.validation.nameMaxLength,
+              description: 'User name',
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'User email',
+              pattern: config.validation.emailPattern,
+            },
+            password: {
+              type: 'string',
+              minLength: config.validation.passwordMinLength,
+              description: 'User password',
+            },
+            role: {
+              type: 'string',
+              enum: ['client', 'admin'],
+              description: 'User role',
+            },
+          },
+        },
         ErrorResponse: {
           type: 'object',
           properties: {
@@ -240,7 +289,7 @@ Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use
               type: 'string',
               format: 'date-time',
               description: 'When the error occurred',
-              example: '2025-07-07T12:00:00.000Z',
+              example: '2025-07-08T12:00:00.000Z',
             },
             path: {
               type: 'string',
@@ -250,6 +299,77 @@ Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use
           },
           required: ['error', 'message', 'timestamp', 'path'],
         },
+        SuccessResponse: {
+          type: 'object',
+          properties: {
+            message: {
+              type: 'string',
+              description: 'Success message',
+              example: 'Operation completed successfully',
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              description: 'When the operation was completed',
+              example: '2025-07-08T12:00:00.000Z',
+            },
+          },
+          required: ['message', 'timestamp'],
+        },
+        HealthResponse: {
+          type: 'object',
+          properties: {
+            status: {
+              type: 'string',
+              enum: ['OK', 'ERROR'],
+              description: 'Application health status',
+              example: 'OK',
+            },
+            timestamp: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Health check timestamp',
+              example: '2025-07-08T12:00:00.000Z',
+            },
+            uptime: {
+              type: 'number',
+              description: 'Application uptime in seconds',
+              example: 3600,
+            },
+            memory: {
+              type: 'object',
+              description: 'Memory usage information',
+              properties: {
+                rss: {
+                  type: 'number',
+                  description: 'Resident Set Size (total memory allocated)',
+                },
+                heapTotal: {
+                  type: 'number',
+                  description: 'Total heap allocated',
+                },
+                heapUsed: {
+                  type: 'number',
+                  description: 'Heap actually used',
+                },
+                external: {
+                  type: 'number',
+                  description: 'External memory usage',
+                },
+                arrayBuffers: {
+                  type: 'number',
+                  description: 'Memory allocated for ArrayBuffers',
+                },
+              },
+            },
+            environment: {
+              type: 'string',
+              description: 'Environment name',
+              example: 'development',
+            },
+          },
+          required: ['status', 'timestamp', 'uptime', 'memory', 'environment'],
+        },
       },
     },
     security: [
@@ -258,7 +378,7 @@ Para usar os endpoints protegidos, primeiro faça login em \`/auth/login\` e use
       },
     ],
   },
-  apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+  apis: ['./src/routes/*.ts', './src/controllers/*.ts', './src/app.ts'],
 };
 
 const specs = swaggerJsdoc(options);
@@ -269,10 +389,28 @@ export const setupSwagger = (app: Application): void => {
     swaggerUi.serve,
     swaggerUi.setup(specs, {
       explorer: true,
-      customCss: '.swagger-ui .topbar { display: none }',
-      customSiteTitle: 'Client Balance Management API',
+      customCss: `
+        .swagger-ui .topbar { display: none }
+        .swagger-ui .info hgroup.main h2 { color: #ff6900 }
+        .swagger-ui .info .title { color: #ff6900 }
+        .swagger-ui .scheme-container { background: #fafafa }
+      `,
+      customSiteTitle: 'Itaú - Client Balance Management API Documentation',
+      customfavIcon: '/favicon.ico',
+      swaggerOptions: {
+        docExpansion: 'none',
+        filter: true,
+        showRequestHeaders: true,
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        tryItOutEnabled: true,
+      },
     }),
   );
+
+  // Redirect root API docs path to Swagger UI
+  app.get('/api-docs', (_req, res) => {
+    res.redirect('/api-docs/');
+  });
 };
 
 export { specs };

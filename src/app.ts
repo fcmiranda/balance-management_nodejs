@@ -45,6 +45,33 @@ app.use(requestLogger);
 // Setup Swagger documentation
 setupSwagger(app);
 
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns the current health status of the application including uptime, memory usage, and environment information
+ *     tags: [System]
+ *     responses:
+ *       200:
+ *         description: Application is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthResponse'
+ *             example:
+ *               status: "OK"
+ *               timestamp: "2025-07-08T12:00:00.000Z"
+ *               uptime: 3600
+ *               memory:
+ *                 rss: 45678912
+ *                 heapTotal: 25165824
+ *                 heapUsed: 18874568
+ *                 external: 1074456
+ *                 arrayBuffers: 163840
+ *               environment: "development"
+ */
+
 // Health check endpoint
 app.get('/health', (_req, res) => {
   res.json({
