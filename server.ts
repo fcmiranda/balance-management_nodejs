@@ -50,7 +50,7 @@ app.listen(PORT, () => {
   console.log('🏥 Health check:');
   console.log(`   GET  http://localhost:${PORT}/health`);
   console.log('\n💡 Use the following credentials to test:');
-  console.log('   Admin: admin@itau.com / admin123');
+  console.log('   Admin: admin@admin.com / 123123');
   console.log('   Client: client@test.com / client123');
 });
 

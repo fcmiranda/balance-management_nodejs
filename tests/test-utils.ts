@@ -42,7 +42,7 @@ export const testUserData = {
   admin: {
     name: 'Admin User',
     email: 'admin@example.com',
-    password: 'admin123',
+    password: '123123',
     role: 'admin' as const,
   },
   invalid: {

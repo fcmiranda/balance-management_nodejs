@@ -15,8 +15,8 @@ async function seedTypeOrmDatabase() {
     const authRepository = new TypeOrmAuthRepository();
     const authService = new AuthService();
 
-    const adminEmail = 'admin@itau.com';
-    const adminPassword = 'admin123';
+    const adminEmail = 'admin@admin.com';
+    const adminPassword = '123123';
 
     const existingAdmin = await authRepository.findUserByEmail(adminEmail);
 
