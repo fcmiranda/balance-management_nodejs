@@ -159,14 +159,7 @@ const options = {
         },
         CreateAccountRequest: {
           type: 'object',
-          required: ['accountNumber'],
-          properties: {
-            accountNumber: {
-              type: 'string',
-              pattern: config.validation.accountNumberPattern,
-              description: `Account number (${config.validation.accountNumberLength} digits starting with 1-9)`,
-            },
-          },
+          properties: {},
         },
         TransactionRequest: {
           type: 'object',

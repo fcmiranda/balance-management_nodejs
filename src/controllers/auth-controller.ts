@@ -11,7 +11,6 @@ export class AuthController {
 
   async login(req: Request, res: Response): Promise<void> {
     try {
-      // Request body is already validated by middleware
       const result = await this.authUseCase.login(req.body);
 
       sendData(result, res, 200);
@@ -22,7 +21,6 @@ export class AuthController {
 
   async register(req: Request, res: Response): Promise<void> {
     try {
-      // Request body is already validated by middleware
       const result = await this.authUseCase.register(req.body);
 
       sendData(result, res, 201);
@@ -39,7 +37,17 @@ export class AuthController {
       }
 
       const user = await this.authUseCase.getCurrentUser(req.user.userId);
-      sendData(user, res, 200);
+
+      const userResponse = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+
+      sendData(userResponse, res, 200);
     } catch (error) {
       handleError(error, req, res);
     }

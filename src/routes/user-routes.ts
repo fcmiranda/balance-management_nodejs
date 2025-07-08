@@ -233,7 +233,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
  * @swagger
  * /users:
  *   get:
- *     summary: Get all users (Admin only)
+ *     summary: Get all users
  *     tags: [Users]
  *     security:
  *       - BearerAuth: []
@@ -260,12 +260,6 @@ router.delete('/:id', authenticateToken, (req, res) => {
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/', authenticateToken, (req, res) => {
-  // Only admin can list all users
-  if (req.user?.role !== 'admin') {
-    handleAuthorizationError('Admin role required', req, res);
-    return;
-  }
-
   userController.listUsers(req, res);
 });
 

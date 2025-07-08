@@ -3,7 +3,6 @@ import type { CommandUseCase, CommandUseCaseVoid, QueryUseCase } from './use-cas
 
 export interface CreateAccountRequest {
   userId: number;
-  name: string;
 }
 
 export interface GetAccountByIdRequest {

@@ -28,7 +28,6 @@ export class AccountController {
 
       const request = {
         userId: req.user.userId,
-        name: req.body.name,
       };
 
       const useCase = this.createAccountUseCase;

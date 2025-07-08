@@ -5,7 +5,6 @@ import {
   accountDepositRequestSchema,
   accountIdParamSchema,
   accountWithdrawRequestSchema,
-  createAccountRequestSchema,
 } from '@infrastructure/validation/schemas';
 import express from 'express';
 import { DIFactory } from '../infrastructure/di/di-factory';
@@ -67,7 +66,6 @@ router.post(
   '/accounts',
   authMiddleware.authenticate,
   authMiddleware.authorize(['client']), // Only clients can create accounts
-  validateBody(createAccountRequestSchema),
   accountController.createAccount.bind(accountController),
 );
 
