@@ -31,7 +31,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  // Relations
   @OneToMany(
     () => Account,
     (account) => account.user,

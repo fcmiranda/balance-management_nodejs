@@ -8,7 +8,6 @@ import {
 import type { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
 
-// Mock Express objects
 const mockRequest = (data: any, target: 'body' | 'params' | 'query' = 'body') => {
   const req = {} as Request;
   req[target] = data;
@@ -176,7 +175,7 @@ describe('Validation Middleware', () => {
 
       expect(mockNext).toHaveBeenCalledWith();
       expect(req.body).toEqual({ name: 'John' });
-      // params should remain unchanged when no params schema provided
+
       expect(req.params).toEqual({ id: 'invalid-uuid' });
     });
 

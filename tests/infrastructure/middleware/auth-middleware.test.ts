@@ -2,7 +2,6 @@ import { AuthService } from '../../../src/infrastructure/auth/auth-service';
 import { AuthMiddleware } from '../../../src/infrastructure/middleware/auth-middleware';
 import { createMockNext, createMockRequest, createMockResponse } from '../../test-utils';
 
-// Mock the AuthService
 jest.mock('../../../src/infrastructure/auth/auth-service');
 
 describe('Auth Middleware', () => {

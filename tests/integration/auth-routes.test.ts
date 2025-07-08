@@ -3,14 +3,12 @@ import request from 'supertest';
 import { Container } from '../../src/infrastructure/container';
 import { testUserData } from '../test-utils';
 
-// Mock ALL dependencies before importing anything
 jest.mock('../../src/infrastructure/container');
 jest.mock('../../src/infrastructure/auth/auth-service');
 jest.mock('../../src/infrastructure/repositories/typeorm-account-repository');
 jest.mock('../../src/infrastructure/repositories/typeorm-auth-repository');
 jest.mock('../../src/application/use-cases/auth-use-case');
 
-// Create a comprehensive mock container
 const mockAuthUseCase = {
   login: jest.fn(),
   register: jest.fn(),
@@ -30,11 +28,9 @@ const mockContainer = {
   getListUsersUseCase: jest.fn(),
 };
 
-// Mock Container.getInstance to return our mock container
 const MockedContainer = Container as jest.Mocked<typeof Container>;
 MockedContainer.getInstance = jest.fn().mockReturnValue(mockContainer);
 
-// Import routes after all mocks are set up
 import { routes } from '../../src/routes/index';
 
 describe('Auth Routes Integration', () => {

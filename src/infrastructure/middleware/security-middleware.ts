@@ -4,9 +4,6 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { config } from '../config/config';
 
-/**
- * Rate limiting middleware
- */
 export const createRateLimiter = () => {
   return rateLimit({
     windowMs: config.rateLimitWindowMs,
@@ -18,7 +15,6 @@ export const createRateLimiter = () => {
     standardHeaders: true,
     legacyHeaders: false,
     skip: (req: Request) => {
-      // Skip rate limiting for health checks
       return req.path === '/health' || req.path === '/api/health';
     },
   });
@@ -70,7 +66,7 @@ export const createCorsMiddleware = () => {
     origin:
       process.env.NODE_ENV === 'production'
         ? process.env.ALLOWED_ORIGINS?.split(',') || ['https://yourdomain.com']
-        : true, // Allow all origins in development
+        : true,
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -97,7 +93,6 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
       timestamp: new Date().toISOString(),
     };
 
-    // Log to console (in production, use proper logging service)
     console.log(JSON.stringify(logData));
   });
 
@@ -108,7 +103,6 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
  * Input sanitization middleware
  */
 export const sanitizeInput = (req: Request, _res: Response, next: NextFunction): void => {
-  // Basic input sanitization
   const sanitize = (obj: unknown): unknown => {
     if (typeof obj === 'string') {
       return obj.trim();

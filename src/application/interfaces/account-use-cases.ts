@@ -12,13 +12,13 @@ export interface GetAccountByIdRequest {
 export interface AccountDepositRequest {
   accountId: number;
   amount: number;
-  userId: number; // For authorization
+  userId: number;
 }
 
 export interface AccountWithdrawRequest {
   accountId: number;
   amount: number;
-  userId: number; // For authorization
+  userId: number;
 }
 
 export interface GetAccountsByUserIdRequest {
@@ -40,5 +40,4 @@ export interface IAccountDepositUseCase
 export interface IAccountWithdrawUseCase
   extends CommandUseCase<AccountWithdrawRequest, AccountResponse> {}
 
-// Re-export types for convenience
 export type { AccountResponse };

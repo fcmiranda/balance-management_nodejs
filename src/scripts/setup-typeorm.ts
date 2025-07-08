@@ -9,15 +9,12 @@ async function setupTypeORM() {
   console.log('🚀 Setting up TypeORM database...');
 
   try {
-    // Initialize TypeORM
     await AppDataSource.initialize();
     console.log('✅ TypeORM initialized successfully');
 
-    // Run migrations if needed
     await AppDataSource.runMigrations();
     console.log('✅ Migrations completed');
 
-    // Seed initial data
     await seedInitialData();
     console.log('✅ Initial data seeded');
 
@@ -36,7 +33,6 @@ async function seedInitialData() {
   const authRepository = new TypeOrmAuthRepository();
   const authService = new AuthService();
 
-  // Create admin user
   const adminEmail = 'admin@itau.com';
   const adminPassword = 'admin123';
 
@@ -47,7 +43,6 @@ async function seedInitialData() {
     console.log(`📝 Created admin user: ${adminEmail}`);
   }
 
-  // Create test client user
   const clientEmail = 'client@test.com';
   const clientPassword = 'client123';
 
@@ -59,7 +54,6 @@ async function seedInitialData() {
   }
 }
 
-// Run setup if this script is executed directly
 if (require.main === module) {
   setupTypeORM();
 }

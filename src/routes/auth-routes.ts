@@ -50,7 +50,7 @@ const authMiddleware = new AuthMiddleware();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-// Public routes (no authentication required)
+
 router.post(
   '/login',
   createAuthRateLimiter(),
@@ -119,7 +119,7 @@ router.post(
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-// Protected routes (authentication required)
+
 router.get('/me', authMiddleware.authenticate, authController.getCurrentUser.bind(authController));
 
 /**

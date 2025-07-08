@@ -1,4 +1,3 @@
-// DTOs for API communication
 export interface AccountDTO {
   id: number;
   userId: number;
@@ -18,7 +17,6 @@ export interface ErrorResponse {
   error: string;
 }
 
-// Authentication DTOs
 export interface LoginRequest {
   email: string;
   password: string;

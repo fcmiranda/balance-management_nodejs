@@ -1,4 +1,3 @@
-// Result pattern for better error handling following OCP
 export abstract class Result<T, E = Error> {
   abstract isSuccess(): boolean;
   abstract isFailure(): boolean;
@@ -13,7 +12,6 @@ export abstract class Result<T, E = Error> {
     return new FailureResult(error);
   }
 
-  // Map over the success value
   map<U>(fn: (value: T) => U): Result<U, E> {
     if (this.isSuccess()) {
       return Result.success(fn(this.getValue()));
@@ -21,7 +19,6 @@ export abstract class Result<T, E = Error> {
     return Result.failure(this.getError());
   }
 
-  // Chain operations that return Results
   flatMap<U>(fn: (value: T) => Result<U, E>): Result<U, E> {
     if (this.isSuccess()) {
       return fn(this.getValue());
@@ -29,7 +26,6 @@ export abstract class Result<T, E = Error> {
     return Result.failure(this.getError());
   }
 
-  // Handle errors
   mapError<F>(fn: (error: E) => F): Result<T, F> {
     if (this.isFailure()) {
       return Result.failure(fn(this.getError()));

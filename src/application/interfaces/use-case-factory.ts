@@ -19,7 +19,7 @@ export interface IContainer {
   getGetAccountsByUserIdUseCase(): IGetAccountsByUserIdUseCase;
   getAccountDepositUseCase(): IAccountDepositUseCase;
   getAccountWithdrawUseCase(): IAccountWithdrawUseCase;
-  // User management use cases
+
   getUserByIdUseCase(): IGetUserByIdUseCase;
   getCreateUserUseCase(): ICreateUserUseCase;
   getUpdateUserUseCase(): IUpdateUserUseCase;

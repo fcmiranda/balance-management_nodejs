@@ -10,13 +10,11 @@ export class DeleteUserUseCase implements IDeleteUserUseCase {
   ) {}
 
   async execute(request: DeleteUserRequest): Promise<void> {
-    // Check if user exists
     const existingUser = await this.authRepository.findUserById(request.id);
     if (!existingUser) {
       throw new NotFoundError('User', request.id);
     }
 
-    // Only check for accounts with positive balance
     const userAccounts = await this.accountRepository.findByUserId(request.id);
     const accountsWithBalance = userAccounts.filter((account) => account.balance > 0);
     if (accountsWithBalance.length > 0) {
@@ -26,7 +24,6 @@ export class DeleteUserUseCase implements IDeleteUserUseCase {
       );
     }
 
-    // Delete user (accounts will be cascade deleted due to database constraint)
     await this.authRepository.deleteUser(request.id);
   }
 }

@@ -2,7 +2,6 @@ import type { User } from '../src/domain/entities/auth';
 import type { AuthRepository } from '../src/domain/repositories/auth-repository';
 import type { AuthService } from '../src/infrastructure/auth/auth-service';
 
-// Mock Auth Repository
 export const mockAuthRepository = (): jest.Mocked<AuthRepository> => ({
   findUserByEmail: jest.fn(),
   findUserById: jest.fn(),
@@ -12,7 +11,6 @@ export const mockAuthRepository = (): jest.Mocked<AuthRepository> => ({
   deleteUser: jest.fn(),
 });
 
-// Mock Auth Service
 export const mockAuthService = () => ({
   generateToken: jest.fn(),
   verifyToken: jest.fn(),
@@ -21,7 +19,6 @@ export const mockAuthService = () => ({
   extractTokenFromHeader: jest.fn(),
 });
 
-// Test Client Data
 export const testClientData = {
   valid: {
     name: 'John Doe',
@@ -35,7 +32,6 @@ export const testClientData = {
   },
 };
 
-// Test User Data
 export const testUserData = {
   valid: {
     name: 'John Doe',
@@ -57,7 +53,6 @@ export const testUserData = {
   },
 };
 
-// JWT Test Tokens
 export const testTokens = {
   validClient:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJjbGllbnQiLCJpYXQiOjE2MjM5MjQ4MDB9.test',
@@ -68,7 +63,6 @@ export const testTokens = {
   invalid: 'invalid.token.here',
 };
 
-// Helper to create Express-like request/response mocks
 interface MockRequest {
   body: Record<string, unknown>;
   params: Record<string, unknown>;
@@ -115,5 +109,4 @@ export const createMockResponse = (): MockResponse => {
   return res;
 };
 
-// Helper to create mock Next function
 export const createMockNext = () => jest.fn();

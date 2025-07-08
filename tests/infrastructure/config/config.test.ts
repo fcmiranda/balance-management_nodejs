@@ -17,7 +17,6 @@ describe('Configuration Management', () => {
       expect(config.logging).toBeDefined();
       expect(config.limits).toBeDefined();
 
-      // Optional properties may be undefined - check they exist on the config object
       expect('allowedOrigins' in config).toBe(true);
     });
 
@@ -42,14 +41,12 @@ describe('Configuration Management', () => {
       expect(() => new RegExp(validation.accountNumberPattern)).not.toThrow();
       expect(() => new RegExp(validation.emailPattern)).not.toThrow();
 
-      // Test account number pattern
       const accountNumberRegex = new RegExp(validation.accountNumberPattern);
       expect(accountNumberRegex.test('1234567890')).toBe(true);
       expect(accountNumberRegex.test('0123456789')).toBe(false);
       expect(accountNumberRegex.test('123456789')).toBe(false);
       expect(accountNumberRegex.test('12345678901')).toBe(false);
 
-      // Test email pattern
       const emailRegex = new RegExp(validation.emailPattern);
       expect(emailRegex.test('test@example.com')).toBe(true);
       expect(emailRegex.test('invalid-email')).toBe(false);
@@ -61,7 +58,7 @@ describe('Configuration Management', () => {
       expect(config.jwtSecret).toBeDefined();
       expect(config.jwtExpiresIn).toBeDefined();
       expect(config.bcryptRounds).toBeGreaterThan(0);
-      expect(config.bcryptRounds).toBeLessThan(20); // Reasonable upper bound
+      expect(config.bcryptRounds).toBeLessThan(20);
     });
 
     it('should have valid rate limit configuration', () => {

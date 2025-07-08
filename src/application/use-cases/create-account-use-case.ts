@@ -15,22 +15,17 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
   ) {}
 
   async execute(request: CreateAccountRequest): Promise<AccountResponse> {
-    // Verify that the user exists
     const user = await this.authRepository.findUserById(request.userId);
     if (!user) {
       throw new NotFoundError('User', request.userId);
     }
 
-    // Generate a unique account number
     const accountNumber = await this.generateUniqueAccountNumber();
 
-    // Create the account domain entity
     const account = Account.create(request.userId, accountNumber);
 
-    // Save the account
     const savedAccount = await this.accountRepository.save(account);
 
-    // Return the account response
     return {
       id: savedAccount.id || 0,
       userId: savedAccount.userId,
@@ -45,10 +40,8 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
     let attempts = 0;
 
     while (attempts < maxAttempts) {
-      // Generate a random 10-digit account number
       const accountNumber = this.generateRandomAccountNumber();
 
-      // Check if this account number already exists
       const existingAccount = await this.accountRepository.findByAccountNumber(accountNumber);
 
       if (!existingAccount) {
@@ -62,7 +55,6 @@ export class CreateAccountUseCase implements ICreateAccountUseCase {
   }
 
   private generateRandomAccountNumber(): string {
-    // Generate a 10-digit number starting with 1-9 (to avoid leading zeros)
     const firstDigit = Math.floor(Math.random() * 9) + 1;
     const remainingDigits = Math.floor(Math.random() * 1000000000)
       .toString()

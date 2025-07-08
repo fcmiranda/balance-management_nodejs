@@ -14,13 +14,11 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
   ) {}
 
   async execute(request: UpdateUserRequest): Promise<UserResponse> {
-    // Check if user exists
     const existingUser = await this.authRepository.findUserById(request.id);
     if (!existingUser) {
       throw new NotFoundError('User', request.id);
     }
 
-    // Validate input
     const updates: Partial<Pick<typeof existingUser, 'name' | 'email' | 'password' | 'role'>> = {};
 
     if (request.name !== undefined) {
@@ -35,7 +33,6 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
         throw new ValidationError('Valid email is required', ['email']);
       }
 
-      // Check if email is already taken by another user
       const emailUser = await this.authRepository.findUserByEmail(request.email.toLowerCase());
       if (emailUser && emailUser.id !== request.id) {
         throw new DuplicateError('User', 'email', request.email);
@@ -58,7 +55,6 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
       updates.role = request.role;
     }
 
-    // Update user
     const updatedUser = await this.authRepository.updateUser(request.id, updates);
 
     return {

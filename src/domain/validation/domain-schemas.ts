@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { config } from '../../infrastructure/config/config';
 
-// Domain validation schemas using configuration
 export const clientDomainSchema = z.object({
   id: z.number().int().positive().nullable(),
   name: z.string().min(config.validation.nameMinLength).max(config.validation.nameMaxLength).trim(),
@@ -25,7 +24,6 @@ export const amountDomainSchema = z
   .max(config.validation.maxTransactionAmount)
   .finite('Amount must be a valid number');
 
-// Account validation schemas using configuration
 export const accountDomainSchema = z.object({
   id: z.number().int().positive().nullable(),
   userId: z.number().int().positive(),
@@ -52,12 +50,10 @@ export const accountCreateDomainSchema = z.object({
     ),
 });
 
-// Repository validation schemas
 export const clientIdDomainSchema = z.number().int().positive();
 export const accountIdDomainSchema = z.number().int().positive();
 export const userIdDomainSchema = z.number().int().positive();
 
-// Type exports for domain layer
 export type ClientDomainData = z.infer<typeof clientDomainSchema>;
 export type ClientCreateDomainData = z.infer<typeof clientCreateDomainSchema>;
 export type ClientUpdateDomainData = z.infer<typeof clientUpdateDomainSchema>;

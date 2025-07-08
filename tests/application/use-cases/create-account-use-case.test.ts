@@ -5,7 +5,6 @@ import { NotFoundError } from '@domain/errors/domain-errors';
 import type { AccountRepository } from '@domain/repositories/account-repository';
 import type { AuthRepository } from '@domain/repositories/auth-repository';
 
-// Mock repositories
 const mockAccountRepository = {
   findAll: jest.fn(),
   findById: jest.fn(),
@@ -96,8 +95,8 @@ describe('CreateAccountUseCase', () => {
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
       mockAccountRepository.findByAccountNumber
-        .mockResolvedValueOnce(existingAccount) // First attempt returns existing account
-        .mockResolvedValueOnce(null); // Second attempt returns null (unique)
+        .mockResolvedValueOnce(existingAccount)
+        .mockResolvedValueOnce(null);
       mockAccountRepository.save.mockResolvedValue(savedAccount);
 
       const result = await useCase.execute(request);
@@ -115,13 +114,13 @@ describe('CreateAccountUseCase', () => {
       const existingAccount = Account.fromPersistence(1, 2, '1234567890', 100);
 
       mockAuthRepository.findUserById.mockResolvedValue(mockUser);
-      // Mock all attempts to return existing account (simulating collision)
+
       mockAccountRepository.findByAccountNumber.mockResolvedValue(existingAccount);
 
       await expect(useCase.execute(request)).rejects.toThrow(
         'Unable to generate unique account number after multiple attempts',
       );
-      expect(mockAccountRepository.findByAccountNumber).toHaveBeenCalledTimes(10); // max attempts
+      expect(mockAccountRepository.findByAccountNumber).toHaveBeenCalledTimes(10);
       expect(mockAccountRepository.save).not.toHaveBeenCalled();
     });
 
@@ -140,8 +139,8 @@ describe('CreateAccountUseCase', () => {
       await useCase.execute(request);
 
       const saveCall = mockAccountRepository.save.mock.calls[0][0];
-      expect(saveCall.accountNumber).toMatch(/^\d{10}$/); // 10 digits
-      expect(saveCall.accountNumber[0]).not.toBe('0'); // First digit not zero
+      expect(saveCall.accountNumber).toMatch(/^\d{10}$/);
+      expect(saveCall.accountNumber[0]).not.toBe('0');
     });
   });
 });

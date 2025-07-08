@@ -15,12 +15,10 @@ export class AccountWithdrawUseCase implements IAccountWithdrawUseCase {
       throw new NotFoundError('Account', request.accountId);
     }
 
-    // Security check: Only the account owner can withdraw from their account
     if (account.userId !== request.userId) {
       throw new UnauthorizedError('You can only withdraw from your own account');
     }
 
-    // Perform the withdrawal
     account.withdraw(request.amount);
     const updatedAccount = await this.accountRepository.update(account);
 

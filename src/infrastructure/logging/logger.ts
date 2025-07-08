@@ -1,4 +1,3 @@
-// Logging interface following DIP
 export interface ILogger {
   info(message: string, data?: unknown): void;
   error(message: string, error?: Error, data?: unknown): void;
@@ -6,7 +5,6 @@ export interface ILogger {
   debug(message: string, data?: unknown): void;
 }
 
-// Console logger implementation
 export class ConsoleLogger implements ILogger {
   info(message: string, data?: unknown): void {
     console.log(`[INFO] ${message}`, data ? JSON.stringify(data, null, 2) : '');
@@ -29,7 +27,6 @@ export class ConsoleLogger implements ILogger {
   }
 }
 
-// Null logger for testing
 export class NullLogger implements ILogger {
   info(_message: string, _data?: unknown): void {}
   error(_message: string, _error?: Error, _data?: unknown): void {}

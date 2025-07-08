@@ -5,63 +5,49 @@ import { z } from 'zod';
  * Ensures all required environment variables are present and valid
  */
 const configSchema = z.object({
-  // Server Configuration
   port: z.coerce.number().int().positive().default(8080),
   nodeEnv: z.enum(['development', 'test', 'production']).default('development'),
 
-  // JWT Configuration
   jwtSecret: z.string().min(1, 'JWT_SECRET is required'),
   jwtExpiresIn: z.string().default('24h'),
 
-  // Database Configuration
   dbPath: z.string().default('./database.sqlite'),
   dbSynchronize: z.boolean().default(true),
   dbLogging: z.boolean().default(false),
 
-  // Security Configuration
   bcryptRounds: z.coerce.number().int().min(8).max(15).default(12),
 
-  // Rate Limiting Configuration
-  rateLimitWindowMs: z.coerce.number().int().positive().default(900000), // 15 minutes
+  rateLimitWindowMs: z.coerce.number().int().positive().default(900000),
   rateLimitMaxRequests: z.coerce.number().int().positive().default(100),
-  rateLimitAuthWindowMs: z.coerce.number().int().positive().default(900000), // 15 minutes
+  rateLimitAuthWindowMs: z.coerce.number().int().positive().default(900000),
   rateLimitAuthMaxRequests: z.coerce.number().int().positive().default(5),
 
-  // CORS Configuration
   allowedOrigins: z.string().optional(),
 
-  // Swagger Configuration
   swaggerUrl: z.string().url().default('http://localhost:8080/api'),
 
-  // Business Rules Configuration
   validation: z
     .object({
-      // User validation rules
       nameMinLength: z.coerce.number().int().positive().default(2),
       nameMaxLength: z.coerce.number().int().positive().default(100),
       passwordMinLength: z.coerce.number().int().positive().default(6),
       passwordMaxLength: z.coerce.number().int().positive().default(100),
 
-      // Account validation rules
       accountNumberPattern: z.string().default('^[1-9]\\d{9}$'),
       accountNumberLength: z.coerce.number().int().positive().default(10),
       accountNumberMinLength: z.coerce.number().int().positive().default(5),
       accountNumberMaxLength: z.coerce.number().int().positive().default(20),
 
-      // Email validation pattern
       emailPattern: z.string().default('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$'),
 
-      // Amount validation
       minTransactionAmount: z.coerce.number().positive().default(0.01),
       maxTransactionAmount: z.coerce.number().positive().default(1000000),
 
-      // General validation rules
       minPositiveInteger: z.coerce.number().int().positive().default(1),
       maxBalanceValue: z.coerce.number().positive().default(Number.MAX_SAFE_INTEGER),
     })
     .default({}),
 
-  // Logging Configuration
   logging: z
     .object({
       level: z.enum(['debug', 'info', 'warn', 'error']).default('info'),
@@ -71,7 +57,6 @@ const configSchema = z.object({
     })
     .default({}),
 
-  // Application Limits
   limits: z
     .object({
       requestBodySizeLimit: z.string().default('10mb'),
@@ -87,35 +72,27 @@ const configSchema = z.object({
  */
 function loadConfig() {
   const rawConfig = {
-    // Server
     port: process.env.PORT,
     nodeEnv: process.env.NODE_ENV,
 
-    // JWT
     jwtSecret: process.env.JWT_SECRET,
     jwtExpiresIn: process.env.JWT_EXPIRES_IN,
 
-    // Database
     dbPath: process.env.DB_PATH,
     dbSynchronize: process.env.DB_SYNCHRONIZE !== 'false' && process.env.NODE_ENV !== 'production',
     dbLogging: process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development',
 
-    // Security
     bcryptRounds: process.env.BCRYPT_ROUNDS,
 
-    // Rate Limiting
     rateLimitWindowMs: process.env.RATE_LIMIT_WINDOW_MS,
     rateLimitMaxRequests: process.env.RATE_LIMIT_MAX_REQUESTS,
     rateLimitAuthWindowMs: process.env.RATE_LIMIT_AUTH_WINDOW_MS,
     rateLimitAuthMaxRequests: process.env.RATE_LIMIT_AUTH_MAX_REQUESTS,
 
-    // CORS
     allowedOrigins: process.env.ALLOWED_ORIGINS,
 
-    // Swagger
     swaggerUrl: process.env.SWAGGER_URL || `http://localhost:${process.env.PORT || 8080}/api`,
 
-    // Business Rules
     validation: {
       nameMinLength: process.env.VALIDATION_NAME_MIN_LENGTH,
       nameMaxLength: process.env.VALIDATION_NAME_MAX_LENGTH,
@@ -132,7 +109,6 @@ function loadConfig() {
       maxBalanceValue: process.env.VALIDATION_MAX_BALANCE_VALUE,
     },
 
-    // Logging
     logging: {
       level: process.env.LOG_LEVEL,
       enableConsole: process.env.LOG_ENABLE_CONSOLE !== 'false',
@@ -140,7 +116,6 @@ function loadConfig() {
       logFilePath: process.env.LOG_FILE_PATH,
     },
 
-    // Application Limits
     limits: {
       requestBodySizeLimit: process.env.REQUEST_BODY_SIZE_LIMIT,
       requestTimeoutMs: process.env.REQUEST_TIMEOUT_MS,

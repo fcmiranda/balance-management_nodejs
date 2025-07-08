@@ -2,11 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { AuthService } from '../../../src/infrastructure/auth/auth-service';
 
-// Mock external dependencies
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
-// Mock config
 jest.mock('../../../src/infrastructure/config/config', () => ({
   config: {
     jwtSecret: 'test-secret-key',
@@ -43,7 +41,6 @@ describe('AuthService', () => {
     });
 
     it('should use default values if environment variables not provided', () => {
-      // This test is not applicable anymore since we're mocking the config
       const payload = { userId: 1, email: 'test@example.com', role: 'client' as const };
       const expectedToken = 'jwt-token';
 

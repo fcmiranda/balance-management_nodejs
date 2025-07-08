@@ -2,26 +2,26 @@
 
 import 'dotenv/config';
 import express from 'express';
-import { Database } from './src/infrastructure/database/database';
-import { ErrorHandlerMiddleware } from './src/infrastructure/middleware/error-handler';
-import { SecurityMiddleware } from './src/infrastructure/middleware/security-middleware';
+import { TypeOrmDatabase } from './src/infrastructure/database/typeorm-database';
+import { handleError } from './src/infrastructure/middleware/error-handler';
+import {
+  createCorsMiddleware,
+  createHelmetMiddleware,
+  sanitizeInput,
+} from './src/infrastructure/middleware/security-middleware';
 import { routes } from './src/routes/index';
 
 const app = express();
 
-// Initialize database
-Database.getInstance();
+TypeOrmDatabase.getInstance();
 
-// Security middleware
-app.use(SecurityMiddleware.createHelmetMiddleware());
-app.use(SecurityMiddleware.createCorsMiddleware());
+app.use(createHelmetMiddleware());
+app.use(createCorsMiddleware());
 
-// Request processing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(SecurityMiddleware.sanitizeInput);
+app.use(sanitizeInput);
 
-// Health check endpoint
 app.get('/health', (_req, res) => {
   res.json({
     status: 'OK',
@@ -32,11 +32,9 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// API routes
 app.use('/api', routes);
 
-// Error handling middleware (must be last)
-app.use(ErrorHandlerMiddleware.handle);
+app.use(handleError);
 
 const PORT = process.env.PORT || 8080;
 
@@ -56,9 +54,8 @@ app.listen(PORT, () => {
   console.log('   Client: client@test.com / client123');
 });
 
-// Graceful shutdown
 process.on('SIGINT', () => {
   console.log('\n🛑 Shutting down gracefully...');
-  Database.getInstance().close();
+  TypeOrmDatabase.getInstance().close();
   process.exit(0);
 });

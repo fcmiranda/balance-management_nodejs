@@ -100,7 +100,6 @@ router.get('/:id', authenticateToken, (req, res) => {
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.post('/', authenticateToken, validateRequest(createUserRequestSchema), (req, res) => {
-  // Only admin can create users
   if (req.user?.role !== 'admin') {
     handleAuthorizationError('Admin role required', req, res);
     return;
@@ -165,7 +164,6 @@ router.post('/', authenticateToken, validateRequest(createUserRequestSchema), (r
 router.put('/:id', authenticateToken, validateRequest(updateUserRequestSchema), (req, res) => {
   const userId = Number.parseInt(req.params.id);
 
-  // Users can only update their own profile, or admin can update any user
   if (req.user?.role !== 'admin' && req.user?.userId !== userId) {
     handleAuthorizationError('You can only update your own profile', req, res);
     return;
@@ -220,7 +218,6 @@ router.put('/:id', authenticateToken, validateRequest(updateUserRequestSchema), 
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.delete('/:id', authenticateToken, (req, res) => {
-  // Only admin can delete users
   if (req.user?.role !== 'admin') {
     handleAuthorizationError('Admin role required', req, res);
     return;

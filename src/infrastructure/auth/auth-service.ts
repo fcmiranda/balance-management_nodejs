@@ -29,7 +29,6 @@ export class AuthService {
       role: payload.role,
     };
 
-    // @ts-ignore - JWT sign method has complex overloads
     return jwt.sign(tokenPayload, this.jwtSecret, {
       expiresIn: this.jwtExpiresIn,
     });

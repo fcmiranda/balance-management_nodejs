@@ -15,12 +15,10 @@ export class AccountDepositUseCase implements IAccountDepositUseCase {
       throw new NotFoundError('Account', request.accountId);
     }
 
-    // Security check: Only the account owner can deposit to their account
     if (account.userId !== request.userId) {
       throw new UnauthorizedError('You can only deposit to your own account');
     }
 
-    // Perform the deposit
     account.deposit(request.amount);
     const updatedAccount = await this.accountRepository.update(account);
 

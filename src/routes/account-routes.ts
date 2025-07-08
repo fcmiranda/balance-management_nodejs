@@ -61,11 +61,11 @@ const authMiddleware = new AuthMiddleware();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-// Routes with authentication and validation middleware
+
 router.post(
   '/accounts',
   authMiddleware.authenticate,
-  authMiddleware.authorize(['client']), // Only clients can create accounts
+  authMiddleware.authorize(['client']),
   accountController.createAccount.bind(accountController),
 );
 
@@ -102,7 +102,7 @@ router.post(
 router.get(
   '/accounts',
   authMiddleware.authenticate,
-  authMiddleware.authorize(['client']), // Only clients can view their own accounts
+  authMiddleware.authorize(['client']),
   accountController.getUserAccounts.bind(accountController),
 );
 
@@ -162,7 +162,7 @@ router.get(
 router.post(
   '/accounts/:accountId/deposit',
   authMiddleware.authenticate,
-  authMiddleware.authorize(['client']), // Only clients can deposit to their own accounts
+  authMiddleware.authorize(['client']),
   validateParams(accountIdParamSchema),
   validateBody(accountDepositRequestSchema),
   accountController.deposit.bind(accountController),
@@ -224,7 +224,7 @@ router.post(
 router.post(
   '/accounts/:accountId/withdraw',
   authMiddleware.authenticate,
-  authMiddleware.authorize(['client']), // Only clients can withdraw from their own accounts
+  authMiddleware.authorize(['client']),
   validateParams(accountIdParamSchema),
   validateBody(accountWithdrawRequestSchema),
   accountController.withdraw.bind(accountController),

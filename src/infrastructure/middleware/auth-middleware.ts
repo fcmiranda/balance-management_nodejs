@@ -3,7 +3,6 @@ import type { NextFunction, Request, Response } from 'express';
 import { AuthService } from '../auth/auth-service';
 import { handleAuthError, handleAuthorizationError } from './standard-error-handler';
 
-// Extend Express Request to include user
 declare global {
   namespace Express {
     interface Request {
@@ -72,12 +71,10 @@ export class AuthMiddleware {
 
       next();
     } catch (_error) {
-      // Continue without authentication
       next();
     }
   };
 }
 
-// Export instance for backward compatibility
 const authMiddleware = new AuthMiddleware();
 export const authenticateToken = authMiddleware.authenticate;

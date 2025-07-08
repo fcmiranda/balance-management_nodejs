@@ -61,9 +61,7 @@ describe('GetAccountsByUserIdUseCase', () => {
     });
 
     it('should handle accounts without createdAt field', async () => {
-      const mockAccounts = [
-        Account.fromPersistence(1, 1, '1234567890', 100.5), // No createdAt
-      ];
+      const mockAccounts = [Account.fromPersistence(1, 1, '1234567890', 100.5)];
 
       mockAccountRepository.findByUserId.mockResolvedValue(mockAccounts);
 

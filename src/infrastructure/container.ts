@@ -41,7 +41,6 @@ export class Container implements IContainer {
   private readonly accountDepositUseCase: IAccountDepositUseCase;
   private readonly accountWithdrawUseCase: IAccountWithdrawUseCase;
 
-  // User management use cases
   private readonly getUserByIdUseCaseInstance: IGetUserByIdUseCase;
   private readonly createUserUseCaseInstance: ICreateUserUseCase;
   private readonly updateUserUseCaseInstance: IUpdateUserUseCase;
@@ -62,7 +61,6 @@ export class Container implements IContainer {
     this.accountDepositUseCase = new AccountDepositUseCase(this.accountRepository);
     this.accountWithdrawUseCase = new AccountWithdrawUseCase(this.accountRepository);
 
-    // Initialize user management use cases
     this.getUserByIdUseCaseInstance = new GetUserByIdUseCase(this.authRepository);
     this.createUserUseCaseInstance = new CreateUserUseCase(this.authRepository, this.authService);
     this.updateUserUseCaseInstance = new UpdateUserUseCase(this.authRepository, this.authService);
@@ -100,7 +98,6 @@ export class Container implements IContainer {
     return this.accountWithdrawUseCase;
   }
 
-  // User management use case getters
   public getUserByIdUseCase(): IGetUserByIdUseCase {
     return this.getUserByIdUseCaseInstance;
   }

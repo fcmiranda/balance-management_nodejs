@@ -37,11 +37,9 @@ describe('AccountController - createAccount', () => {
       mockAccountWithdrawUseCase,
     );
 
-    // Setup Express app for testing
     app = express();
     app.use(express.json());
 
-    // Add middleware to simulate authenticated user
     app.use((req, _res, next) => {
       req.user = { userId: 1, email: 'test@example.com', role: 'client' };
       next();
@@ -110,7 +108,6 @@ describe('AccountController - createAccount', () => {
     });
 
     it('should return 401 when user is not authenticated', async () => {
-      // Create app without auth middleware
       const unauthApp = express();
       unauthApp.use(express.json());
       unauthApp.post('/accounts', (req, res) => {
@@ -163,7 +160,6 @@ describe('AccountController - createAccount', () => {
     });
 
     it('should pass correct user ID from authenticated request', async () => {
-      // Setup different user
       const differentUserApp = express();
       differentUserApp.use(express.json());
       differentUserApp.use((req, _res, next) => {

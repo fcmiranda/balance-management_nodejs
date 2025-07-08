@@ -9,18 +9,15 @@ async function seedTypeOrmDatabase() {
   console.log('🌱 Seeding TypeORM database...');
 
   try {
-    // Initialize TypeORM database
     const database = TypeOrmDatabase.getInstance();
     await database.initialize();
 
     const authRepository = new TypeOrmAuthRepository();
     const authService = new AuthService();
 
-    // Create admin user
     const adminEmail = 'admin@itau.com';
     const adminPassword = 'admin123';
 
-    // Check if admin already exists
     const existingAdmin = await authRepository.findUserByEmail(adminEmail);
 
     if (!existingAdmin) {
@@ -33,7 +30,6 @@ async function seedTypeOrmDatabase() {
       console.log('ℹ️  Admin user already exists');
     }
 
-    // Create test client user
     const clientEmail = 'client@test.com';
     const clientPassword = 'client123';
 
@@ -57,7 +53,6 @@ async function seedTypeOrmDatabase() {
   }
 }
 
-// Run the seeding if this script is executed directly
 if (require.main === module) {
   seedTypeOrmDatabase();
 }

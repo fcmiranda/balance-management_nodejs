@@ -55,7 +55,6 @@ describe('UserController', () => {
     app = express();
     app.use(express.json());
 
-    // Mock auth middleware
     app.use((req, _res, next) => {
       req.user = { userId: 1, email: 'test@example.com', role: 'admin' };
       next();

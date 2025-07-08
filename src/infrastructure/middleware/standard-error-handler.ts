@@ -68,7 +68,6 @@ export function handleError(error: unknown, req: Request, res: Response): void {
     return;
   }
 
-  // Handle generic errors
   console.error('Unhandled error:', error);
 
   const errorResponse: StandardErrorResponse = {

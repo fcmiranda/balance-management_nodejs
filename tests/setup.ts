@@ -1,18 +1,13 @@
 import 'reflect-metadata';
 import 'dotenv/config';
 
-// Global test setup
 beforeAll(() => {
-  // Set test environment variables
   process.env.NODE_ENV = 'test';
   process.env.JWT_SECRET = 'test-secret-key';
 });
 
-afterAll(() => {
-  // Clean up after all tests
-});
+afterAll(() => {});
 
-// Mock console methods in tests to reduce noise
 global.console = {
   ...console,
   log: jest.fn(),

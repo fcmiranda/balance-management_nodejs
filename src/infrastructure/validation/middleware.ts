@@ -2,10 +2,8 @@ import type { NextFunction, Request, Response } from 'express';
 import { ZodError, type z } from 'zod';
 import type { StandardErrorResponse } from '../middleware/standard-error-handler';
 
-// Validation target types
 type ValidationTarget = 'body' | 'params' | 'query' | 'headers';
 
-// Error messages for different validation targets
 const ERROR_MESSAGES: Record<ValidationTarget, string> = {
   body: 'Invalid request body',
   params: 'Invalid URL parameters',
@@ -13,7 +11,6 @@ const ERROR_MESSAGES: Record<ValidationTarget, string> = {
   headers: 'Invalid request headers',
 };
 
-// Validation context descriptions for error messages
 const VALIDATION_CONTEXTS: Record<ValidationTarget, string> = {
   body: 'Validation failed',
   params: 'Invalid URL parameters',
@@ -21,10 +18,6 @@ const VALIDATION_CONTEXTS: Record<ValidationTarget, string> = {
   headers: 'Invalid request headers',
 };
 
-/**
- * Centralized validation error handler
- * Processes ZodError and creates consistent error responses
- */
 function handleValidationError(
   error: unknown,
   req: Request,
@@ -51,7 +44,6 @@ function handleValidationError(
     return;
   }
 
-  // Handle non-Zod errors
   const response: StandardErrorResponse = {
     error: ERROR_MESSAGES[target],
     message: 'Validation error occurred',
@@ -61,21 +53,11 @@ function handleValidationError(
   res.status(400).json(response);
 }
 
-/**
- * Generic validation middleware factory
- * Consolidates all validation logic into a single, configurable function
- *
- * @param target - Which part of the request to validate ('body', 'params', 'query', 'headers')
- * @param schema - Zod schema to validate against
- * @param options - Additional configuration options
- */
 export function validate(
   target: ValidationTarget,
   schema: z.ZodSchema<unknown>,
   options: {
-    /** Whether to merge validated data back into the original request object */
     merge?: boolean;
-    /** Whether to replace the original data with validated data (default: true for body, false for others) */
     replace?: boolean;
   } = {},
 ) {
@@ -84,15 +66,12 @@ export function validate(
       const data = req[target];
       const validatedData = schema.parse(data);
 
-      // Determine whether to replace or merge based on target and options
       const shouldReplace = options.replace ?? target === 'body';
       const shouldMerge = options.merge ?? !shouldReplace;
 
       if (shouldReplace) {
-        // Replace the entire target with validated data
         (req as any)[target] = validatedData;
       } else if (shouldMerge) {
-        // Merge validated data back into the original target
         Object.assign(req[target], validatedData);
       }
 
@@ -103,7 +82,6 @@ export function validate(
   };
 }
 
-// Backward compatibility functions - these now use the consolidated validate function
 export function validateSchema(schema: z.ZodSchema<unknown>) {
   return validate('body', schema);
 }
@@ -120,22 +98,18 @@ export function validateBody(schema: z.ZodSchema<unknown>) {
   return validate('body', schema, { replace: true });
 }
 
-// Combine body and params validation using the consolidated validate function
 export function validateRequest(
   bodySchema: z.ZodSchema<unknown>,
   paramsSchema?: z.ZodSchema<unknown>,
 ) {
   return (req: Request, res: Response, next: NextFunction): void => {
-    // Create a composed validation middleware that runs both validations
     const bodyValidation = validate('body', bodySchema, { replace: true });
 
     if (!paramsSchema) {
-      // Only validate body if no params schema provided
       bodyValidation(req, res, next);
       return;
     }
 
-    // Validate body first, then params if both schemas are provided
     const paramsValidation = validate('params', paramsSchema, { merge: true });
 
     bodyValidation(req, res, (bodyError) => {
@@ -149,7 +123,6 @@ export function validateRequest(
   };
 }
 
-// Utility function to validate data in use cases
 export function validateData<T>(schema: z.ZodSchema<T>, data: unknown): T {
   try {
     return schema.parse(data);

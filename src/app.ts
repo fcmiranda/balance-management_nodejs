@@ -14,12 +14,6 @@ import { setupSwagger } from '@infrastructure/swagger/swagger-config';
 import { routes } from '@routes/index';
 import express from 'express';
 
-// Validate configuration on startup
-validateConfig();
-
-const app = express();
-
-// Initialize TypeORM database
 const initializeDatabase = async () => {
   try {
     const database = TypeOrmDatabase.getInstance();
@@ -31,21 +25,17 @@ const initializeDatabase = async () => {
   }
 };
 
-// Security middleware
 app.use(createHelmetMiddleware());
 app.use(createCorsMiddleware());
 app.use(createRateLimiter());
 
-// Request processing middleware
 app.use(express.json({ limit: config.limits.requestBodySizeLimit }));
 app.use(express.urlencoded({ extended: true, limit: config.limits.requestBodySizeLimit }));
 app.use(sanitizeInput);
 app.use(requestLogger);
 
-// Setup Swagger documentation
 setupSwagger(app);
 
-// Health check endpoint
 app.get('/health', (_req, res) => {
   res.json({
     status: 'OK',
@@ -56,15 +46,12 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// API routes
 app.use('/api', routes);
 
-// Error handling middleware (must be last)
 app.use(handleError);
 
 const PORT = config.port;
 
-// Start server after database initialization
 const startServer = async () => {
   await initializeDatabase();
 
@@ -75,7 +62,6 @@ const startServer = async () => {
   });
 };
 
-// Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('Shutting down gracefully...');
   const database = TypeOrmDatabase.getInstance();
@@ -83,7 +69,6 @@ process.on('SIGINT', async () => {
   process.exit(0);
 });
 
-// Start the application
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);

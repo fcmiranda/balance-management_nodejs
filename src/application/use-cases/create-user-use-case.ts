@@ -14,7 +14,6 @@ export class CreateUserUseCase implements ICreateUserUseCase {
   ) {}
 
   async execute(request: CreateUserRequest): Promise<UserResponse> {
-    // Validate input
     if (!request.name || request.name.trim().length < 2) {
       throw new ValidationError('Name must be at least 2 characters long', ['name']);
     }
@@ -27,16 +26,13 @@ export class CreateUserUseCase implements ICreateUserUseCase {
       throw new ValidationError('Password must be at least 6 characters long', ['password']);
     }
 
-    // Check if user already exists
     const existingUser = await this.authRepository.findUserByEmail(request.email.toLowerCase());
     if (existingUser) {
       throw new DuplicateError('User', 'email', request.email);
     }
 
-    // Hash password
     const hashedPassword = await this.authService.hashPassword(request.password);
 
-    // Create user with default role if not provided
     const user = await this.authRepository.createUser(
       request.name.trim(),
       request.email.toLowerCase(),

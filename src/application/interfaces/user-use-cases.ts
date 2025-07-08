@@ -44,5 +44,4 @@ export interface IDeleteUserUseCase extends CommandUseCase<DeleteUserRequest, vo
 
 export interface IListUsersUseCase extends CommandUseCase<void, UserResponse[]> {}
 
-// Re-export types for convenience
 export type { User };

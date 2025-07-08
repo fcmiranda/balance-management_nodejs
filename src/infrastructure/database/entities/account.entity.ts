@@ -29,7 +29,6 @@ export class Account {
   @UpdateDateColumn()
   updatedAt!: Date;
 
-  // Relations
   @ManyToOne(
     () => User,
     (user) => user.accounts,

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { config } from '../config/config';
 
-// Base schemas using configuration
 export const clientIdSchema = z.number().int().positive('Client ID must be a positive integer');
 
 export const nameSchema = z
@@ -36,7 +35,6 @@ export const amountSchema = z
   .positive('Amount must be positive')
   .finite('Amount must be a valid number');
 
-// User validation schemas
 export const userIdSchema = z.number().int().positive('User ID must be a positive integer');
 
 export const passwordSchema = z
@@ -54,7 +52,6 @@ export const roleSchema = z.enum(['admin', 'client'], {
   errorMap: () => ({ message: 'Role must be either "admin" or "client"' }),
 });
 
-// Request DTOs validation schemas
 export const createClientRequestSchema = z.object({
   name: nameSchema,
   email: emailSchema,
@@ -92,7 +89,6 @@ export const accountWithdrawRequestSchema = z.object({
   amount: amountSchema,
 });
 
-// URL parameter validation schemas
 export const clientIdParamSchema = z.object({
   id: z.string().transform((val) => {
     const parsed = Number.parseInt(val, 10);
@@ -113,7 +109,6 @@ export const accountIdParamSchema = z.object({
   }),
 });
 
-// Auth schemas
 export const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
@@ -126,7 +121,6 @@ export const registerSchema = z.object({
   role: z.enum(['admin', 'client']).default('client'),
 });
 
-// User schemas
 export const createUserRequestSchema = z.object({
   name: nameSchema,
   email: emailSchema,
@@ -141,7 +135,6 @@ export const updateUserRequestSchema = z.object({
   role: roleSchema.optional(),
 });
 
-// Type exports for use in the application
 export type CreateClientRequest = z.infer<typeof createClientRequestSchema>;
 export type UpdateClientRequest = z.infer<typeof updateClientRequestSchema>;
 export type GetClientByIdRequest = z.infer<typeof getClientByIdRequestSchema>;

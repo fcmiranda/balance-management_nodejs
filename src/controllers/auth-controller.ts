@@ -54,8 +54,6 @@ export class AuthController {
   }
 
   async logout(_req: Request, res: Response): Promise<void> {
-    // For JWT, logout is handled client-side by removing the token
-    // In a more complex implementation, you might maintain a blacklist
     sendData({ message: 'Logged out successfully' }, res, 200);
   }
 }

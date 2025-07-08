@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// User Entity for authentication
 export interface User {
   id: number;
   name: string;
@@ -11,7 +10,6 @@ export interface User {
   updatedAt: Date;
 }
 
-// JWT Payload
 export interface JwtPayload {
   userId: number;
   email: string;

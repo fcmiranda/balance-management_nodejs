@@ -15,7 +15,6 @@ import type { AccountRepository } from '@domain/repositories/account-repository'
 import type { AuthRepository } from '@domain/repositories/auth-repository';
 import type { AuthService } from '@infrastructure/auth/auth-service';
 
-// Mock repositories and services
 const mockAuthRepository = {
   findUserById: jest.fn(),
   findUserByEmail: jest.fn(),

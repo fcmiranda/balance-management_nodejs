@@ -44,17 +44,14 @@ export class AuthUseCase {
   }
 
   async register(registerData: RegisterRequest): Promise<AuthResponse> {
-    // Check if user already exists
     const existingUser = await this.authRepository.findUserByEmail(registerData.email);
 
     if (existingUser) {
       throw new DuplicateError('User', 'email', registerData.email);
     }
 
-    // Hash password
     const hashedPassword = await this.authService.hashPassword(registerData.password);
 
-    // Create user
     const user = await this.authRepository.createUser(
       registerData.name,
       registerData.email,
@@ -62,7 +59,6 @@ export class AuthUseCase {
       registerData.role,
     );
 
-    // Generate token
     const token = this.authService.generateToken({
       userId: user.id,
       email: user.email,
